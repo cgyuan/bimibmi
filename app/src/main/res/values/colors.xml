@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#249bb3</color>
+    <color name="colorPrimaryDark">#00249BB3</color>
+    <color name="colorAccent">#249bb3</color>
+    <color name="white">#ffffff</color>
+
+    <color name="timeBar_buffered_color">#1effe9</color>
+    <!--已经播放过视频的颜色-->
+    <color name="timeBar_played_color">#1effe9</color>
+    <!--没有加载过进度的颜色-->
+    <color name="timeBar_unplayed_color">#8f8f8f</color>
+    <!--视频进度圆点的颜色-->
+    <color name="timeBar_scrubber_color">#1effe9</color>
+
+
+    <color name="text_selected">#1effe9</color>
+    <color name="text_un_selected">#f9f9f9</color>
+
+    <color name="controller_bg_dark">#66000000</color>
+    <color name="controller_bg_light">#00000000</color>
+
+    <color name="dkplayer_background_color">#96000000</color>
+    <color name="dkplayer_theme_color">#39C5BB</color>
+    <color name="dkplayer_theme_color_translucent">#9939C5BB</color>
+    <dimen name="dkplayer_controller_height">46dp</dimen>
+    <dimen name="dkplayer_controller_icon_padding">12dp</dimen>
+    <dimen name="dkplayer_controller_seekbar_max_size">1dp</dimen>
+    <dimen name="dkplayer_controller_seekbar_size_n">14dp</dimen>
+    <dimen name="dkplayer_controller_seekbar_size_s">14dp</dimen>
+    <dimen name="dkplayer_controller_text_size">16sp</dimen>
+    <dimen name="dkplayer_controller_time_text_size">14sp</dimen>
+    <dimen name="dkplayer_default_spacing">10dp</dimen>
+    <dimen name="dkplayer_play_btn_size">50dp</dimen>
+</resources>

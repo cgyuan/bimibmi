@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">BimibimiClient</string>
+
+    <string name="clear">清空</string>
+    <string name="search_history">搜索历史：</string>
+    <string name="search">搜索</string>
+    <string name="search_keyword">输入搜索关键词</string>
+    <string name="search_none_tips">搜索内容不能为空</string>
+    <string name="title_activity_on_line_movie">OnLineMovieActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_online_detail_page">OnlineDetailPageActivity</string>
+    <string name="favor">收藏</string>
+
+    <string name="dkplayer_lock_tip">请先解锁屏幕！</string>
+    <string name="dkplayer_locked">已锁定</string>
+    <string name="dkplayer_replay">重新播放</string>
+    <string name="dkplayer_unlocked">已解锁</string>
+</resources>

@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    api 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    api 'com.github.dueeeke.dkplayer:player-ijk:3.1.3'
+}
