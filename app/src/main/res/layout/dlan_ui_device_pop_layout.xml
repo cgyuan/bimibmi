@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="300.0dip"
+    android:background="@drawable/dlan_bag"
+    android:padding="20.0dip">
+
+    <TextView
+        android:id="@+id/dlan_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="无线投屏"
+        android:textSize="16.0sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/dlan_small_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dlan_title"
+        android:layout_marginTop="4.0dip"
+        android:text="可用设备列表"
+        android:textSize="12.0sp" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12.0dip"
+        android:layout_marginEnd="23.0dip" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/device_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/device_bottom_button"
+        android:layout_below="@+id/dlan_small_tip"
+        android:layout_marginTop="20.0dip" />
+
+    <LinearLayout
+        android:id="@+id/device_bottom_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20.0dip"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dlan_to_help"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="查看帮助"
+            android:textSize="14.0sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dlan_to_cancel"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="取消"
+            android:textSize="14.0sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</RelativeLayout>

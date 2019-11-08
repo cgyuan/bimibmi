@@ -29,4 +29,9 @@
         <item name="android:windowEnterAnimation">@anim/anim_float_window_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_float_window_exit</item>
     </style>
+
+    <style name="SplashTheme" parent="@style/AppTheme">
+        <item name="android:windowBackground">@drawable/splash_d</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
