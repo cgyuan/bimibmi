@@ -18,7 +18,8 @@ import org.json.JSONObject
 import java.net.URLDecoder
 
 class OnlinePlayListAdapter(private val context: Context,
-                            private val episodes: List<Episode>):
+                            private val episodes: List<Episode>,
+                            private val bgSector: Int = 0):
     RecyclerView.Adapter<OnlinePlayHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnlinePlayHolder {
@@ -32,6 +33,9 @@ class OnlinePlayListAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: OnlinePlayHolder, position: Int) {
         holder.btPlayText.text = episodes[position].title
+        if (bgSector != 0) {
+            holder.btPlayText.setBackgroundResource(bgSector)
+        }
         holder.itemView.setOnClickListener {
             Toast.makeText(context, Constants.BIMIBIMI_INDEX + episodes[position].href, Toast.LENGTH_SHORT).show()
             StringRequest().url(episodes[position].href)
@@ -55,6 +59,11 @@ class OnlinePlayListAdapter(private val context: Context,
                 })
         }
     }
-}
 
-//var player_data={"flag":"play","encrypt":1,"trysee":0,"points":0,"link":"\/bangumi\/669\/play\/1\/1\/","link_next":"\/bangumi\/669\/play\/1\/2\/","link_pre":"","url":"%37%33%31%31%62%30%64%35%66%63%39%39%31%37%33%39%2E%6D%70%34","url_next":"%36%65%61%66%66%33%39%64%31%65%32%39%63%64%64%31%2E%6D%70%34","from":"niux","server":"no","note":""}
+    fun refreshData(episodes: MutableList<Episode>) {
+        this.episodes as MutableList
+        this.episodes.clear()
+        this.episodes.addAll(episodes)
+        this.notifyDataSetChanged()
+    }
+}

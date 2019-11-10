@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponseString(response: String) {
-
+                println(response)
                 val list = HtmlDataParser.parseBanner(response)
 
                 val carouselLayoutManager = CarouselLayoutManager(baseContext, dp2px(100f))

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20.0dip"
+    android:layout_marginTop="10.0dip"
+    android:layout_marginRight="20.0dip"
+    android:background="@drawable/desc_bg_shape"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/dataSourceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10.0dip"
+        android:alpha="0.7"
+        android:drawableLeft="@drawable/ic_playlist_play_black_24dp"
+        android:drawablePadding="2.0dip"
+        android:text="播放源"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/viewAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginRight="6.0dip"
+        android:alpha="0.7"
+        android:drawableRight="@drawable/ic_seri_more"
+        android:drawablePadding="2.0dip"
+        android:textColor="@color/white"
+        android:textSize="14.0sp"
+        android:text="查看全部" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/episodesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dataSourceLabel"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:layout_marginBottom="10dp" />
+
+</RelativeLayout>

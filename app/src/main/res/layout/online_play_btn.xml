@@ -18,6 +18,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:id="@+id/btPlayText"
+        android:maxLines="1"
         android:foreground="?selectableItemBackground"
         android:text="高清" />
 

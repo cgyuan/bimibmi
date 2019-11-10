@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="20.0dip"
+        android:layout_height="20.0dip"
+        android:layout_alignEnd="@+id/head_desc"
+        android:layout_alignBottom="@+id/head_desc"
+        android:layout_marginRight="4dp"
+        app:srcCompat="@drawable/ic_more"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/desc_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/poster_border"
+        android:layout_marginLeft="20.0dip"
+        android:layout_marginTop="24.0dip"
+        android:layout_marginRight="20.0dip"
+        android:background="@drawable/desc_bg_shape"
+        android:orientation="vertical"
+        android:padding="10.0dip">
+
+        <TextView
+            android:id="@+id/desc_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="简介："
+            android:textColor="@color/white"
+            android:textSize="20.0sp"
+            android:textStyle="bold" />
+
+        <com.ctetin.expandabletextviewlibrary.ExpandableTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:ep_max_line="3"
+            android:textColor="#9cffffff"
+            app:ep_need_contract="true"
+            android:lineSpacingExtra="6dp"
+            app:ep_need_animation="true"
+            android:layout_marginLeft="4dp"
+            app:ep_contract_text="收起"
+            app:ep_expand_text="展开"
+            app:ep_end_color="@color/white"
+            app:ep_expand_color="@color/white"
+            app:ep_contract_color="@color/white"
+            app:ep_need_expand="true"
+            android:id="@+id/descView" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/head_desc"
+        android:layout_width="200.0dip"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mv_update_tag"
+        android:layout_marginLeft="4.0dip"
+        android:layout_marginTop="2.0dip"
+        android:layout_marginRight="20.0dip"
+        android:layout_toRightOf="@+id/poster_border"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2.0dip"
+        android:maxLines="1"
+        android:paddingTop="6dp"
+        android:paddingRight="6dp"
+        android:textColor="#dcffffff"
+        android:textSize="14.0sp" />
+
+    <TextView
+        android:id="@+id/head_desc2"
+        android:layout_width="200.0dip"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head_desc"
+        android:layout_alignBottom="@+id/poster_border"
+        android:layout_marginLeft="4.0dip"
+        android:layout_marginTop="2.0dip"
+        android:layout_marginRight="20.0dip"
+        android:layout_toRightOf="@+id/poster_border"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2.0dip"
+        android:paddingRight="6dp"
+        android:paddingBottom="12.0dip"
+        android:textColor="#9cffffff"
+        android:textSize="12.0sp" />
+
+    <TextView
+        android:id="@+id/mv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/poster_border"
+        android:layout_marginLeft="4.0dip"
+        android:layout_marginRight="20.0dip"
+        android:layout_toRightOf="@+id/poster_border"
+        android:textColor="@color/white"
+        android:textSize="22.0sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/mv_update_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mv_title"
+        android:layout_marginLeft="4.0dip"
+        android:layout_marginTop="2.0dip"
+        android:layout_marginRight="20.0dip"
+        android:layout_toRightOf="@+id/poster_border"
+        android:paddingLeft="4.0dip"
+        android:paddingRight="4.0dip"
+        android:paddingBottom="2.0dip"
+        android:textColor="#ffff9100"
+        android:text="666"
+        android:textSize="12.0sp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/poster_border"
+        android:layout_width="134.0dip"
+        android:layout_height="190.0dip"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20.0dip"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginRight="10dp"
+        app:cardCornerRadius="6.0dip"
+        app:cardElevation="6.0dip">
+
+        <ImageView
+            android:id="@+id/line_detail_poster"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/timg1"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
