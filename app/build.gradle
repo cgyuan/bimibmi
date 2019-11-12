@@ -13,6 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 使用兼容模式
         vectorDrawables.useSupportLibrary = true
@@ -86,6 +87,13 @@ dependencies {
 
     implementation 'jp.wasabeef:glide-transformations:2.0.2'
 
+    implementation 'com.youth.banner:banner:1.4.10'  //最新版本
+
+    implementation ('com.alibaba.android:vlayout:1.2.8@aar') {
+        transitive = true
+    }
+
     implementation project(':modules:dkplayer-java')
     implementation project(':modules:dlnalib')
+    implementation 'androidx.multidex:multidex:2.0.1'
 }

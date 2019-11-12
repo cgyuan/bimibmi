@@ -1,10 +1,11 @@
 package com.cyuan.bimibimi
 
 import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.cyuan.bimibimi.core.App
 import zmovie.com.dlan.DlanLib
 
-class BimibimiApp : Application() {
+class BimibimiApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

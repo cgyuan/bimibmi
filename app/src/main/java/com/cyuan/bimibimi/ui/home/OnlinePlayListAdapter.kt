@@ -7,15 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.constant.Constants
-import com.cyuan.bimibimi.extension.logWarn
 import com.cyuan.bimibimi.model.Episode
-import com.cyuan.bimibimi.network.Callback
-import com.cyuan.bimibimi.network.StringRequest
 import com.cyuan.bimibimi.parser.HtmlDataParser
+import com.cyuan.bimibimi.parser.ParseVideoCallback
+import com.cyuan.bimibimi.ui.home.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
-import org.json.JSONObject
-import java.net.URLDecoder
 
 class OnlinePlayListAdapter(private val context: Context,
                             private val episodes: List<Episode>,
@@ -37,26 +33,17 @@ class OnlinePlayListAdapter(private val context: Context,
             holder.btPlayText.setBackgroundResource(bgSector)
         }
         holder.itemView.setOnClickListener {
-            Toast.makeText(context, Constants.BIMIBIMI_INDEX + episodes[position].href, Toast.LENGTH_SHORT).show()
-            StringRequest().url(episodes[position].href)
-                .listen(object: Callback {
-                    override fun onFailure(e: Exception) {
-                        logWarn("fail to load video url data")
-                    }
+            HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseVideoCallback {
+                override fun onSuccess(url: String) {
+                    val intent = Intent(context, OnlinePlayerActivity::class.java)
+                    intent.putExtra("url", url)
+                    context.startActivity(intent)
+                }
 
-                    override fun onResponseString(response: String) {
-                        HtmlDataParser
-                        val start = response.indexOf("player_data=")
-                        val end = response.indexOf("}", start + "player_data=".length) + 1
-                        val jsonStr = response.substring(start + "player_data=".length, end)
-                        val jsonObj = JSONObject(jsonStr)
-                        var url = jsonObj.getString("url")
-                        url = URLDecoder.decode(url, "utf-8")
-                        val intent = Intent(context, OnlinePlayerActivity::class.java)
-                        intent.putExtra("url", url)
-                        context.startActivity(intent)
-                    }
-                })
+                override fun onFail(msg: String) {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 

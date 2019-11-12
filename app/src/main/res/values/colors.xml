@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00249BB3</color>
     <color name="colorAccent">#249bb3</color>
     <color name="white">#ffffff</color>
+    <color name="red">#ff0000</color>
+    <color name="black">#000000</color>
 
     <color name="timeBar_buffered_color">#1effe9</color>
     <!--已经播放过视频的颜色-->

@@ -31,12 +31,11 @@ import com.cyuan.bimibimi.extension.logWarn
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.network.Callback
-import com.cyuan.bimibimi.network.StringRequest
+import com.cyuan.bimibimi.network.request.StringRequest
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
-import kotlinx.android.synthetic.main.play_all_list_layout.*
 
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -98,6 +97,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 //加入圆角变换
                 Glide.with(this@MovieDetailActivity)
                     .load(movieDetail.cover)
+                    .placeholder(R.drawable.ic_default_grey)
                     .apply(requestOptions)
                     .into(toolbarIcon)
 
@@ -106,7 +106,6 @@ class MovieDetailActivity : AppCompatActivity() {
                 descView.setContent(movieDetail.intro)
 
                 for (i in 0 until movieDetail.dataSources.size) {
-//                    dataSourceContainer
                     val view = LayoutInflater.from(this@MovieDetailActivity).inflate(R.layout.online_detail_data_source_hold_layout, dataSourceContainer, false)
                     val dataSourceLabel = view.findViewById<TextView>(R.id.dataSourceLabel)
                     val btnViewALl = view.findViewById<TextView>(R.id.viewAll)
@@ -168,7 +167,7 @@ class MovieDetailActivity : AppCompatActivity() {
             // 获取到充满活力的这种色调
             val vibrant = it!!.mutedSwatch
             //根据调色板Palette获取到图片中的颜色设置到toolbar和tab中背景，标题等，使整个UI界面颜色统一
-            vibrant!!.let {
+            vibrant?.let {
                 val colorBurn = colorBurn(vibrant.rgb)
                 val colorAnim = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ValueAnimator.ofArgb(Color.rgb(110, 110, 100), colorBurn)

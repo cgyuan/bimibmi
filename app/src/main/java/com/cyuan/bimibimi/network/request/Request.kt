@@ -1,13 +1,13 @@
-package com.cyuan.bimibimi.network
+package com.cyuan.bimibimi.network.request
 
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.network.Callback
+import com.cyuan.bimibimi.network.OriginThreadCallback
+import com.cyuan.bimibimi.network.Response
 import com.cyuan.bimibimi.network.exception.ResponseCodeException
 import com.cyuan.bimibimi.network.utils.Utility
 import com.google.gson.GsonBuilder
-import okhttp3.Call
-import okhttp3.FormBody
-import okhttp3.Headers
-import okhttp3.OkHttpClient
+import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -70,7 +70,7 @@ abstract class Request {
     abstract fun listen(callback: Callback?)
 
     /**
-     * Android客户端的所有请求都需要添加User-Agent: GifFun Android这样一个请求头。每个接口的封装子类可以添加自己的请求头。
+     * Android客户端的所有请求都需要添加User-Agent: Android这样一个请求头。每个接口的封装子类可以添加自己的请求头。
      * @param builder
      * 请求头builder
      * @return 添加完请求头后的builder。
@@ -104,7 +104,7 @@ abstract class Request {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: okhttp3.Response) {
                 try {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful || response.code == 302) {
                         val body = response.body
                         val result = body?.string() ?: ""
 //                        logVerbose(LoggingInterceptor.TAG, result)
@@ -190,12 +190,12 @@ abstract class Request {
      *
      * @return 组装参数后的FormBody。
      */
-    private fun formBody(): FormBody {
+    open fun formBody(): RequestBody {
         val builder = FormBody.Builder()
         val params = getParams()
         if (params != null) {
             val keys = params.keys
-            if (!keys.isEmpty()) {
+            if (keys.isNotEmpty()) {
                 for (key in keys) {
                     val value = params[key]
                     if (value != null) {
