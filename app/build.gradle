@@ -96,4 +96,6 @@ dependencies {
     implementation project(':modules:dkplayer-java')
     implementation project(':modules:dlnalib')
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation "com.github.skydoves:androidveil:1.0.7"
 }

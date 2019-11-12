@@ -28,12 +28,12 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
 import com.cyuan.bimibimi.extension.logWarn
-import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.StringRequest
 import com.cyuan.bimibimi.parser.HtmlDataParser
+import com.cyuan.bimibimi.utils.ShimmerUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
@@ -49,6 +49,8 @@ class MovieDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
+
+        detail_veilLayout_body.shimmer = ShimmerUtils.getGrayShimmer(this)
 
         movie = intent.getParcelableExtra("movie")!!
         root.setBackgroundColor(Color.rgb(110, 110, 100))
@@ -124,6 +126,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     }
                     dataSourceContainer.addView(view)
                 }
+                detail_veilLayout_body.unVeil()
             }
         })
     }

@@ -34,4 +34,10 @@
     <dimen name="dkplayer_controller_time_text_size">14sp</dimen>
     <dimen name="dkplayer_default_spacing">10dp</dimen>
     <dimen name="dkplayer_play_btn_size">50dp</dimen>
+
+
+
+    <color name="shimmerBase0">#c2c2c2</color>
+    <color name="shimmerHighlight0">#ffffff</color>
+    <color name="shimmerHighlight1">#DFDEDE</color>
 </resources>
