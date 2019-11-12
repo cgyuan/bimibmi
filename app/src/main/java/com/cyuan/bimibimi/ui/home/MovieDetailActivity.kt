@@ -28,6 +28,7 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
 import com.cyuan.bimibimi.extension.logWarn
+import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.network.Callback
@@ -67,7 +68,8 @@ class MovieDetailActivity : AppCompatActivity() {
 
         bottomSheetAdapter = OnlinePlayListAdapter(
             this@MovieDetailActivity,
-            mutableListOf(),
+            arrayListOf(),
+            movie.title,
             R.drawable.bottom_sheet_play_bt_shape
         )
         bottomSheetPlayList.adapter = bottomSheetAdapter
@@ -114,7 +116,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     dataSourceLabel.text = getString(R.string.data_source_label, movieDetail.dataSources[i].name)
                     episodesRV.layoutManager =
                         LinearLayoutManager(baseContext, LinearLayoutManager.HORIZONTAL, false)
-                    episodesRV.adapter = OnlinePlayListAdapter(this@MovieDetailActivity, movieDetail.dataSources[i].episodes)
+                    episodesRV.adapter = OnlinePlayListAdapter(this@MovieDetailActivity, movieDetail.dataSources[i].episodes, movie.title)
 
                     btnViewALl.setOnClickListener {
                         bottomSheetDialog.show()

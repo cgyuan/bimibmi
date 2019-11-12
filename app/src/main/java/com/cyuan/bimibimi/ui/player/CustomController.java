@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cyuan.bimibimi.R;
@@ -234,9 +235,9 @@ public class CustomController extends GestureVideoController implements View.OnC
         }
         anyLayer.show();
         RecyclerView playList = anyLayer.getView(R.id.play_list);
-//        PlayListAdapter adapter = new PlayListAdapter(mPlayList, activity, clickedListener);
-//        playList.setLayoutManager(new GridLayoutManager(activity, 6));
-//        playList.setAdapter(adapter);
+        EpisodeAdapter adapter = new EpisodeAdapter(mPlayList, anyLayer, clickedListener);
+        playList.setLayoutManager(new GridLayoutManager(activity, 6));
+        playList.setAdapter(adapter);
 
         anyLayer.getView(R.id.chose_root).setOnTouchListener(new OnTouchListener() {
             @Override
@@ -256,8 +257,8 @@ public class CustomController extends GestureVideoController implements View.OnC
         });
     }
 
-    public void showTitle() {
-        mTitle.setVisibility(View.VISIBLE);
+    public void setTitle(String title) {
+        mTitle.setText(title);
     }
 
     private void toggleSpeed() {
@@ -545,10 +546,6 @@ public class CustomController extends GestureVideoController implements View.OnC
             return 0;
         }
 
-        if (mTitle != null && TextUtils.isEmpty(mTitle.getText())) {
-            mTitle.setText(mMediaPlayer.getTitle());
-        }
-
         if (mIsLive) return 0;
 
         int position = (int) mMediaPlayer.getCurrentPosition();
@@ -685,7 +682,7 @@ public class CustomController extends GestureVideoController implements View.OnC
     }
 
     public interface OnItemClickedListener {
-        void clicked(String position);
+        void clicked(int position);
     }
 
     public void startNetSpeedGet(String speed){

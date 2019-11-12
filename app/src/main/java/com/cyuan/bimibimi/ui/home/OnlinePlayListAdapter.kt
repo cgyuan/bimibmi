@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseVideoCallback
 import com.cyuan.bimibimi.ui.home.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
+import java.util.ArrayList
 
 class OnlinePlayListAdapter(private val context: Context,
-                            private val episodes: List<Episode>,
+                            private val episodes: ArrayList<Episode>,
+                            private val movieTitle: String,
                             private val bgSector: Int = 0):
     RecyclerView.Adapter<OnlinePlayHolder>() {
 
@@ -36,7 +39,11 @@ class OnlinePlayListAdapter(private val context: Context,
             HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseVideoCallback {
                 override fun onSuccess(url: String) {
                     val intent = Intent(context, OnlinePlayerActivity::class.java)
-                    intent.putExtra("url", url)
+                    intent.putExtra(PlayerKeys.URL, url)
+                    intent.putExtra(PlayerKeys.MOVIE_TITLE, movieTitle)
+                    intent.putExtra(PlayerKeys.EPISODE_NAME, episodes[position].title)
+                    intent.putExtra(PlayerKeys.EPISODE_INDEX, position)
+                    intent.putParcelableArrayListExtra(PlayerKeys.EPISODE_LIST, episodes)
                     context.startActivity(intent)
                 }
 
@@ -48,7 +55,6 @@ class OnlinePlayListAdapter(private val context: Context,
     }
 
     fun refreshData(episodes: MutableList<Episode>) {
-        this.episodes as MutableList
         this.episodes.clear()
         this.episodes.addAll(episodes)
         this.notifyDataSetChanged()

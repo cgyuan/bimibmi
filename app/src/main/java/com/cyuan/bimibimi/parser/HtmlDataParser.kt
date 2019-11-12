@@ -1,5 +1,6 @@
 package com.cyuan.bimibimi.parser
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.webkit.WebSettings
@@ -12,7 +13,6 @@ import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.ParseVideoUrlRequest
 import com.cyuan.bimibimi.network.request.StringRequest
-import com.cyuan.bimibimi.ui.home.MovieDetailActivity
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.net.URLDecoder
@@ -134,7 +134,7 @@ object HtmlDataParser {
             }
 
             val playList = element.getElementsByTag("a")
-            val episodes = mutableListOf<Episode>()
+            val episodes = arrayListOf<Episode>()
             playList.forEach {
                 val episode = Episode()
                 episode.title = it.text()
@@ -202,7 +202,7 @@ object HtmlDataParser {
     }
 
     private fun parseVideoUrlWithWebView(context: Context, url: String, callback: ParseVideoCallback?) {
-        context as MovieDetailActivity
+        context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
@@ -223,6 +223,7 @@ object HtmlDataParser {
                             callback?.onSuccess(newUrl)
                         }
                     }
+                    webView.removeAllViews()
                 }, 200)
             }
         }
