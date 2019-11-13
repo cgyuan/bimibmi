@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.extension
+package com.cyuan.bimibimi.core.extension
 
 import com.cyuan.bimibimi.core.App
 

@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.widget.Toast
 import com.cyuan.bimibimi.core.App
-import com.cyuan.bimibimi.extension.logWarn
+import com.cyuan.bimibimi.core.extension.logWarn
 import java.text.SimpleDateFormat
 import java.util.*
 

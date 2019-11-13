@@ -1,8 +1,8 @@
 package com.cyuan.bimibimi.parser
 
-interface ParseVideoCallback {
+interface ParseResultCallback<T> {
 
-    fun onSuccess(url: String)
+    fun onSuccess(data: T)
 
     fun onFail(msg: String)
 }

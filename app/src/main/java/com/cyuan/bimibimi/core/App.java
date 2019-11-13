@@ -18,16 +18,6 @@ public class App {
 
     private static Handler handler;
 
-    private static boolean isLogin;
-
-    private static long userId;
-
-    private static String token;
-
-    private static int loginType = -1;
-
-    public static String BASE_URL = isDebug ? "http://192.168.31.177:3000" : "http://api.quxianggif.com";
-
 
     /**
      * 初始化接口。这里会进行应用程序的初始化操作，一定要在代码执行的最开始调用。
@@ -56,15 +46,6 @@ public class App {
      */
     public static Handler getHandler() {
         return handler;
-    }
-
-    /**
-     * 判断用户是否已登录。
-     *
-     * @return 已登录返回true，未登录返回false。
-     */
-    public static boolean isLogin() {
-        return isLogin;
     }
 
     /**

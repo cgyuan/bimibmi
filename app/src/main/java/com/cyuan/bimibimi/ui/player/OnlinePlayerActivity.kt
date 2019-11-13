@@ -9,7 +9,7 @@ import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.parser.HtmlDataParser
-import com.cyuan.bimibimi.parser.ParseVideoCallback
+import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.player.CustomController.OnstateChangeListener
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
@@ -49,7 +49,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
     private val episodeItemClickListener = CustomController.OnItemClickedListener { position ->
         val episode = episodeList[position]
-        HtmlDataParser.parseVideoSource(this@OnlinePlayerActivity, episode, object : ParseVideoCallback {
+        HtmlDataParser.parseVideoSource(this@OnlinePlayerActivity, episode, object : ParseResultCallback<String> {
             override fun onSuccess(url: String) {
                 this@OnlinePlayerActivity.url = url
                 episodeName = episode.title

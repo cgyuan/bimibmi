@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.utils
+package com.cyuan.bimibimi.core.utils
 
 import android.content.Context
 import android.widget.ImageView

@@ -10,7 +10,7 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.parser.HtmlDataParser
-import com.cyuan.bimibimi.parser.ParseVideoCallback
+import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.home.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
 import java.util.ArrayList
@@ -36,8 +36,9 @@ class OnlinePlayListAdapter(private val context: Context,
             holder.btPlayText.setBackgroundResource(bgSector)
         }
         holder.itemView.setOnClickListener {
-            HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseVideoCallback {
-                override fun onSuccess(url: String) {
+            HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
+                override fun onSuccess(data: String) {
+                    val url: String = data
                     val intent = Intent(context, OnlinePlayerActivity::class.java)
                     intent.putExtra(PlayerKeys.URL, url)
                     intent.putExtra(PlayerKeys.MOVIE_TITLE, movieTitle)

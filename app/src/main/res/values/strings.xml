@@ -16,4 +16,7 @@
     <string name="dkplayer_locked">已锁定</string>
     <string name="dkplayer_replay">重新播放</string>
     <string name="dkplayer_unlocked">已解锁</string>
+
+
+    <string name="load_failed_click_to_reload">加载失败，点击可重新加载</string>
 </resources>

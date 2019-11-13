@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.cyuan.bimibimi.ui.home.adapter.GridHelperAdapter
 import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
+import com.cyuan.bimibimi.ui.home.adapter.HomeGridHelperAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 recyclerView.setRecycledViewPool(viewPool)
                 viewPool.setMaxRecycledViews(0, 10)
 
-                val adapters = DelegateAdapter(layoutManager, true)
+                val adapters = DelegateAdapter(layoutManager, false)
 
 
                 val data = HtmlDataParser.parseBanner(response)
@@ -48,8 +49,12 @@ class MainActivity : AppCompatActivity() {
                 adapters.addAdapter(bannerAdapter)
 
 
-                data.second.forEach {
-                    adapters.addAdapter(GridHelperAdapter(this@MainActivity, it))
+                for (section in data.second) {
+                    adapters.addAdapter(HomeGridHelperAdapter(this@MainActivity, section.list,
+                        R.layout.home_section_item_layout,
+                        R.layout.hom_section_header_layout,
+                        section.title, section.moreLink))
+            //                    adapters.addAdapter(GridHelperAdapter(this@MainActivity, section))
                 }
                 recyclerView.adapter = adapters
             }

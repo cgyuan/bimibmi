@@ -2,17 +2,19 @@ package com.cyuan.bimibimi.ui.home.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.GridLayoutHelper
 import com.bumptech.glide.Glide
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.extension.dp2px
+import com.cyuan.bimibimi.core.extension.dp2px
 import com.cyuan.bimibimi.model.Section
+import com.cyuan.bimibimi.ui.category.CategoryActivity
 import com.cyuan.bimibimi.ui.home.MovieDetailActivity
 import com.cyuan.bimibimi.ui.home.holder.HomeSectionHeaderHolder
 import com.cyuan.bimibimi.ui.home.holder.HomeSectionItemHolder
@@ -38,8 +40,12 @@ class GridHelperAdapter(private val context: Context, private val section: Secti
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is HomeSectionHeaderHolder) {
             holder.name.text = section.title
+            if (TextUtils.isEmpty(section.moreLink)) {
+                holder.more.visibility = View.GONE
+            }
             holder.more.setOnClickListener {
-                Toast.makeText(context, section.moreLink, Toast.LENGTH_SHORT).show()
+                val intent = Intent(context, CategoryActivity::class.java)
+                context.startActivity(intent)
             }
         } else {
             val movie = section.list[position - 1]

@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.extension.dp2px
+import com.cyuan.bimibimi.core.extension.dp2px
 import com.cyuan.bimibimi.ui.home.MainActivity
 import com.cyuan.bimibimi.widget.DefaultAnimationListener
 import kotlinx.android.synthetic.main.splash_layout.*

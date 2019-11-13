@@ -8,7 +8,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
-import com.cyuan.bimibimi.extension.logWarn
+import com.cyuan.bimibimi.core.extension.logWarn
 import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.ParseVideoUrlRequest
@@ -72,7 +72,7 @@ object HtmlDataParser {
 
     private fun parseSection(response: String) : List<Section> {
         val titleList = listOf("今日热播", "新番放送", "国产动漫", "番组计划", "剧场动画", "影视")
-        val moreList = listOf("", "/type/riman/", "/type/guoman", "/type/fanzu/", "/type/juchang/", "/type/move/")
+        val moreList = listOf("", "/type/riman", "/type/guoman", "/type/fanzu", "/type/juchang", "/type/move")
         val document = Jsoup.parse(response)!!
         // <ul class="drama-module clearfix tab-cont">
         val sectionEles = document.select("ul[class=drama-module clearfix tab-cont]")
@@ -175,7 +175,7 @@ object HtmlDataParser {
         return movieDetail
     }
 
-    fun parseVideoSource(context: Context, episode: Episode, callback: ParseVideoCallback?) {
+    fun parseVideoSource(context: Context, episode: Episode, callback: ParseResultCallback<String>?) {
         StringRequest().url(episode.href)
             .listen(object: Callback {
                 override fun onFailure(e: Exception) {
@@ -201,7 +201,7 @@ object HtmlDataParser {
             })
     }
 
-    private fun parseVideoUrlWithWebView(context: Context, url: String, callback: ParseVideoCallback?) {
+    private fun parseVideoUrlWithWebView(context: Context, url: String, callback: ParseResultCallback<String>?) {
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true
@@ -229,7 +229,7 @@ object HtmlDataParser {
         }
     }
 
-    private fun parseVideoUrlWithKeys(url: String, webView: WebView, callback: ParseVideoCallback?) {
+    private fun parseVideoUrlWithKeys(url: String, webView: WebView, callback: ParseResultCallback<String>?) {
         var newUrl = url
         StringRequest().url("https://bb.nmbaojie.com/mingri/mingri.php?url=${newUrl}")
             .listen(object : Callback {
@@ -278,7 +278,7 @@ object HtmlDataParser {
             })
     }
 
-    private fun parseVideoUrlById(url: String, callback: ParseVideoCallback?) {
+    private fun parseVideoUrlById(url: String, callback: ParseResultCallback<String>?) {
         var targetUrl = ""
         var isDanmaFSource = false
         when {
@@ -323,5 +323,36 @@ object HtmlDataParser {
 
         url = URLDecoder.decode(url, "utf-8")
         return url
+    }
+
+
+    fun parseCategoryMovie(path: String, callback: ParseResultCallback<List<Movie>>?) {
+        val url = "http://www.bimibimi.tv$path/"
+        StringRequest().url(url)
+            .listen(object : Callback {
+                override fun onFailure(e: Exception) {
+                    callback?.onFail(e.message ?: "解析分类数据失败")
+                }
+
+                override fun onResponseString(response: String) {
+                    val document = Jsoup.parse(response)
+                    val movieEles = document.select("ul[class=drama-module clearfix tab-cont]")[0].getElementsByTag("li")
+                    val movieList = mutableListOf<Movie>()
+                    for (movieELe in movieEles) {
+                        val movie = Movie()
+                        val linkEle = movieELe.getElementsByTag("a")[0]
+                        val imgEle = movieELe.getElementsByTag("img")[0]
+                        movie.cover = imgEle.attr("data-original")
+                        if (!movie.cover.startsWith("http")) {
+                            movie.cover = Constants.BIMIBIMI_INDEX + movie.cover
+                        }
+                        movie.title = linkEle.attr("title")
+                        movie.href = linkEle.attr("href")
+                        movie.label = movieELe.select("span[class=fl]")[0].text()
+                        movieList.add(movie)
+                    }
+                    callback?.onSuccess(movieList)
+                }
+            })
     }
 }
