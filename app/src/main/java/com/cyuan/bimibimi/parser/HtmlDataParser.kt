@@ -168,10 +168,28 @@ object HtmlDataParser {
 //                append("\n")
             }
         }
+
+        val movieEles = document.select("ul[class=drama-module clearfix tab-cont]")[0].getElementsByTag("li")
+        val movieList = mutableListOf<Movie>()
+        for (movieELe in movieEles) {
+            val movie = Movie()
+            val linkEle = movieELe.getElementsByTag("a")[0]
+            val imgEle = movieELe.getElementsByTag("img")[0]
+            movie.cover = imgEle.attr("data-original")
+            if (!movie.cover.startsWith("http")) {
+                movie.cover = Constants.BIMIBIMI_INDEX + movie.cover
+            }
+            movie.title = linkEle.attr("title")
+            movie.href = linkEle.attr("href")
+            movie.label = movieELe.select("span[class=fl]")[0].text()
+            movieList.add(movie)
+        }
+
         movieDetail.headers = stringBuilder.toString()
 
-
         movieDetail.dataSources = dataSources
+
+        movieDetail.recommendList = movieList
         return movieDetail
     }
 

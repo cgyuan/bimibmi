@@ -34,6 +34,8 @@ import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.StringRequest
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.core.utils.ShimmerUtils
+import com.cyuan.bimibimi.ui.home.adapter.RecommendMovieAdapter
+import com.cyuan.bimibimi.widget.FocusLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
@@ -126,6 +128,11 @@ class MovieDetailActivity : AppCompatActivity() {
                     }
                     dataSourceContainer.addView(view)
                 }
+
+                recommendListRv.layoutManager = FocusLayoutManager()
+                recommendListRv.adapter = RecommendMovieAdapter(this@MovieDetailActivity, movieDetail.recommendList)
+
+                viewContainer.removeView(recommendListVeil)
                 detail_veilLayout_body.unVeil()
             }
         })

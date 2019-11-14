@@ -14,6 +14,8 @@ class MovieDetail {
     var cover: String = ""
 
     var dataSources = mutableListOf<DataSource>()
+
+    var recommendList = mutableListOf<Movie>()
 }
 
 class DataSource {

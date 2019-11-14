@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="105dp"
+    android:layout_height="140dp"
+    android:layout_marginLeft="10dp"
+    android:background="@drawable/round_corner_rectangle">
+
+</View>
