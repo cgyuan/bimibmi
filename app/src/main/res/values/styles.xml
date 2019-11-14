@@ -30,8 +30,15 @@
         <item name="android:windowExitAnimation">@anim/anim_float_window_exit</item>
     </style>
 
-    <style name="SplashTheme" parent="@style/AppTheme">
+    <style name="SplashTheme" parent="@style/TranslucentStatusBarTheme">
         <item name="android:windowBackground">@drawable/splash_d</item>
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="TranslucentStatusBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

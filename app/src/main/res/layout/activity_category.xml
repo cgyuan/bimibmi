@@ -24,6 +24,7 @@
                 android:background="@color/colorPrimary"
                 app:tabTextColor="@color/white"
                 android:isScrollContainer="true"
+                app:tabMode="scrollable"
                 app:tabIndicatorColor="@color/design_default_color_primary"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

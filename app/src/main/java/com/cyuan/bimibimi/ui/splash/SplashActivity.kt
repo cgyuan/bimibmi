@@ -1,8 +1,10 @@
 package com.cyuan.bimibimi.ui.splash
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.TranslateAnimation
@@ -12,6 +14,8 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.extension.dp2px
+import com.cyuan.bimibimi.core.utils.DensityUtils
+import com.cyuan.bimibimi.core.utils.SystemBarHelper
 import com.cyuan.bimibimi.ui.home.MainActivity
 import com.cyuan.bimibimi.widget.DefaultAnimationListener
 import kotlinx.android.synthetic.main.splash_layout.*
@@ -20,7 +24,23 @@ class SplashActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DensityUtils.setDensity(application, this)
         setContentView(R.layout.splash_layout)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            /**
+             *  * @see #LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT 全屏模式，内容下移，非全屏不受影响
+             *  * @see #LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES 允许内容去延伸进刘海区
+             *  * @see #LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER 不允许内容延伸进刘海区
+             */
+            val params = window.attributes
+            params.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes = params
+
+            SystemBarHelper.immersiveStatusBar(this)
+        }
 
         val container = LinearLayout(this)
         container.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
@@ -29,7 +49,9 @@ class SplashActivity: AppCompatActivity() {
             AnimationUtils.loadAnimation(this, R.anim.splash_anim_in_center),
             AnimationUtils.loadAnimation(this, R.anim.splash_anim_in_right)
         )
-        val colHeight = dp2px(170F) * 5
+        val cardHeight = 185F
+        val colHeight = dp2px(cardHeight) * 5
+        println("colHeight = $colHeight")
         for (row in 0..2) {
             val col = LinearLayout(this)
             col.orientation = LinearLayout.VERTICAL
@@ -37,10 +59,10 @@ class SplashActivity: AppCompatActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 colHeight
             )
-            if (row != 0) {
-                val lp = col.layoutParams as LinearLayout.LayoutParams
-                lp.leftMargin = dp2px(15f)
-            }
+//            if (row != 0) {
+//                val lp = col.layoutParams as LinearLayout.LayoutParams
+//                lp.leftMargin = dp2px(15f)
+//            }
             for (i in 1..5) {
                 val frame = View.inflate(this, R.layout.item_splash_section, null)
                 val iv = frame.findViewById<ImageView>(R.id.item_img)
@@ -51,13 +73,13 @@ class SplashActivity: AppCompatActivity() {
             container.addView(col)
             col.startAnimation(animList[row])
         }
-        container.getChildAt(0).translationY = (-dp2px(170F)).toFloat()
-        container.getChildAt(2).translationY = (-dp2px(170F)).toFloat()
+        container.getChildAt(0).translationY = (-dp2px(cardHeight)).toFloat()
+        container.getChildAt(2).translationY = (-dp2px(cardHeight)).toFloat()
         animList[2].setAnimationListener(object : DefaultAnimationListener() {
             override fun onAnimationEnd(animation: Animation?) {
-                val animLeft = TranslateAnimation(0f, 0f, 0f, dp2px(170F).toFloat())
-                val animRight = TranslateAnimation(0f, 0f, 0f, dp2px(170F).toFloat())
-                val animCenter = TranslateAnimation(0f, 0f, 0f, -dp2px(170F).toFloat())
+                val animLeft = TranslateAnimation(0f, 0f, 0f, dp2px(cardHeight).toFloat())
+                val animRight = TranslateAnimation(0f, 0f, 0f, dp2px(cardHeight).toFloat())
+                val animCenter = TranslateAnimation(0f, 0f, 0f, -dp2px(cardHeight).toFloat())
                 animLeft.duration = 1500
                 animLeft.fillAfter = true
                 animRight.duration = 1500
