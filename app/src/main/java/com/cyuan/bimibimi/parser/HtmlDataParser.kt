@@ -12,62 +12,71 @@ import com.cyuan.bimibimi.core.extension.logWarn
 import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.ParseVideoUrlRequest
+import com.cyuan.bimibimi.network.request.SearchRequest
 import com.cyuan.bimibimi.network.request.StringRequest
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.net.URLDecoder
 import java.util.regex.Pattern
 
 
 object HtmlDataParser {
-    fun parseBanner(response: String) : Pair<MutableList<Movie>, List<Section>> {
-        var start = response.indexOf("<section class=\"area clearfix area-slider\">")
-        var end = response.indexOf("</section>", 0)
-        val banner = response.substring(start, end)
-        val pattern = Pattern.compile("<li.*?</li>")
-        val matcher = pattern.matcher(banner)
-        val list = mutableListOf<Movie>()
-        while (matcher.find()) {
-            val video = Movie()
-            val itemString = matcher.group()
-
-            start = itemString.indexOf("href=\"")
-            end = itemString.indexOf("\"", start + "href=\"".length)
-            val href = itemString.substring(start + "href=\"".length, end)
-            video.href = href
-            start = itemString.indexOf("title=\"")
-            end = itemString.indexOf("\"", start + "title=\"".length)
-            val title = itemString.substring(start + "title=\"".length, end)
-            video.title = title
-
-            start = itemString.indexOf("src=\"")
-            end = itemString.indexOf("\"", start + "src=\"".length)
-            var cover = itemString.substring(start + "src=\"".length, end)
-            if (!cover.startsWith("http")) {
-                cover = Constants.BIMIBIMI_INDEX + cover
+    fun parseHomePage(callback: ParseResultCallback<Pair<MutableList<Movie>, List<Section>>>?) {
+        StringRequest().listen(object : Callback{
+            override fun onFailure(e: Exception) {
+                callback?.onFail(e.message ?: "解析首页数据失败")
             }
-            video.cover = cover
+
+            override fun onResponseString(response: String) {
+                var start = response.indexOf("<section class=\"area clearfix area-slider\">")
+                var end = response.indexOf("</section>", 0)
+                val banner = response.substring(start, end)
+                val pattern = Pattern.compile("<li.*?</li>")
+                val matcher = pattern.matcher(banner)
+                val list = mutableListOf<Movie>()
+                while (matcher.find()) {
+                    val video = Movie()
+                    val itemString = matcher.group()
+
+                    start = itemString.indexOf("href=\"")
+                    end = itemString.indexOf("\"", start + "href=\"".length)
+                    val href = itemString.substring(start + "href=\"".length, end)
+                    video.href = href
+                    start = itemString.indexOf("title=\"")
+                    end = itemString.indexOf("\"", start + "title=\"".length)
+                    val title = itemString.substring(start + "title=\"".length, end)
+                    video.title = title
+
+                    start = itemString.indexOf("src=\"")
+                    end = itemString.indexOf("\"", start + "src=\"".length)
+                    var cover = itemString.substring(start + "src=\"".length, end)
+                    if (!cover.startsWith("http")) {
+                        cover = Constants.BIMIBIMI_INDEX + cover
+                    }
+                    video.cover = cover
 
 
-            start = itemString.indexOf("<b class=\"text-overflow\">")
-            end = itemString.indexOf("</b>", start + "<b class=\"text-overflow\">".length)
-            var label: String
-            if (start > 0 && end > 0) {
-                label = itemString.substring(start + "<b class=\"text-overflow\">".length, end)
-                video.label = label.trim()
-            } else {
-                start = itemString.indexOf("<p>")
-                end = itemString.indexOf("</p>", start + "<p>".length)
-                label = itemString.substring(start + "<p>".length, end)
-                video.label = label
+                    start = itemString.indexOf("<b class=\"text-overflow\">")
+                    end = itemString.indexOf("</b>", start + "<b class=\"text-overflow\">".length)
+                    var label: String
+                    if (start > 0 && end > 0) {
+                        label = itemString.substring(start + "<b class=\"text-overflow\">".length, end)
+                        video.label = label.trim()
+                    } else {
+                        start = itemString.indexOf("<p>")
+                        end = itemString.indexOf("</p>", start + "<p>".length)
+                        label = itemString.substring(start + "<p>".length, end)
+                        video.label = label
+                    }
+                    list.add(video)
+                }
+
+
+                val sections = parseSection(response)
+                callback?.onSuccess(Pair(list, sections))
             }
-            list.add(video)
-        }
-
-
-        val sections = parseSection(response)
-
-        return Pair(list, sections)
+        })
     }
 
     private fun parseSection(response: String) : List<Section> {
@@ -169,21 +178,7 @@ object HtmlDataParser {
             }
         }
 
-        val movieEles = document.select("ul[class=drama-module clearfix tab-cont]")[0].getElementsByTag("li")
-        val movieList = mutableListOf<Movie>()
-        for (movieELe in movieEles) {
-            val movie = Movie()
-            val linkEle = movieELe.getElementsByTag("a")[0]
-            val imgEle = movieELe.getElementsByTag("img")[0]
-            movie.cover = imgEle.attr("data-original")
-            if (!movie.cover.startsWith("http")) {
-                movie.cover = Constants.BIMIBIMI_INDEX + movie.cover
-            }
-            movie.title = linkEle.attr("title")
-            movie.href = linkEle.attr("href")
-            movie.label = movieELe.select("span[class=fl]")[0].text()
-            movieList.add(movie)
-        }
+        val movieList = parseMovieList(document)
 
         movieDetail.headers = stringBuilder.toString()
 
@@ -354,21 +349,42 @@ object HtmlDataParser {
 
                 override fun onResponseString(response: String) {
                     val document = Jsoup.parse(response)
-                    val movieEles = document.select("ul[class=drama-module clearfix tab-cont]")[0].getElementsByTag("li")
-                    val movieList = mutableListOf<Movie>()
-                    for (movieELe in movieEles) {
-                        val movie = Movie()
-                        val linkEle = movieELe.getElementsByTag("a")[0]
-                        val imgEle = movieELe.getElementsByTag("img")[0]
-                        movie.cover = imgEle.attr("data-original")
-                        if (!movie.cover.startsWith("http")) {
-                            movie.cover = Constants.BIMIBIMI_INDEX + movie.cover
-                        }
-                        movie.title = linkEle.attr("title")
-                        movie.href = linkEle.attr("href")
-                        movie.label = movieELe.select("span[class=fl]")[0].text()
-                        movieList.add(movie)
-                    }
+                    val movieList = parseMovieList(document)
+                    callback?.onSuccess(movieList)
+                }
+            })
+    }
+
+    private fun parseMovieList(document: Document): MutableList<Movie> {
+        val movieEles =
+            document.select("ul[class=drama-module clearfix tab-cont]")[0].getElementsByTag("li")
+        val movieList = mutableListOf<Movie>()
+        for (movieELe in movieEles) {
+            val movie = Movie()
+            val linkEle = movieELe.getElementsByTag("a")[0]
+            val imgEle = movieELe.getElementsByTag("img")[0]
+            movie.cover = imgEle.attr("data-original")
+            if (!movie.cover.startsWith("http")) {
+                movie.cover = Constants.BIMIBIMI_INDEX + movie.cover
+            }
+            movie.title = linkEle.attr("title")
+            movie.href = linkEle.attr("href")
+            movie.label = movieELe.select("span[class=fl]")[0].text()
+            movieList.add(movie)
+        }
+        return movieList
+    }
+
+    fun parseSearch(searchKeyWord: String, callback: ParseResultCallback<List<Movie>>?) {
+        SearchRequest().addParam("wd", searchKeyWord)
+            .listen(object : Callback {
+                override fun onFailure(e: Exception) {
+                    callback?.onFail(e.message ?: "")
+                }
+
+                override fun onResponseString(response: String) {
+                    val document = Jsoup.parse(response)
+                    val movieList = parseMovieList(document)
                     callback?.onSuccess(movieList)
                 }
             })

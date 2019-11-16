@@ -98,4 +98,8 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation "com.github.skydoves:androidveil:1.0.7"
+
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
+
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 }
