@@ -2,30 +2,39 @@ package com.cyuan.bimibimi.ui.home
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.databinding.FragmentHomeBinding
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.model.Section
-import com.cyuan.bimibimi.parser.HtmlDataParser
-import com.cyuan.bimibimi.parser.ParseResultCallback
+import com.cyuan.bimibimi.repository.OnlineMovieRepository
 import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
-import com.cyuan.bimibimi.ui.home.adapter.HomeGridHelperAdapter
+import com.cyuan.bimibimi.ui.base.CommonGridHelperAdapter
+import com.cyuan.bimibimi.ui.home.viewmodel.HomeViewModel
 import com.cyuan.bimibimi.ui.search.SearchActivity
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
+
+    private lateinit var adapters: DelegateAdapter
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        val binding = FragmentHomeBinding.inflate(inflater)
+        binding.activity = activity as MainActivity
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -34,45 +43,51 @@ class HomeFragment : Fragment() {
         toolbar.title = ""
         (activity as MainActivity).setSupportActionBar(toolbar)
         initSearchView()
+        initRecyclerView()
 
-        HtmlDataParser.parseHomePage(object : ParseResultCallback<Pair<MutableList<Movie>, List<Section>>> {
-            override fun onSuccess(data: Pair<MutableList<Movie>, List<Section>>) {
-                val layoutManager = VirtualLayoutManager(context!!)
-
-                recyclerView.layoutManager = layoutManager
-
-                val viewPool = RecyclerView.RecycledViewPool()
-                recyclerView.setRecycledViewPool(viewPool)
-                viewPool.setMaxRecycledViews(0, 10)
-
-                val adapters = DelegateAdapter(layoutManager, false)
-
-
-                val bannerList = data.first.map {
-                    it.cover
-                }
-
-                val bannerAdapter = HomeBannerAdapter(context!!, bannerList, data.first)
-                adapters.addAdapter(bannerAdapter)
-
-
-                for (section in data.second) {
-                    adapters.addAdapter(
-                        HomeGridHelperAdapter(context!!, section.list,
-                        R.layout.home_section_item_layout,
-                        R.layout.hom_section_header_layout,
-                        section.title, section.moreLink)
-                    )
-                    //                    adapters.addAdapter(GridHelperAdapter(this@MainActivity, section))
-                }
-                recyclerView.adapter = adapters
+        viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return HomeViewModel(OnlineMovieRepository.instance) as T
             }
 
-            override fun onFail(msg: String) {
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            }
+        }).get(HomeViewModel::class.java)
 
+        viewModel.fetchHomeData()
+
+        viewModel.bannerList.observe(this, Observer<List<Movie>> { bannerList ->
+            val bannerImgList = bannerList?.map {
+                it.cover
+            }
+            val bannerAdapter = HomeBannerAdapter(context!!, bannerImgList!!, bannerList!!)
+            adapters.addAdapter(bannerAdapter)
         })
+
+        viewModel.sectionList.observe(this, Observer { sectionList ->
+            for (section in sectionList) {
+                adapters.addAdapter(
+                    CommonGridHelperAdapter(
+                        context!!, section.list,
+                        R.layout.movie_card_item_layout,
+                        R.layout.hom_section_header_layout,
+                        section.title, section.moreLink
+                    )
+                )
+                // adapters.addAdapter(GridHelperAdapter(this@MainActivity, section))
+            }
+            recyclerView.adapter = adapters
+        })
+    }
+
+    private fun initRecyclerView() {
+        val layoutManager = VirtualLayoutManager(context!!)
+
+        recyclerView.layoutManager = layoutManager
+
+        val viewPool = RecyclerView.RecycledViewPool()
+        recyclerView.setRecycledViewPool(viewPool)
+        viewPool.setMaxRecycledViews(0, 10)
+
+        adapters = DelegateAdapter(layoutManager, false)
     }
 
     private fun initSearchView() {

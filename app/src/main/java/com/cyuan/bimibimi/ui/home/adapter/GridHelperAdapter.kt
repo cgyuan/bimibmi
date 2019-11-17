@@ -32,7 +32,7 @@ class GridHelperAdapter(private val context: Context, private val section: Secti
             HomeSectionHeaderHolder(view)
         } else {
             val view = LayoutInflater.from(context)
-                .inflate(R.layout.home_section_item_layout, parent, false)
+                .inflate(R.layout.movie_card_item_layout, parent, false)
             HomeSectionItemHolder(view)
         }
     }

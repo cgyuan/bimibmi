@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home.adapter
+package com.cyuan.bimibimi.ui.base
 
 import android.content.Context
 import android.content.Intent
@@ -8,14 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.LayoutHelper
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.ui.base.BaseVLayoutAdapter
-import com.cyuan.bimibimi.ui.base.LayoutHelperFactory
 import com.cyuan.bimibimi.ui.category.CategoryActivity
 import com.cyuan.bimibimi.ui.home.holder.HomeSectionHeaderHolder
 import com.cyuan.bimibimi.ui.home.holder.HomeSectionItemHolder
 
 
-class HomeGridHelperAdapter(
+class CommonGridHelperAdapter(
     context: Context,
     dataList: List<Movie>,
     itemLayoutId: Int,

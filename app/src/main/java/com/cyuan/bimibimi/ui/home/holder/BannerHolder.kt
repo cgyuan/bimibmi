@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home
+package com.cyuan.bimibimi.ui.home.holder
 
 
 import android.view.View

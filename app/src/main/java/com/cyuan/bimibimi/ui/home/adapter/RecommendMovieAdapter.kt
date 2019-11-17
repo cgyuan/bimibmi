@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.home.MovieDetailActivity
 import com.cyuan.bimibimi.ui.home.holder.RecommendMovieItemHolder
@@ -30,7 +31,7 @@ class RecommendMovieAdapter(
         holder.title.text = movie.title
         holder.itemView.setOnClickListener {
             val intent = Intent(context, MovieDetailActivity::class.java)
-            intent.putExtra("movie", movie)
+            intent.putExtra(PlayerKeys.MOVIE, movie)
             context.startActivity(intent)
         }
     }

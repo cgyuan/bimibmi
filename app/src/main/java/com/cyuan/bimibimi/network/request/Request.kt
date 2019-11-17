@@ -8,8 +8,12 @@ import com.cyuan.bimibimi.network.exception.ResponseCodeException
 import com.cyuan.bimibimi.network.utils.Utility
 import com.google.gson.GsonBuilder
 import okhttp3.*
+import okhttp3.Request
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 abstract class Request {
     private lateinit var okHttpClient: OkHttpClient
@@ -79,6 +83,33 @@ abstract class Request {
         return builder
     }
 
+    private suspend fun <T> Call.await(): T {
+        return suspendCoroutine { continuation ->
+            enqueue(object : okhttp3.Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
+                }
+
+                override fun onResponse(call: Call, response: okhttp3.Response) {
+                    val body = response.body
+                    if (body != null) continuation.resume(body as T)
+                    else continuation.resumeWithException(RuntimeException("response body is null"))
+                }
+
+            })
+        }
+    }
+
+    suspend fun inFlightSync(): Pair<Boolean, String> {
+        val request = buildRequest()
+        val response = okHttpClient.newCall(request).execute()
+        return if (response.isSuccessful || response.code == 302) {
+            Pair(true, response.body.toString())
+        } else {
+            Pair(false, response.message)
+        }
+    }
+
 
     /**
      * 组装网络请求后添加到HTTP发送队列，并监听响应回调。
@@ -86,20 +117,8 @@ abstract class Request {
      * 网络请求对应的实体类
      */
     fun <T> inFlight(requestModel: Class<T>) {
-        build()
-        val requestBuilder = okhttp3.Request.Builder()
-        if (method() == GET && getParams() != null) {
-            requestBuilder.url(urlWithParam())
-        } else {
-            requestBuilder.url(url())
-        }
-        requestBuilder.headers(headers(Headers.Builder()).build())
-        when {
-            method() == POST -> requestBuilder.post(formBody())
-            method() == PUT -> requestBuilder.put(formBody())
-            method() == DELETE -> requestBuilder.delete(formBody())
-        }
-        okHttpClient.newCall(requestBuilder.build()).enqueue(object : okhttp3.Callback {
+        val request = buildRequest()
+        okHttpClient.newCall(request).enqueue(object : okhttp3.Callback {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: okhttp3.Response) {
@@ -131,6 +150,24 @@ abstract class Request {
             }
 
         })
+    }
+
+    private fun buildRequest(): Request {
+        build()
+        val requestBuilder = Request.Builder()
+        if (method() == GET && getParams() != null) {
+            requestBuilder.url(urlWithParam())
+        } else {
+            requestBuilder.url(url())
+        }
+        requestBuilder.headers(headers(Headers.Builder()).build())
+        when {
+            method() == POST -> requestBuilder.post(formBody())
+            method() == PUT -> requestBuilder.put(formBody())
+            method() == DELETE -> requestBuilder.delete(formBody())
+        }
+        val request = requestBuilder.build()
+        return request
     }
 
     private fun notifyResponse(response: String) {

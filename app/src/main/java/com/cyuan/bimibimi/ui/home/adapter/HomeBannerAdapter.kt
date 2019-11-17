@@ -2,12 +2,15 @@ package com.cyuan.bimibimi.ui.home.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.home.MovieDetailActivity
 import com.cyuan.bimibimi.ui.home.holder.HomeBannerViewHolder
@@ -16,7 +19,7 @@ import com.cyuan.bimibimi.core.utils.GlideImageLoader
 class HomeBannerAdapter(
     private val context: Context,
     private val bannerList: List<String>,
-    private val movies: MutableList<Movie>
+    private val movies: List<Movie>
 ) : DelegateAdapter.Adapter<HomeBannerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeBannerViewHolder {
@@ -37,9 +40,10 @@ class HomeBannerAdapter(
         holder.banner.setImageLoader(GlideImageLoader())
             .setImages(bannerList)
             .setOnBannerListener { position ->
-                val intent = Intent(context, MovieDetailActivity::class.java)
-                intent.putExtra("movie", movies[position])
-                context.startActivity(intent)
+                val navController = Navigation.findNavController(holder.banner)
+                val args = Bundle()
+                args.putParcelable(PlayerKeys.MOVIE, movies[position])
+                navController.navigate(R.id.action_homeFragment_to_movieDetailActivity, args)
             }
         holder.banner.start()
     }

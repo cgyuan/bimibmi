@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -47,6 +49,10 @@ android {
 
     androidExtensions {
         experimental = true
+    }
+
+    dataBinding {
+        enabled true
     }
 
     packagingOptions {
@@ -102,4 +108,7 @@ dependencies {
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 }

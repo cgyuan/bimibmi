@@ -7,134 +7,92 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.core.extension.logWarn
 import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
-import com.cyuan.bimibimi.core.extension.logWarn
-import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.model.MovieDetail
-import com.cyuan.bimibimi.network.Callback
-import com.cyuan.bimibimi.network.request.StringRequest
-import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.core.utils.ShimmerUtils
+import com.cyuan.bimibimi.databinding.ActivityMovieDetailBinding
+import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.home.adapter.RecommendMovieAdapter
+import com.cyuan.bimibimi.ui.home.viewmodel.MovieDetailViewModel
+import com.cyuan.bimibimi.ui.home.viewmodel.MovieDetailViewModelFactory
 import com.cyuan.bimibimi.widget.FocusLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
 
 
 class MovieDetailActivity : AppCompatActivity() {
 
-    private lateinit var bottomSheetAdapter: OnlinePlayListAdapter
-    private lateinit var movieDetail: MovieDetail
-    private lateinit var bottomSheetPlayList: RecyclerView
     private lateinit var movie: Movie
+
+    private val viewModel by viewModels<MovieDetailViewModel> {
+        MovieDetailViewModelFactory()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_detail)
+        val binding = DataBindingUtil.setContentView<ActivityMovieDetailBinding>(
+            this,
+            R.layout.activity_movie_detail
+        )
+        movie = intent.getParcelableExtra(PlayerKeys.MOVIE)!!
+        binding.activity = this
 
         detail_veilLayout_body.shimmer = ShimmerUtils.getGrayShimmer(this)
 
-        movie = intent.getParcelableExtra("movie")!!
         root.setBackgroundColor(Color.rgb(110, 110, 100))
         toolbar.setBackgroundColor(Color.rgb(110, 110, 100))
         setSupportActionBar(toolbar)
 
-        backIcon.setOnClickListener {
-            finish()
-        }
-
-        val bottomSheetDialog = BottomSheetDialog(this)
-        val contentView = View.inflate(this, R.layout.play_all_list_layout, null)
-        bottomSheetDialog.setContentView(contentView)
-        val closeBtn = contentView.findViewById<ImageView>(R.id.close)
-        bottomSheetPlayList = contentView.findViewById(R.id.playListRv)
-        bottomSheetPlayList.layoutManager = GridLayoutManager(this@MovieDetailActivity, 4, GridLayoutManager.VERTICAL, false)
-
-        bottomSheetAdapter = OnlinePlayListAdapter(
-            this@MovieDetailActivity,
-            arrayListOf(),
-            movie.title,
-            R.drawable.bottom_sheet_play_bt_shape
-        )
-        bottomSheetPlayList.adapter = bottomSheetAdapter
-        closeBtn.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
         initThemeColor()
 
-        StringRequest().url(Constants.BIMIBIMI_INDEX + movie.href).listen(object : Callback {
-            override fun onFailure(e: Exception) {
-                logWarn("load movie detail fail")
-            }
+        val url = Constants.BIMIBIMI_INDEX + movie.href
 
-            override fun onResponseString(response: String) {
-                movieDetail = HtmlDataParser.parseMovieDetail(response)
+        viewModel.fetchMovieDetail(url)
 
-                val requestOptions = RequestOptions()
-                    .transform(GlideRoundTransform(this@MovieDetailActivity, 4))
+        viewModel.movieDetail.observe(this, Observer { movieDetail ->
+            binding.viewModel = viewModel
+            val requestOptions = RequestOptions()
+                .transform(GlideRoundTransform(this@MovieDetailActivity, 4))
 
-                movieDetail.title = movie.title
+            logWarn("MovieDetailActivity", "viewModel update")
 
-                mvTitle.text = movieDetail.title
-                headDesc.text = movieDetail.headers
-                toolbarTitle.text = movieDetail.title
+            movieDetail.title = movie.title
 
-                //加入圆角变换
-                Glide.with(this@MovieDetailActivity)
-                    .load(movieDetail.cover)
-                    .placeholder(R.drawable.ic_default_grey)
-                    .apply(requestOptions)
-                    .into(toolbarIcon)
+            mvTitle.text = movieDetail.title
+            headDesc.text = movieDetail.headers
+            toolbarTitle.text = movieDetail.title
 
-                Glide.with(this@MovieDetailActivity).load(movieDetail.cover).into(detailPoster)
+            //加入圆角变换
+            Glide.with(this@MovieDetailActivity)
+                .load(movieDetail.cover)
+                .placeholder(R.drawable.ic_default_grey)
+                .apply(requestOptions)
+                .into(toolbarIcon)
 
-                descView.setContent(movieDetail.intro)
+            descView.setContent(movieDetail.intro)
 
-                for (i in 0 until movieDetail.dataSources.size) {
-                    val view = LayoutInflater.from(this@MovieDetailActivity).inflate(R.layout.online_detail_data_source_hold_layout, dataSourceContainer, false)
-                    val dataSourceLabel = view.findViewById<TextView>(R.id.dataSourceLabel)
-                    val btnViewALl = view.findViewById<TextView>(R.id.viewAll)
-                    val episodesRV = view.findViewById<RecyclerView>(R.id.episodesRecyclerView)
+            recommendListRv.layoutManager = FocusLayoutManager()
+            recommendListRv.adapter = RecommendMovieAdapter(this@MovieDetailActivity, movieDetail.recommendList)
 
-                    dataSourceLabel.text = getString(R.string.data_source_label, movieDetail.dataSources[i].name)
-                    episodesRV.layoutManager =
-                        LinearLayoutManager(baseContext, LinearLayoutManager.HORIZONTAL, false)
-                    episodesRV.adapter = OnlinePlayListAdapter(this@MovieDetailActivity, movieDetail.dataSources[i].episodes, movie.title)
-
-                    btnViewALl.setOnClickListener {
-                        bottomSheetDialog.show()
-                        bottomSheetAdapter.refreshData(movieDetail.dataSources[i].episodes)
-                    }
-                    dataSourceContainer.addView(view)
-                }
-
-                recommendListRv.layoutManager = FocusLayoutManager()
-                recommendListRv.adapter = RecommendMovieAdapter(this@MovieDetailActivity, movieDetail.recommendList)
-
-                viewContainer.removeView(recommendListVeil)
-                detail_veilLayout_body.unVeil()
-            }
+            viewContainer.removeView(recommendListVeil)
+            detail_veilLayout_body.unVeil()
         })
     }
 

@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.base.BaseVLayoutAdapter
@@ -19,7 +20,7 @@ class HomeSectionItemHolder(itemView: View) : BaseVLayoutAdapter.ViewHolder<Movi
         itemView.setOnClickListener {
             val intent = Intent(App.getContext(), MovieDetailActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra("movie", data)
+            intent.putExtra(PlayerKeys.MOVIE, data)
             App.getContext().startActivity(intent)
         }
     }

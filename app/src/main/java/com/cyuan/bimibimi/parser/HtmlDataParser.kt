@@ -117,75 +117,85 @@ object HtmlDataParser {
 //    <span class="mask"><i class="iconfont icon-play"></i></span></a><div class="info">
 //    <a href="/bangumi/bi/1998/">刀剑神域 Alicization War of Underworld</a><p><span class="fl">更新至05话</span></p></div></li>
 
-    fun parseMovieDetail(response: String): MovieDetail {
-        val movieDetail = MovieDetail()
-        val document = Jsoup.parse(response)!!
-        val introEle = document.select("div[class=vod-jianjie]")[0]
-//        val introEle = introEle.child(0)!!
-        movieDetail.intro = introEle.text()
+    fun parseMovieDetail(url: String, callback: ParseResultCallback<MovieDetail>?) {
+        StringRequest().url(url)
+            .listen(object: Callback {
+                override fun onFailure(e: Exception) {
+                    callback?.onFail(e.message ?: "解析影视数据失败")
+                }
 
-        movieDetail.cover = document.select("div[class=v_pic]")[0].child(0)!!.attr("data-original")
-        if (!movieDetail.cover.startsWith("http")) {
-            movieDetail.cover = Constants.BIMIBIMI_INDEX + movieDetail.cover
-        }
+                override fun onResponseString(response: String) {
+                    val movieDetail = MovieDetail()
+                    val document = Jsoup.parse(response)!!
+                    val introEle = document.select("div[class=vod-jianjie]")[0]
+//                    val introEle = introEle.child(0)!!
+                    movieDetail.intro = introEle.text()
+
+                    movieDetail.cover = document.select("div[class=v_pic]")[0].child(0)!!.attr("data-original")
+                    if (!movieDetail.cover.startsWith("http")) {
+                        movieDetail.cover = Constants.BIMIBIMI_INDEX + movieDetail.cover
+                    }
 
 
-        val dataSourceEles = document.select("div[class=js_bt]")
-//        val baiduPanElement = dataSourceEles.removeAt(dataSourceEles.size - 1)
-        val playListEles = document.select("ul[class=player_list]")
-        val dataSources = mutableListOf<DataSource>()
-        playListEles.forEachIndexed { index, element ->
-            val dataSource = DataSource()
-            val dataSourceLabel = dataSourceEles[index].getElementsByTag("span")[0].text()
-            dataSource.name = dataSourceLabel
-            if (dataSourceLabel.contains("百度")) {
-                return@forEachIndexed
-            }
+                    val dataSourceEles = document.select("div[class=js_bt]")
+                    //        val baiduPanElement = dataSourceEles.removeAt(dataSourceEles.size - 1)
+                    val playListEles = document.select("ul[class=player_list]")
+                    val dataSources = mutableListOf<DataSource>()
+                    playListEles.forEachIndexed { index, element ->
+                        val dataSource = DataSource()
+                        val dataSourceLabel = dataSourceEles[index].getElementsByTag("span")[0].text()
+                        dataSource.name = dataSourceLabel
+                        if (dataSourceLabel.contains("百度")) {
+                            return@forEachIndexed
+                        }
 
-            val playList = element.getElementsByTag("a")
-            val episodes = arrayListOf<Episode>()
-            playList.forEach {
-                val episode = Episode()
-                episode.title = it.text()
-                episode.href = Constants.BIMIBIMI_INDEX + it.attr("href")
-                episodes.add(episode)
-            }
-            dataSource.episodes = episodes
-            dataSources.add(dataSource)
-        }
+                        val playList = element.getElementsByTag("a")
+                        val episodes = arrayListOf<Episode>()
+                        playList.forEach {
+                            val episode = Episode()
+                            episode.title = it.text()
+                            episode.href = Constants.BIMIBIMI_INDEX + it.attr("href")
+                            episodes.add(episode)
+                        }
+                        dataSource.episodes = episodes
+                        dataSources.add(dataSource)
+                    }
 
-        val headEles = document.select("ul[class=txt_list clearfix]")[0].getElementsByTag("li")
-        headEles.removeAt(0)
-        headEles.removeAt(headEles.size - 1)
-        headEles.removeAt(headEles.size - 1)
-        headEles.removeAt(headEles.size - 1)
-        val stringBuilder = StringBuilder()
-        with(stringBuilder) {
-            for (element in headEles) {
-                val key = element.child(0).text()
-                val actors = element.getElementsByTag("a")
-                append(element.text()).append("\n")
-//                append(key)
-//                println(element.text())
-//                for (i in 0 until actors.size) {
-//                    if (i > 3) {
-//                        append("...")
-//                        break
-//                    }
-//                    append(actors[i].text()).append(" ")
-//                }
-//                append("\n")
-            }
-        }
+                    val headEles = document.select("ul[class=txt_list clearfix]")[0].getElementsByTag("li")
+                    headEles.removeAt(0)
+                    headEles.removeAt(headEles.size - 1)
+                    headEles.removeAt(headEles.size - 1)
+                    headEles.removeAt(headEles.size - 1)
+                    val stringBuilder = StringBuilder()
+                    with(stringBuilder) {
+                        for (element in headEles) {
+                            val key = element.child(0).text()
+                            val actors = element.getElementsByTag("a")
+                            append(element.text()).append("\n")
+//                            append(key)
+//                            println(element.text())
+//                            for (i in 0 until actors.size) {
+//                                if (i > 3) {
+//                                    append("...")
+//                                    break
+//                                }
+//                                append(actors[i].text()).append(" ")
+//                            }
+//                            append("\n")
+                        }
+                    }
 
-        val movieList = parseMovieList(document)
+                    val movieList = parseMovieList(document)
 
-        movieDetail.headers = stringBuilder.toString()
+                    movieDetail.headers = stringBuilder.toString()
 
-        movieDetail.dataSources = dataSources
+                    movieDetail.dataSources = dataSources
 
-        movieDetail.recommendList = movieList
-        return movieDetail
+                    movieDetail.recommendList = movieList
+
+                    callback?.onSuccess(movieDetail)
+                }
+            })
     }
 
     fun parseVideoSource(context: Context, episode: Episode, callback: ParseResultCallback<String>?) {

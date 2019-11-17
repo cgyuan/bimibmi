@@ -52,7 +52,7 @@ class SearchActivity: AppCompatActivity() {
         searchAdapter = SearchGridHelperAdapter(
             this,
             movieList,
-            R.layout.home_section_item_layout
+            R.layout.movie_card_item_layout
         )
         adapters.addAdapter(searchAdapter)
         recyclerView.adapter = adapters

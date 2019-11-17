@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.cyuan.bimibimi.ui.home.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_movieDetailActivity"
+            app:destination="@id/movieDetailActivity"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <activity
+        android:id="@+id/movieDetailActivity"
+        android:name="com.cyuan.bimibimi.ui.home.MovieDetailActivity"
+        android:label="MovieDetailActivity" >
+        <argument
+            android:name="movie"
+            app:argType="com.cyuan.bimibimi.model.Movie" />
+    </activity>
+</navigation>

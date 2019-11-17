@@ -10,7 +10,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.ui.home.BannerHolder
+import com.cyuan.bimibimi.ui.home.holder.BannerHolder
 import com.cyuan.bimibimi.ui.home.MovieDetailActivity
 
 class BannerAdapter(private val context: Context, recentUpdate: MutableList<Movie>) :

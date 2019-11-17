@@ -1,77 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <data>
+        <variable
+            name="activity"
+            type="com.cyuan.bimibimi.ui.home.MainActivity" />
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                android:contentInsetStart="0dp"
-                app:contentInsetStart="0dp"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:id="@+id/navigation_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary"
+                    android:contentInsetStart="0dp"
+                    app:contentInsetStart="0dp"
+                    app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-
-                    <ImageView
+                    <LinearLayout
+                        android:id="@+id/navigation_layout"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_drawer_home" />
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:onClick="@{() -> activity.openDrawer()}">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/toolbar_user_avatar"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginStart="12dp"
-                        android:src="@drawable/timg9" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:maxLines="1"
-                        android:text=""
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_drawer_home" />
 
-                </LinearLayout>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/toolbar_user_avatar"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginStart="12dp"
+                            android:src="@drawable/timg9"/>
 
-            </androidx.appcompat.widget.Toolbar>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:maxLines="1"
+                            android:text=""
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+                    </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:scrollbars="none" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:scrollbars="none"/>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <com.miguelcatalan.materialsearchview.MaterialSearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />
 
 
-</FrameLayout>
+    </FrameLayout>
+</layout>

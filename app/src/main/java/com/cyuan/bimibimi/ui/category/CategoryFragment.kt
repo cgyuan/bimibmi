@@ -67,7 +67,7 @@ class CategoryFragment(private var category: String) : Fragment() {
         categoryAdapter = CategoryGridHelperAdapter(
             this,
             movieList,
-            R.layout.home_section_item_layout,
+            R.layout.movie_card_item_layout,
             R.layout.loading_footer
         )
         adapters.addAdapter(categoryAdapter)
