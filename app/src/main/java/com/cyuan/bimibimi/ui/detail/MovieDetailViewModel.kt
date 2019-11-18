@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home.viewmodel
+package com.cyuan.bimibimi.ui.detail
 
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData

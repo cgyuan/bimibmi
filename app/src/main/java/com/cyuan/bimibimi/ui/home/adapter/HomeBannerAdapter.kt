@@ -1,7 +1,6 @@
 package com.cyuan.bimibimi.ui.home.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import com.alibaba.android.vlayout.layout.SingleLayoutHelper
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.ui.home.MovieDetailActivity
 import com.cyuan.bimibimi.ui.home.holder.HomeBannerViewHolder
 import com.cyuan.bimibimi.core.utils.GlideImageLoader
 

@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home.viewmodel
+package com.cyuan.bimibimi.ui.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

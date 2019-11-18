@@ -10,7 +10,7 @@ import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.base.BaseVLayoutAdapter
-import com.cyuan.bimibimi.ui.home.MovieDetailActivity
+import com.cyuan.bimibimi.ui.detail.MovieDetailActivity
 
 class HomeSectionItemHolder(itemView: View) : BaseVLayoutAdapter.ViewHolder<Movie>(itemView) {
     override fun onBind(data: Movie) {

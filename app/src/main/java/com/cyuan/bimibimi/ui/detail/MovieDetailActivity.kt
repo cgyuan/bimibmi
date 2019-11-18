@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home
+package com.cyuan.bimibimi.ui.detail
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
@@ -8,8 +8,10 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
@@ -28,10 +30,10 @@ import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
 import com.cyuan.bimibimi.core.utils.ShimmerUtils
 import com.cyuan.bimibimi.databinding.ActivityMovieDetailBinding
+import com.cyuan.bimibimi.db.AppDatabase
+import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.ui.home.adapter.RecommendMovieAdapter
-import com.cyuan.bimibimi.ui.home.viewmodel.MovieDetailViewModel
-import com.cyuan.bimibimi.ui.home.viewmodel.MovieDetailViewModelFactory
+import com.cyuan.bimibimi.ui.detail.adapter.RecommendMovieAdapter
 import com.cyuan.bimibimi.widget.FocusLayoutManager
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
@@ -39,6 +41,7 @@ import kotlinx.android.synthetic.main.content_online_detail_page.*
 
 class MovieDetailActivity : AppCompatActivity() {
 
+    private lateinit var favoriteMovieRepository: FavoriteMovieRepository
     private lateinit var movie: Movie
 
     private val viewModel by viewModels<MovieDetailViewModel> {
@@ -89,7 +92,10 @@ class MovieDetailActivity : AppCompatActivity() {
             descView.setContent(movieDetail.intro)
 
             recommendListRv.layoutManager = FocusLayoutManager()
-            recommendListRv.adapter = RecommendMovieAdapter(this@MovieDetailActivity, movieDetail.recommendList)
+            recommendListRv.adapter = RecommendMovieAdapter(
+                this@MovieDetailActivity,
+                movieDetail.recommendList
+            )
 
             viewContainer.removeView(recommendListVeil)
             detail_veilLayout_body.unVeil()
@@ -165,6 +171,31 @@ class MovieDetailActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.cat_topappbar_menu, menu)
+        val item = menu!!.findItem(R.id.favorite)
+        favoriteMovieRepository = FavoriteMovieRepository(AppDatabase.instance.favoriteMovieDao())
+        val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
+        item.setIcon(if (isFavorMovie) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
         return true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.favorite) {
+            toggleFavor(item)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun toggleFavor(item: MenuItem) {
+        val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
+        if (isFavorMovie) {
+            favoriteMovieRepository.removeMovie(movie)
+            item.setIcon(R.drawable.ic_favorite_border_black_24dp)
+            Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show()
+        } else {
+            favoriteMovieRepository.addMovie(movie)
+            item.setIcon(R.drawable.ic_favorite_black_24dp)
+            Toast.makeText(this, "已添加收藏", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

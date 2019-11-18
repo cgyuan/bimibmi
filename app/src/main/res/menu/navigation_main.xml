@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/item_home"
+            android:id="@+id/homeFragment"
             android:checked="true"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="主页" />
@@ -24,12 +24,12 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/item_favourite"
+            android:id="@+id/favoriteFragment"
             android:icon="@drawable/ic_star_black_24dp"
             android:title="我的收藏" />
 
         <item
-            android:id="@+id/item_history"
+            android:id="@+id/historyFragment"
             android:icon="@drawable/ic_history_black_24dp"
             android:title="历史记录" />
 

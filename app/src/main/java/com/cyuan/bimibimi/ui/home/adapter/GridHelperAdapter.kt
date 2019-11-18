@@ -15,7 +15,7 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.extension.dp2px
 import com.cyuan.bimibimi.model.Section
 import com.cyuan.bimibimi.ui.category.CategoryActivity
-import com.cyuan.bimibimi.ui.home.MovieDetailActivity
+import com.cyuan.bimibimi.ui.detail.MovieDetailActivity
 import com.cyuan.bimibimi.ui.home.holder.HomeSectionHeaderHolder
 import com.cyuan.bimibimi.ui.home.holder.HomeSectionItemHolder
 

@@ -12,13 +12,27 @@
             app:destination="@id/movieDetailActivity"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_favoriteFragment"
+            app:destination="@id/favoriteFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <activity
         android:id="@+id/movieDetailActivity"
-        android:name="com.cyuan.bimibimi.ui.home.MovieDetailActivity"
+        android:name="com.cyuan.bimibimi.ui.detail.MovieDetailActivity"
         android:label="MovieDetailActivity" >
         <argument
             android:name="movie"
             app:argType="com.cyuan.bimibimi.model.Movie" />
     </activity>
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.cyuan.bimibimi.ui.home.FavoriteFragment"
+        android:label="FavoriteFragment" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.cyuan.bimibimi.ui.home.HistoryFragment"
+        android:label="HistoryFragment" />
 </navigation>

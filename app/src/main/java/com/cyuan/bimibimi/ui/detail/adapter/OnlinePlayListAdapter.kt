@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home.adapter
+package com.cyuan.bimibimi.ui.detail.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -11,7 +11,7 @@ import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
-import com.cyuan.bimibimi.ui.home.holder.OnlinePlayHolder
+import com.cyuan.bimibimi.ui.detail.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
 import java.util.ArrayList
 

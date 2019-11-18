@@ -7,10 +7,10 @@
 
         <variable
             name="viewModel"
-            type="com.cyuan.bimibimi.ui.home.viewmodel.MovieDetailViewModel" />
+            type="com.cyuan.bimibimi.ui.detail.MovieDetailViewModel" />
         <variable
             name="activity"
-            type="com.cyuan.bimibimi.ui.home.MovieDetailActivity" />
+            type="com.cyuan.bimibimi.ui.detail.MovieDetailActivity" />
 
     </data>
 

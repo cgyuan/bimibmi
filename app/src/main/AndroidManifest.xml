@@ -27,7 +27,7 @@
         <activity android:name=".ui.home.MainActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.home.MovieDetailActivity" />
+        <activity android:name=".ui.detail.MovieDetailActivity" />
         <activity android:name=".ui.player.OnlinePlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape" />

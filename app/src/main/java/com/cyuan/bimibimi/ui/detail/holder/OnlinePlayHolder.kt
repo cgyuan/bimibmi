@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home.holder
+package com.cyuan.bimibimi.ui.detail.holder
 
 import android.view.View
 import android.widget.TextView

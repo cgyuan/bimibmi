@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.model.MovieDetail
-import com.cyuan.bimibimi.ui.home.adapter.OnlinePlayListAdapter
+import com.cyuan.bimibimi.ui.detail.adapter.OnlinePlayListAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 

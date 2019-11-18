@@ -1,4 +1,4 @@
-package com.cyuan.bimibimi.ui.home.adapter
+package com.cyuan.bimibimi.ui.detail.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -8,8 +8,8 @@ import com.bumptech.glide.Glide
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.ui.home.MovieDetailActivity
-import com.cyuan.bimibimi.ui.home.holder.RecommendMovieItemHolder
+import com.cyuan.bimibimi.ui.detail.MovieDetailActivity
+import com.cyuan.bimibimi.ui.detail.holder.RecommendMovieItemHolder
 
 class RecommendMovieAdapter(
     private val context: Context,
@@ -18,7 +18,10 @@ class RecommendMovieAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        RecommendMovieItemHolder.createViewHolder(context, parent)
+        RecommendMovieItemHolder.createViewHolder(
+            context,
+            parent
+        )
 
     override fun getItemCount() = movieList.size
 
