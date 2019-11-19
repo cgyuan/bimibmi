@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.cyuan.bimibimi.ui.home.viewmodel.HomeViewModel" />
         <variable
             name="activity"
             type="com.cyuan.bimibimi.ui.home.MainActivity" />
@@ -68,11 +73,20 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
+            <com.cyuan.bimibimi.widget.EmptyView
+                android:id="@+id/emptyView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                bind:viewStatus="@{viewModel.viewState}"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/movie_card_item_layout"
+                tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                tools:spanCount="2"
                 android:scrollbars="none" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

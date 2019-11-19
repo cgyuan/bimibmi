@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
-            name="movieDetail"
-            type="com.cyuan.bimibimi.model.MovieDetail" />
+            name="viewModel"
+            type="com.cyuan.bimibimi.ui.detail.MovieDetailViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -18,176 +19,190 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/activity_movie_detail">
 
-        <com.skydoves.androidveil.VeilLayout
-            android:id="@+id/detail_veilLayout_body"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:veilLayout_shimmerEnable="true"
-            app:veilLayout_veiled="true"
-            android:overScrollMode="never"
-            app:veilLayout_radius="6dp">
 
-            <LinearLayout
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.skydoves.androidveil.VeilLayout
+                android:id="@+id/detail_veilLayout_body"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/poster_border"
-                        android:layout_width="134dp"
-                        android:layout_height="190dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="10dp"
-                        app:cardCornerRadius="6dp"
-                        app:cardElevation="6dp">
-
-                        <ImageView
-                            android:id="@+id/detailPoster"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            bind:imageUrl="@{movieDetail.cover}"
-                            bind:placeDrawable="@{@drawable/ic_default_grey}"
-                            bind:errorDrawable="@{@drawable/ic_default_grey}"/>
-                    </androidx.cardview.widget.CardView>
-
-
-                    <TextView
-                        android:id="@+id/mvTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/poster_border"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_toRightOf="@+id/poster_border"
-                        android:ellipsize="marquee"
-                        android:singleLine="true"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/headDesc"
-                        android:layout_width="200dp"
-                        android:layout_height="150dp"
-                        android:layout_below="@+id/mvTitle"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_toRightOf="@+id/poster_border"
-                        android:ellipsize="end"
-                        android:lineSpacingExtra="2dp"
-                        android:lines="7"
-                        android:textColor="#9cffffff"
-                        android:textSize="12sp" />
-
-                </RelativeLayout>
+                android:overScrollMode="never"
+                app:veilLayout_radius="6dp"
+                app:veilLayout_shimmerEnable="true"
+                app:veilLayout_veiled="true">
 
                 <LinearLayout
-                    android:id="@+id/viewContainer"
+                    android:id="@+id/movieDetail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:id="@+id/desc_content"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:background="@drawable/desc_bg_shape"
-                        android:orientation="vertical"
-                        android:padding="10dp">
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/poster_border"
+                            android:layout_width="134dp"
+                            android:layout_height="190dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginRight="10dp"
+                            app:cardCornerRadius="6dp"
+                            app:cardElevation="6dp">
+
+                            <ImageView
+                                android:id="@+id/detailPoster"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                bind:errorDrawable="@{@drawable/ic_default_grey}"
+                                bind:imageUrl="@{viewModel.movieDetail.cover}"
+                                bind:placeDrawable="@{@drawable/ic_default_grey}" />
+                        </androidx.cardview.widget.CardView>
+
 
                         <TextView
-                            android:id="@+id/desc_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="简介："
-                            android:textColor="@color/white"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                        <com.ctetin.expandabletextviewlibrary.ExpandableTextView
-                            android:id="@+id/descView"
+                            android:id="@+id/mvTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="60dp"
+                            android:layout_alignTop="@+id/poster_border"
                             android:layout_marginLeft="4dp"
-                            android:layout_marginTop="4dp"
-                            android:lineSpacingExtra="6dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_toRightOf="@+id/poster_border"
+                            android:ellipsize="marquee"
+                            android:singleLine="true"
+                            android:textColor="@color/white"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/headDesc"
+                            android:layout_width="200dp"
+                            android:layout_height="150dp"
+                            android:layout_below="@+id/mvTitle"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_toRightOf="@+id/poster_border"
+                            android:ellipsize="end"
+                            android:lineSpacingExtra="2dp"
+                            android:lines="7"
                             android:textColor="#9cffffff"
-                            app:ep_contract_color="@color/white"
-                            app:ep_contract_text="收起"
-                            app:ep_end_color="@color/white"
-                            app:ep_expand_color="@color/white"
-                            app:ep_expand_text="展开"
-                            app:ep_max_line="3"
-                            app:ep_need_animation="true"
-                            app:ep_need_contract="true"
-                            app:ep_need_expand="true" />
-                    </LinearLayout>
+                            android:textSize="12sp" />
+
+                    </RelativeLayout>
 
                     <LinearLayout
-                        android:id="@+id/dataSourceContainer"
+                        android:id="@+id/viewContainer"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10.0dip"
-                        android:orientation="vertical"
-                        bind:movieSource="@{movieDetail}"/>
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/rec_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="26dp"
-                        android:alpha="0.7"
-                        android:drawableLeft="@drawable/ic_slideshow_black_24dp"
-                        android:gravity="center_vertical"
-                        android:text="猜你喜欢"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        <LinearLayout
+                            android:id="@+id/desc_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:background="@drawable/desc_bg_shape"
+                            android:orientation="vertical"
+                            android:padding="10dp">
 
-                    <LinearLayout
-                        android:id="@+id/recommendListVeil"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/desc_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="简介："
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
 
-                        <include layout="@layout/veil_card" />
+                            <com.ctetin.expandabletextviewlibrary.ExpandableTextView
+                                android:id="@+id/descView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="4dp"
+                                android:layout_marginTop="4dp"
+                                android:lineSpacingExtra="6dp"
+                                android:minHeight="60dp"
+                                android:textColor="#9cffffff"
+                                app:ep_contract_color="@color/white"
+                                app:ep_contract_text="收起"
+                                app:ep_end_color="@color/white"
+                                app:ep_expand_color="@color/white"
+                                app:ep_expand_text="展开"
+                                app:ep_max_line="3"
+                                app:ep_need_animation="true"
+                                app:ep_need_contract="true"
+                                app:ep_need_expand="true" />
+                        </LinearLayout>
 
-                        <include layout="@layout/veil_card" />
+                        <LinearLayout
+                            android:id="@+id/dataSourceContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10.0dip"
+                            android:orientation="vertical"
+                            bind:movieSource="@{viewModel.movieDetail}" />
 
-                        <include layout="@layout/veil_card" />
+                        <TextView
+                            android:id="@+id/rec_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_marginLeft="26dp"
+                            android:alpha="0.7"
+                            android:drawableLeft="@drawable/ic_slideshow_black_24dp"
+                            android:gravity="center_vertical"
+                            android:text="猜你喜欢"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                        <LinearLayout
+                            android:id="@+id/recommendListVeil"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="20dp"
+                            android:orientation="horizontal">
+
+                            <include layout="@layout/veil_card" />
+
+                            <include layout="@layout/veil_card" />
+
+                            <include layout="@layout/veil_card" />
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recommendListRv"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="10dp"
+                            android:minHeight="200dp"
+                            android:paddingLeft="20dp" />
 
                     </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recommendListRv"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:minHeight="200dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="10dp"
-                        android:paddingLeft="20dp" />
 
                 </LinearLayout>
+            </com.skydoves.androidveil.VeilLayout>
 
+            <com.cyuan.bimibimi.widget.EmptyView
+                android:id="@+id/emptyView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                bind:viewStatus="@{viewModel.viewState}" />
 
-            </LinearLayout>
-        </com.skydoves.androidveil.VeilLayout>
+        </FrameLayout>
 
     </androidx.core.widget.NestedScrollView>
 </layout>

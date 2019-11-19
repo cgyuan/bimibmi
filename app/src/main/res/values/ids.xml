@@ -2,4 +2,5 @@
 <resources>
     <item name="statusbar_view" type="id"/>
     <item name="translucent_view" type="id"/>
+    <item name="emptyView" type="id"/>
 </resources>

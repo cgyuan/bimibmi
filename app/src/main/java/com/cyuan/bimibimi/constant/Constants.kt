@@ -11,4 +11,13 @@ interface Constants {
             const val KEYWORD = "KW"
         }
     }
+
+    interface ViewState {
+        companion object {
+            const val LOADING = 0
+            const val EMPTY = 1
+            const val ERROR = 2
+            const val DONE = 3
+        }
+    }
 }

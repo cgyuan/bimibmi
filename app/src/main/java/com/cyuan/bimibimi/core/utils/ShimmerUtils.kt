@@ -11,7 +11,7 @@ object ShimmerUtils {
     return Shimmer.ColorHighlightBuilder()
       .setBaseColor(ContextCompat.getColor(context, R.color.shimmerBase0))
       .setHighlightColor(ContextCompat.getColor(context, R.color.shimmerHighlight0))
-      .setBaseAlpha(0.8f)
+      .setBaseAlpha(1f)
       .setHighlightAlpha(0.8f)
       .build()
   }

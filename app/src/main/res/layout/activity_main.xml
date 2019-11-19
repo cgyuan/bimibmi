@@ -21,12 +21,13 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="240dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/navigation_background_light"
         android:overScrollMode="never"
-        app:menu="@menu/navigation_main" />
+        app:menu="@menu/navigation_main"
+        app:headerLayout="@layout/navigation_header_layout"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
 

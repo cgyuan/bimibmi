@@ -25,7 +25,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
-import com.cyuan.bimibimi.core.extension.logWarn
 import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
 import com.cyuan.bimibimi.core.utils.ShimmerUtils
@@ -33,14 +32,17 @@ import com.cyuan.bimibimi.databinding.ActivityMovieDetailBinding
 import com.cyuan.bimibimi.db.AppDatabase
 import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
 import com.cyuan.bimibimi.model.Movie
+import com.cyuan.bimibimi.ui.base.UICallback
+import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.detail.adapter.RecommendMovieAdapter
 import com.cyuan.bimibimi.widget.FocusLayoutManager
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
 
 
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailActivity : AppCompatActivity(), UICallback {
 
+    private lateinit var url: String
     private lateinit var favoriteMovieRepository: FavoriteMovieRepository
     private lateinit var movie: Movie
 
@@ -54,8 +56,12 @@ class MovieDetailActivity : AppCompatActivity() {
             this,
             R.layout.activity_movie_detail
         )
+        bindEmptyViewCallback(this)
+        emptyView.bind(movieDetail)
         movie = intent.getParcelableExtra(PlayerKeys.MOVIE)!!
+        binding.lifecycleOwner = this
         binding.activity = this
+        binding.viewModel = viewModel
 
         detail_veilLayout_body.shimmer = ShimmerUtils.getGrayShimmer(this)
 
@@ -65,16 +71,13 @@ class MovieDetailActivity : AppCompatActivity() {
 
         initThemeColor()
 
-        val url = Constants.BIMIBIMI_INDEX + movie.href
+        url = Constants.BIMIBIMI_INDEX + movie.href
 
         viewModel.fetchMovieDetail(url)
 
         viewModel.movieDetail.observe(this, Observer { movieDetail ->
-            binding.viewModel = viewModel
             val requestOptions = RequestOptions()
                 .transform(GlideRoundTransform(this@MovieDetailActivity, 4))
-
-            logWarn("MovieDetailActivity", "viewModel update")
 
             movieDetail.title = movie.title
 
@@ -98,8 +101,32 @@ class MovieDetailActivity : AppCompatActivity() {
             )
 
             viewContainer.removeView(recommendListVeil)
-            detail_veilLayout_body.unVeil()
         })
+
+        viewModel.loadDataState.observe(this, Observer {
+            if (it in listOf(Constants.ViewState.ERROR , Constants.ViewState.DONE)) {
+                detail_veilLayout_body.unVeil()
+            } else if (it == Constants.ViewState.LOADING) {
+                detail_veilLayout_body.veil()
+            }
+        })
+
+        scroll_content.scrollTo(0, 0)
+        scroll_content.postDelayed({
+            scrollToTop()
+        }, 5)
+    }
+
+    private fun scrollToTop() {
+        if (scroll_content.scrollY != 0) {
+            scroll_content.postDelayed({
+                scroll_content.scrollTo(0, 0)
+            }, 5)
+        }
+    }
+
+    override fun reload() {
+        viewModel.fetchMovieDetail(url)
     }
 
     private fun initThemeColor() {

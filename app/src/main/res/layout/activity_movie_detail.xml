@@ -14,7 +14,7 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:id="@+id/root"
         android:orientation="vertical"
@@ -29,15 +29,7 @@
             app:elevation="0dp"
             android:layout_height="80dp">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/toolbar_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:toolbarId="@+id/toolbar">
-
-                <androidx.appcompat.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     app:titleTextAppearance="@style/ToolbarTitle"
@@ -81,16 +73,15 @@
                             android:layout_centerVertical="true" />
                     </RelativeLayout>
                 </androidx.appcompat.widget.Toolbar>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include layout="@layout/content_online_detail_page" bind:movieDetail="@{viewModel.movieDetail}" />
+        <include layout="@layout/content_online_detail_page" bind:viewModel="@{viewModel}" />
 
         <WebView
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 </layout>

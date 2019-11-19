@@ -14,10 +14,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.ui.detail.adapter.OnlinePlayListAdapter
+import com.cyuan.bimibimi.widget.EmptyView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
+//<attr name="viewStatus" format="enum">
+//  <enum name="loading" value="0"/>
+//  <enum name="empty" value="1" />
+//  <enum name="error" value="2"/>
+//  <enum name="done" value="3"/>
+//</attr>
+@BindingAdapter("viewStatus")
+fun EmptyView.viewStatus(state: Int) {
+    when (state) {
+        Constants.ViewState.LOADING->triggerLoading()
+        Constants.ViewState.EMPTY->triggerEmpty()
+        Constants.ViewState.ERROR->triggerNetError()
+        Constants.ViewState.DONE->triggerOk()
+    }
+}
 
 @BindingAdapter("imageUrl", "placeDrawable", "errorDrawable", "transform", requireAll = false) //requireAll表示所有参数都必须有
 fun imageUrl(view:ImageView, imageUrl: String?, placeDrawable: Drawable?, errorDrawable: Drawable?, transformation: Transformation<Bitmap>?) = imageUrl.let {

@@ -21,7 +21,7 @@ class NetSpeedUtil {
                 TrafficStats.getTotalRxBytes() / 1024//转为KB;
         val nowTimeStamp = System.currentTimeMillis()
         val speed =
-            (nowTotalRxBytes - lastTotalRxBytes) * 1000 / (nowTimeStamp - lastTimeStamp)//毫秒转换
+            (nowTotalRxBytes - lastTotalRxBytes) * 1000 / (nowTimeStamp - lastTimeStamp + 1)//毫秒转换
 
         lastTimeStamp = nowTimeStamp
         lastTotalRxBytes = nowTotalRxBytes

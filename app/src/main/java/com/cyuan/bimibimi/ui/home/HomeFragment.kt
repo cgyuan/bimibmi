@@ -14,15 +14,16 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.databinding.FragmentHomeBinding
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.repository.OnlineMovieRepository
-import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
 import com.cyuan.bimibimi.ui.base.CommonGridHelperAdapter
+import com.cyuan.bimibimi.ui.base.UICallback
+import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
+import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.HomeViewModel
 import com.cyuan.bimibimi.ui.search.SearchActivity
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment() , UICallback {
 
     private lateinit var adapters: DelegateAdapter
     private lateinit var viewModel: HomeViewModel
@@ -33,24 +34,27 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentHomeBinding.inflate(inflater)
-        binding.activity = activity as MainActivity
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-        toolbar.title = ""
-        (activity as MainActivity).setSupportActionBar(toolbar)
-        initSearchView()
-        initRecyclerView()
-
         viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return HomeViewModel(OnlineMovieRepository.instance) as T
             }
 
         }).get(HomeViewModel::class.java)
+        binding.activity = activity as MainActivity
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        bindEmptyViewCallback(this)
+        emptyView.bind(recyclerView)
+        setHasOptionsMenu(true)
+        toolbar.title = ""
+        (activity as MainActivity).setSupportActionBar(toolbar)
+        initSearchView()
+        initRecyclerView()
 
         viewModel.fetchHomeData()
 
@@ -76,6 +80,10 @@ class HomeFragment : Fragment() {
             }
             recyclerView.adapter = adapters
         })
+    }
+
+    override fun reload() {
+        viewModel.fetchHomeData()
     }
 
     private fun initRecyclerView() {
