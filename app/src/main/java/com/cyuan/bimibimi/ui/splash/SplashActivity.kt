@@ -51,7 +51,6 @@ class SplashActivity: AppCompatActivity() {
         )
         val cardHeight = 185F
         val colHeight = dp2px(cardHeight) * 5
-        println("colHeight = $colHeight")
         for (row in 0..2) {
             val col = LinearLayout(this)
             col.orientation = LinearLayout.VERTICAL
@@ -59,10 +58,6 @@ class SplashActivity: AppCompatActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 colHeight
             )
-//            if (row != 0) {
-//                val lp = col.layoutParams as LinearLayout.LayoutParams
-//                lp.leftMargin = dp2px(15f)
-//            }
             for (i in 1..5) {
                 val frame = View.inflate(this, R.layout.item_splash_section, null)
                 val iv = frame.findViewById<ImageView>(R.id.item_img)
@@ -117,8 +112,6 @@ class SplashActivity: AppCompatActivity() {
             }
         })
         showContent.addView(container)
-
     }
-
 
 }
