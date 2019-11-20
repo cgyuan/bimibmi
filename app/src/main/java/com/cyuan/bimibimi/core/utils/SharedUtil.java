@@ -3,7 +3,10 @@ package com.cyuan.bimibimi.core.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.Nullable;
+
 import com.cyuan.bimibimi.core.App;
+import com.google.gson.Gson;
 
 /**
  * SharedPreferences工具类，提供简单的封装接口，简化SharedPreferences的用法。
@@ -12,6 +15,21 @@ import com.cyuan.bimibimi.core.App;
 public class SharedUtil {
 
     private final static String SP = "bimibimi_shared_prefs";
+
+    /**
+     * 将实体对象转换为 json 字符串存储到 SharedPreferences 文件当中。
+     * @param key
+     *          存储的键
+     * @param data
+     *          存储的对象
+     * @param <T>
+     *          存储对象泛型
+     */
+    public static <T> void save(String key, T data) {
+        Gson gson = new Gson();
+        String json = gson.toJson(data);
+        save(key, json);
+    }
 
     /**
      * 存储boolean类型的键值对到SharedPreferences文件当中。
@@ -76,6 +94,24 @@ public class SharedUtil {
         SharedPreferences.Editor editor = App.getContext().getSharedPreferences(SP, Context.MODE_PRIVATE).edit();
         editor.putString(key, value);
         editor.apply();
+    }
+
+    /**
+     * 从SharedPreferences文件当中读取参数传入键相应的 json 字符串，并将其转换为实体对象
+     * @param key
+     *          读取的键
+     * @param <T>
+     *          实体对象的泛型
+     * @return 泛型对应的实体对象，如果读取不到，则返回空值
+     */
+    public static @Nullable <T> T read(String key, Class<T> clazz) {
+        Gson gson = new Gson();
+        String json = read(key, "");
+        try {
+            return gson.fromJson(json, clazz);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

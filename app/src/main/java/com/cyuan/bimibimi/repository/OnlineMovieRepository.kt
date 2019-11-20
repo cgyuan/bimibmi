@@ -1,7 +1,8 @@
 package com.cyuan.bimibimi.repository
-import com.cyuan.bimibimi.model.Movie
+import android.os.SystemClock
+import com.cyuan.bimibimi.core.utils.SharedUtil
+import com.cyuan.bimibimi.model.HomeInfo
 import com.cyuan.bimibimi.model.MovieDetail
-import com.cyuan.bimibimi.model.Section
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import kotlinx.coroutines.Dispatchers
@@ -12,22 +13,31 @@ import kotlin.coroutines.suspendCoroutine
 
 open class OnlineMovieRepository private constructor() {
 
+    private val HOME_INFO = "HOME_INFO"
+
     suspend fun fetchHomeInfo() = withContext(Dispatchers.IO) {
-        val result =
-            suspendCoroutine<Pair<MutableList<Movie>, List<Section>>> { continuation ->
-                HtmlDataParser.parseHomePage(object :
-                    ParseResultCallback<Pair<MutableList<Movie>, List<Section>>> {
-                    override fun onSuccess(data: Pair<MutableList<Movie>, List<Section>>) {
-                        continuation.resume(data)
-                    }
+        val homeInfo = SharedUtil.read(HOME_INFO, HomeInfo::class.java)
+        val hoursAgo = homeInfo?.let {  (SystemClock.uptimeMillis() - homeInfo.updateTimeStamp) / (1000 * 3600) } ?: 0
+        if (homeInfo == null || hoursAgo >= 1) {
+            val result =
+                suspendCoroutine<HomeInfo> { continuation ->
+                    HtmlDataParser.parseHomePage(object :
+                        ParseResultCallback<HomeInfo> {
+                        override fun onSuccess(data: HomeInfo) {
+                            SharedUtil.save(HOME_INFO, data)
+                            continuation.resume(data)
+                        }
 
-                    override fun onFail(msg: String) {
-                        continuation.resumeWithException(Throwable(msg))
-                    }
+                        override fun onFail(msg: String) {
+                            continuation.resumeWithException(Throwable(msg))
+                        }
 
-                })
-            }
-        result
+                    })
+                }
+            result
+        } else {
+            homeInfo
+        }
     }
 
     suspend fun fetchMovieDetail(url: String) = withContext(Dispatchers.IO) {

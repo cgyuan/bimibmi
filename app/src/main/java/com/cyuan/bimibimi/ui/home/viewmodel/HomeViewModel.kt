@@ -23,8 +23,8 @@ class HomeViewModel(private val repository: OnlineMovieRepository) : ViewModel()
         viewState.postValue(Constants.ViewState.LOADING)
         launch({
             val data = repository.fetchHomeInfo()
-            bannerList.value = data.first
-            sectionList.value = data.second
+            bannerList.value = data.bannerList
+            sectionList.value = data.sectionList
             if (bannerList.value.isNullOrEmpty() || sectionList.value.isNullOrEmpty()) {
                 viewState.postValue(Constants.ViewState.EMPTY)
             } else {

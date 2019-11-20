@@ -3,6 +3,7 @@ package com.cyuan.bimibimi.parser
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.os.SystemClock
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -18,11 +19,12 @@ import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.net.URLDecoder
+import java.util.*
 import java.util.regex.Pattern
 
 
 object HtmlDataParser {
-    fun parseHomePage(callback: ParseResultCallback<Pair<MutableList<Movie>, List<Section>>>?) {
+    fun parseHomePage(callback: ParseResultCallback<HomeInfo>?) {
         StringRequest().listen(object : Callback{
             override fun onFailure(e: Exception) {
                 callback?.onFail(e.message ?: "解析首页数据失败")
@@ -74,7 +76,11 @@ object HtmlDataParser {
 
 
                 val sections = parseSection(response)
-                callback?.onSuccess(Pair(list, sections))
+                val homeInfo = HomeInfo()
+                homeInfo.bannerList = list
+                homeInfo.sectionList = sections
+                homeInfo.updateTimeStamp = SystemClock.uptimeMillis()
+                callback?.onSuccess(homeInfo)
             }
         })
     }
