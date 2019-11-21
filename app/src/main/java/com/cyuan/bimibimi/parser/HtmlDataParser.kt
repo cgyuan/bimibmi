@@ -257,6 +257,30 @@ object HtmlDataParser {
             })
     }
 
+    class JsBridge(private val webView: WebView,
+                   private val callback: ParseResultCallback<String>?) {
+        @JavascriptInterface
+        fun getSrc(url: String) {
+            callback?.onSuccess(url)
+            webView.removeAllViews()
+        }
+    }
+
+    private val GET_VIDEO_SRC_JS = "var video = document.getElementsByTagName('video')[0];\n" +
+                    "console.log('VIDEO = ' + video);\n" +
+                    "var t = setInterval(function () {\n" +
+                            "console.log('VIDEO = ' + video);\n" +
+                            "if(video === undefined) {\n" +
+                            "video = document.getElementsByTagName('video')[0];\n" +
+                        "} else {\n" +
+                            "clearInterval(t);\n" +
+                            "console.log('VIDEO_SRC = ' + video.currentSrc);\n" +
+                            //  "video.addEventListener('canplay', function() {\n" +
+                            "javascript:app.getSrc(video.currentSrc);\n" +
+                            // "};\n" +
+                        "}\n" +
+                    "}, 200)\n"
+
     fun parseVideoUrl(context: Context, url: String, callback: ParseResultCallback<String>?) {
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
@@ -265,32 +289,12 @@ object HtmlDataParser {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        webView.addJavascriptInterface(JsBridge(webView, callback), "app")
         webView.loadUrl("https://okjx.lrkdzx.com/okbyjiexi/?url=$url")
 //        webView.loadUrl("http://okjx.cc/?url=https://v.qq.com/x/cover/mu01sbah4rauf44.html")
         webView.webViewClient = object : WebViewClient() {
-            var tryTime = 0
             override fun onPageFinished(view: WebView?, webUrl: String?) {
-                tryTime = 1
-                webView.postDelayed({
-                    extractVideoUrl()
-                }, 100)
-            }
-
-            private fun extractVideoUrl() {
-                tryTime++
-                if (tryTime > 10) return
-                webView.evaluateJavascript("document.getElementsByTagName('video')[0].currentSrc") { value ->
-                    if (TextUtils.isEmpty(value) || value == "null" || value == "\"\"") {
-                        webView.postDelayed({
-                            extractVideoUrl()
-                        }, 100)
-                        return@evaluateJavascript
-                    }
-                    val newUrl = value.replace("\"", "")
-                    callback?.onSuccess(newUrl)
-                    webView.removeAllViews()
-                }
-                webView.removeAllViews()
+                webView.evaluateJavascript(GET_VIDEO_SRC_JS, null)
             }
         }
 
