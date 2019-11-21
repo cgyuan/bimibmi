@@ -34,6 +34,7 @@ abstract class Request {
         connectTimeout(10)
         writeTimeout(10)
         readTimeout(10)
+        notFollowRedirect()
         deviceName = Utility.deviceName
         deviceSerial = Utility.getDeviceSerial()
     }
@@ -53,6 +54,12 @@ abstract class Request {
 
     private fun build() {
         okHttpClient = okHttpBuilder.build()
+    }
+
+    // 不跟随重定向，这里会导致部分视频解析被重定向到 www.baidu.com
+    private fun notFollowRedirect() {
+        okHttpBuilder.followRedirects(false)
+            .followSslRedirects(false)
     }
 
     private fun connectTimeout(seconds: Int) {
@@ -97,16 +104,6 @@ abstract class Request {
                 }
 
             })
-        }
-    }
-
-    suspend fun inFlightSync(): Pair<Boolean, String> {
-        val request = buildRequest()
-        val response = okHttpClient.newCall(request).execute()
-        return if (response.isSuccessful || response.code == 302) {
-            Pair(true, response.body.toString())
-        } else {
-            Pair(false, response.message)
         }
     }
 

@@ -4,22 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.text.TextUtils
+import android.webkit.*
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.extension.logWarn
+import com.cyuan.bimibimi.core.utils.UrlHelper
 import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
-import com.cyuan.bimibimi.network.request.ParseVideoUrlRequest
 import com.cyuan.bimibimi.network.request.SearchRequest
 import com.cyuan.bimibimi.network.request.StringRequest
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.net.URLDecoder
-import java.util.*
 import java.util.regex.Pattern
 
 
@@ -222,7 +220,36 @@ object HtmlDataParser {
                         // 获得视频后缀部分，并据此从静态页面解析视频url
                         parseVideoUrlById(url, callback)
                     } else if (url.endsWith(".html")) {
-                        parseVideoUrlWithWebView(context, url, callback)
+                        // parseVideoUrlWithWebView(context, url, callback)
+                        // "https://api.nmbaojie.com/api/video/youkuplay.php?url=https://api.nmbaojie.com/api/data/iqiyim3u8/19rrok4pg4.m3u8"
+                        // https://www.iqiyi.com/v_19rrok4pg4.html
+                        if (url.contains("iqiyi")) {
+                            val vid = UrlHelper.extractIqyVideoId(url)
+                            url = "https://api.nmbaojie.com/api/video/youkuplay.php?url=https://api.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
+                            callback?.onSuccess(url)
+                        } else if (url.contains("v.qq.com")) {
+                            // https://v.qq.com/x/cover/enj7gj9pcksq89p/g0761hr9ih3.html
+                            // http://dalaowangsan.cn/wangerjiexi/api.php?url=https://m.v.qq.com/cover/0/0gsf9fytppje54d.html?vid=k0027nolupz&cb=jQuery18205677586477461618_1574253655192&_=1574253655788
+
+                            parseVideoUrl(context, url, callback)
+//                            url = UrlHelper.rebuildQQVideoUrl(url)
+//                            StringRequest().url(url)
+//                                .listen(object : Callback {
+//                                    override fun onFailure(e: Exception) {
+//                                        callback?.onFail(e.message ?: "")
+//                                    }
+//
+//                                    override fun onResponseString(response: String) {
+//                                        val result = response.replace("(", "").replace(");", "")
+//                                        try {
+//                                            url = JSONObject(result).getString("url")
+//                                            callback?.onSuccess(url)
+//                                        } catch (e: Exception) {
+//
+//                                        }
+//                                    }
+//                                })
+                        }
                     } else {
                         callback?.onSuccess(url)
                     }
@@ -230,7 +257,7 @@ object HtmlDataParser {
             })
     }
 
-    private fun parseVideoUrlWithWebView(context: Context, url: String, callback: ParseResultCallback<String>?) {
+    fun parseVideoUrl(context: Context, url: String, callback: ParseResultCallback<String>?) {
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true
@@ -238,73 +265,41 @@ object HtmlDataParser {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        webView.settings.userAgentString =
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"
-        webView.loadUrl("https://bb.nmbaojie.com/mingri/mingri.php?url=${url}")
+        webView.loadUrl("https://okjx.lrkdzx.com/okbyjiexi/?url=$url")
+//        webView.loadUrl("http://okjx.cc/?url=https://v.qq.com/x/cover/mu01sbah4rauf44.html")
         webView.webViewClient = object : WebViewClient() {
+            var tryTime = 0
             override fun onPageFinished(view: WebView?, webUrl: String?) {
+                tryTime = 1
                 webView.postDelayed({
-                    webView.evaluateJavascript("document.getElementsByTagName('video')[0].currentSrc") { value ->
-                        if (value == "null") {
-                            parseVideoUrlWithKeys(url, webView, callback)
-                        } else {
-                            val newUrl = value.replace("\"", "")
-                            callback?.onSuccess(newUrl)
-                        }
+                    extractVideoUrl()
+                }, 100)
+            }
+
+            private fun extractVideoUrl() {
+                tryTime++
+                if (tryTime > 10) return
+                webView.evaluateJavascript("document.getElementsByTagName('video')[0].currentSrc") { value ->
+                    if (TextUtils.isEmpty(value) || value == "null" || value == "\"\"") {
+                        webView.postDelayed({
+                            extractVideoUrl()
+                        }, 100)
+                        return@evaluateJavascript
                     }
+                    val newUrl = value.replace("\"", "")
+                    callback?.onSuccess(newUrl)
                     webView.removeAllViews()
-                }, 200)
+                }
+                webView.removeAllViews()
             }
         }
-    }
 
-    private fun parseVideoUrlWithKeys(url: String, webView: WebView, callback: ParseResultCallback<String>?) {
-        var newUrl = url
-        StringRequest().url("https://bb.nmbaojie.com/mingri/mingri.php?url=${newUrl}")
-            .listen(object : Callback {
-                override fun onFailure(e: Exception) {
-                    callback?.onFail(e.message ?: "解析视频失败")
-                }
-                override fun onResponseString(response: String) {
-                    val document = Jsoup.parse(response)
-                    val hdMd5 = document.select("#hdMd5").attr("value")
-                    var k1 = ""
-                    var k2 = "b5f8b134d8ad7258b75a01cd26f022c1"
-                    var k3 = "" //desn1(k1)
-                    var k4 = "" //desn2(k3)
-                    webView.evaluateJavascript("desn('${hdMd5}')") { value ->
-                        k1 = value.replace("\"", "")
-                        webView.evaluateJavascript("desn1('${k1}')") { value ->
-                            k3 = value.replace("\"", "")
-                            webView.evaluateJavascript("desn2('${k3}')") { value ->
-                                k4 = value.replace("\"", "")
-                                ParseVideoUrlRequest().targetUrl(newUrl!!)
-                                    .addParam("key", k1)
-                                    .addParam("key2", k2)
-                                    .addParam("key3", k3)
-                                    .addParam("key4", k4)
-                                    .addParam("url", newUrl)
-                                    .listen(object : Callback {
-                                        override fun onFailure(e: Exception) {
-                                            logWarn("fail to load video url data")
-                                        }
-                                        override fun onResponseString(response: String) {
-                                            println("responseResult = $response")
-                                            try {
-                                                val obj = JSONObject(response)
-                                                newUrl = obj.getString("url")
-
-                                                webView.loadUrl(newUrl)
-                                            } catch (e: Exception) {
-                                                e.printStackTrace()
-                                            }
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                }
-            })
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+                logWarn("console", "["+consoleMessage.messageLevel()+"] "+ consoleMessage.message() + "(" +consoleMessage.sourceId()  + ":" + consoleMessage.lineNumber()+")")
+                return super.onConsoleMessage(consoleMessage)
+            }
+        }
     }
 
     private fun parseVideoUrlById(url: String, callback: ParseResultCallback<String>?) {

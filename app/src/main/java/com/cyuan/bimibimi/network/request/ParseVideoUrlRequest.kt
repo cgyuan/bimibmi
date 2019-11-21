@@ -24,7 +24,7 @@ class ParseVideoUrlRequest: StringRequest() {
     override fun headers(builder: Headers.Builder): Headers.Builder {
         builder.add(
             "referer",
-            "https://bb.nmbaojie.com/mingri/mingri.php?url=${targetUrl}"
+            "https://v.nmbaojie.com/mingri/inde.php?url=${targetUrl}"
         )
         builder.add("Content-Type", "application/x-www-form-urlencoded")
         return super.headers(builder)
