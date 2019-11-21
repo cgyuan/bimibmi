@@ -11,19 +11,19 @@ import androidx.lifecycle.Observer
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.extension.dp2px
 import com.cyuan.bimibimi.databinding.FragmentFavoriteBinding
-import com.cyuan.bimibimi.ui.home.adapter.FavoriteMovieAdapter
-import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModel
-import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModelFactory
+import com.cyuan.bimibimi.ui.home.adapter.HistoryAdapter
+import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModel
+import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModelFactory
 import com.cyuan.bimibimi.widget.GridDividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class HistoryFragment : Fragment() {
 
-    private val adapter by lazy { FavoriteMovieAdapter() }
+    private val adapter by lazy { HistoryAdapter() }
 
-    private val viewModel by viewModels<FavoriteMovieViewModel> {
-        FavoriteMovieViewModelFactory()
+    private val viewModel by viewModels<HistoryViewModel> {
+        HistoryViewModelFactory()
     }
 
     override fun onCreateView(

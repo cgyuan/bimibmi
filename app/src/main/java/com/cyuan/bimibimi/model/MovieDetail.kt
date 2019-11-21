@@ -5,6 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 class MovieDetail {
 
+    var href: String = ""
+
     var title: String = ""
 
     var headers: String = ""

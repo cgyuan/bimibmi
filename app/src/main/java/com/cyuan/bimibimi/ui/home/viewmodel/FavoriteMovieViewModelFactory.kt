@@ -7,7 +7,7 @@ import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
 
 class FavoriteMovieViewModelFactory: ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val repository = FavoriteMovieRepository(AppDatabase.instance.favoriteMovieDao())
+        val repository = FavoriteMovieRepository.getInstance(AppDatabase.instance.favoriteMovieDao())
         return FavoriteMovieViewModel(repository) as T
     }
 }

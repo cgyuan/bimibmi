@@ -7,7 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.db.AppDatabase
+import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.Episode
+import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.player.CustomController.OnstateChangeListener
@@ -19,14 +22,19 @@ import com.dueeeke.videoplayer.player.IjkVideoView
 import com.dueeeke.videoplayer.player.PlayerConfig
 import kotlinx.android.synthetic.main.activity_player_main.*
 import zmovie.com.dlan.DlnaPresenter
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OnlinePlayerActivity : AppCompatActivity() {
 
+    private lateinit var movieCover: String
+    private lateinit var movieDetailHref: String
+    private var playPosition: Long = 0
     private var episodeIndex: Int = 0
-    private lateinit var episodeList: ArrayList<Episode>
+    private var episodeList: ArrayList<Episode>? = null
     private lateinit var episodeName: String
     private lateinit var movieTitle: String
-    private lateinit var url: String
+    private lateinit var currentUrl: String
     private lateinit var dlnaPresenter: DlnaPresenter
     private lateinit var player: AbstractPlayer
     private lateinit var ijkVideoView: IjkVideoView
@@ -34,7 +42,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
     private lateinit var controller: CustomController
     private val stateChangeListener = object: OnstateChangeListener {
         override fun onAirPlay() {
-            dlnaPresenter.showDialogTip(this@OnlinePlayerActivity, url, "【${movieTitle}】$episodeName")
+            dlnaPresenter.showDialogTip(this@OnlinePlayerActivity, currentUrl, "【${movieTitle}】$episodeName")
         }
 
         override fun onPic2Pic() {
@@ -48,13 +56,14 @@ class OnlinePlayerActivity : AppCompatActivity() {
     }
 
     private val episodeItemClickListener = CustomController.OnItemClickedListener { position ->
-        val episode = episodeList[position]
+        val episode = episodeList!![position]
         HtmlDataParser.parseVideoSource(this@OnlinePlayerActivity, episode, object : ParseResultCallback<String> {
             override fun onSuccess(url: String) {
-                this@OnlinePlayerActivity.url = url
+                this@OnlinePlayerActivity.currentUrl = url
                 episodeName = episode.title
                 ijkVideoView.stopPlayback()
                 ijkVideoView.release()
+
                 ijkVideoView.setUrl(url)
                 ijkVideoView.title = "【${movieTitle}】$episodeName"
                 controller.setTitle("【${movieTitle}】$episodeName")
@@ -85,17 +94,20 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
         ijkVideoView.setVideoController(controller)
 
-        url = intent.getStringExtra(PlayerKeys.URL)!!
+        currentUrl = intent.getStringExtra(PlayerKeys.URL)!!
         movieTitle = intent.getStringExtra(PlayerKeys.MOVIE_TITLE)!!
         episodeName = intent.getStringExtra(PlayerKeys.EPISODE_NAME)!!
         episodeIndex = intent.getIntExtra(PlayerKeys.EPISODE_INDEX, 0)
-        episodeList = intent.getParcelableArrayListExtra(PlayerKeys.EPISODE_LIST)!!
+        episodeList = intent.getParcelableArrayListExtra(PlayerKeys.EPISODE_LIST)
+        movieDetailHref = intent.getStringExtra(PlayerKeys.MOVIE_DETAIL_HREF)!!
+        movieCover = intent.getStringExtra(PlayerKeys.MOVIE_COVER) ?: ""
+        playPosition = intent.getLongExtra(PlayerKeys.PLAY_POSITION, 0)
 
-        if (episodeList.size > 1) {
+        if (!episodeList.isNullOrEmpty()) {
             controller.configPlayList(episodeList, episodeIndex)
         }
 
-        if (url.endsWith("m3u8")) {
+        if (currentUrl.endsWith("m3u8")) {
             player = AndroidMediaPlayer(this)
         } else {
             player = IjkPlayer(this)
@@ -106,7 +118,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
             controller.setPlayerState(ijkVideoView.currentPlayerState)
             controller.setPlayState(ijkVideoView.currentPlayState)
         } else {
-            ijkVideoView.setUrl(url)
+            ijkVideoView.setUrl(currentUrl)
             ijkVideoView.title = "【${movieTitle}】$episodeName"
             controller.setTitle("【${movieTitle}】$episodeName")
             val playerConfig = PlayerConfig.Builder()
@@ -122,6 +134,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         playView.addView(ijkVideoView)
         ijkVideoView.startFullScreen()
         ijkVideoView.start()
+        ijkVideoView.seekTo(playPosition)
 
         initDLNA()
     }
@@ -150,6 +163,16 @@ class OnlinePlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mPIPManager.pause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val historyRepository = HistoryRepository
+            .getInstance(AppDatabase.instance.historyDao())
+        val history = History(movieDetailHref, currentUrl,
+            ijkVideoView.title, episodeIndex, ijkVideoView.currentPosition,
+            movieCover, "", Calendar.getInstance())
+        historyRepository.saveHistory(history)
     }
 
     override fun onDestroy() {

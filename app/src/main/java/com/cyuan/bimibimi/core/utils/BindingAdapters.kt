@@ -66,7 +66,7 @@ fun LinearLayout.movieSource(movieDetail: MovieDetail?) = movieDetail?.let {
     val bottomSheetAdapter = OnlinePlayListAdapter(
         context,
         arrayListOf(),
-        movieDetail.title,
+        movieDetail,
         R.drawable.bottom_sheet_play_bt_shape
     )
     bottomSheetPlayList.adapter = bottomSheetAdapter
@@ -82,7 +82,7 @@ fun LinearLayout.movieSource(movieDetail: MovieDetail?) = movieDetail?.let {
         episodesRV.adapter = OnlinePlayListAdapter(
             context,
             dataSource.episodes,
-            movieDetail.title
+            movieDetail
         )
 
         btnViewALl.setOnClickListener {

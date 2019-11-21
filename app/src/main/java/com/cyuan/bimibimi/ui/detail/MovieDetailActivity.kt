@@ -79,7 +79,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         viewModel.movieDetail.observe(this, Observer { movieDetail ->
             val requestOptions = RequestOptions()
                 .transform(GlideRoundTransform(this@MovieDetailActivity, 4))
-
+            movieDetail.href = movie.href
             movieDetail.title = movie.title
 
             mvTitle.text = movieDetail.title
@@ -200,7 +200,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.cat_topappbar_menu, menu)
         val item = menu!!.findItem(R.id.favorite)
-        favoriteMovieRepository = FavoriteMovieRepository(AppDatabase.instance.favoriteMovieDao())
+        favoriteMovieRepository = FavoriteMovieRepository.getInstance(AppDatabase.instance.favoriteMovieDao())
         val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
         item.setIcon(if (isFavorMovie) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
         if (isFavorMovie) {

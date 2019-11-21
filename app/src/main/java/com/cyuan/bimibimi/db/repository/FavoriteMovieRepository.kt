@@ -5,7 +5,7 @@ import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.Movie
 import java.util.*
 
-class FavoriteMovieRepository(private val favoriteMovieDao: FavoriteMovieDao) {
+class FavoriteMovieRepository private constructor(private val favoriteMovieDao: FavoriteMovieDao) {
 
     fun isFavorite(movie: Movie) = favoriteMovieDao.isFavorite(movie.href)
 
@@ -17,4 +17,19 @@ class FavoriteMovieRepository(private val favoriteMovieDao: FavoriteMovieDao) {
     fun removeMovie(movie: Movie) = favoriteMovieDao.deleteMovie(movie.href)
 
     fun getAllMovieByPage() = favoriteMovieDao.queryAllMovie()
+
+    companion object {
+        @Volatile
+        private var  instance: FavoriteMovieRepository? = null
+        fun getInstance(favoriteMovieDao: FavoriteMovieDao): FavoriteMovieRepository {
+            if (instance == null) {
+                synchronized(this) {
+                    if (instance == null) {
+                        instance = FavoriteMovieRepository(favoriteMovieDao)
+                    }
+                }
+            }
+            return instance!!
+        }
+    }
 }
