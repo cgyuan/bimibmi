@@ -13,6 +13,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
@@ -202,7 +203,18 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         favoriteMovieRepository = FavoriteMovieRepository(AppDatabase.instance.favoriteMovieDao())
         val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
         item.setIcon(if (isFavorMovie) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
+        if (isFavorMovie) {
+            setFavoriteIconTint(item, R.color.red)
+        } else {
+            setFavoriteIconTint(item, R.color.white)
+        }
         return true
+    }
+
+    private fun setFavoriteIconTint(item: MenuItem, @ColorRes colorId: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            item.icon.setTint(resources.getColor(colorId))
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -217,10 +229,12 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         if (isFavorMovie) {
             favoriteMovieRepository.removeMovie(movie)
             item.setIcon(R.drawable.ic_favorite_border_black_24dp)
+            setFavoriteIconTint(item, R.color.white)
             Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show()
         } else {
             favoriteMovieRepository.addMovie(movie)
             item.setIcon(R.drawable.ic_favorite_black_24dp)
+            setFavoriteIconTint(item, R.color.red)
             Toast.makeText(this, "已添加收藏", Toast.LENGTH_SHORT).show()
         }
     }
