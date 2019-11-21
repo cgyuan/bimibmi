@@ -103,11 +103,11 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
             viewContainer.removeView(recommendListVeil)
         })
 
-        viewModel.loadDataState.observe(this, Observer {
-            if (it in listOf(Constants.ViewState.ERROR , Constants.ViewState.DONE)) {
-                detail_veilLayout_body.unVeil()
-            } else if (it == Constants.ViewState.LOADING) {
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            if (isLoading) {
                 detail_veilLayout_body.veil()
+            } else {
+                detail_veilLayout_body.unVeil()
             }
         })
 

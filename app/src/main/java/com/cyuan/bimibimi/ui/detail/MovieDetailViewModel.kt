@@ -13,20 +13,20 @@ class MovieDetailViewModel(private val repository: OnlineMovieRepository) : View
 
     val movieDetail = MutableLiveData<MovieDetail>()
     var viewState = MutableLiveData(Constants.ViewState.DONE)
-    var loadDataState = MutableLiveData(Constants.ViewState.LOADING)
+    var isLoading = MutableLiveData(true)
 
     fun fetchMovieDetail(url: String) {
-        loadDataState.value = Constants.ViewState.LOADING
+        isLoading.value = true
         viewState.value = Constants.ViewState.DONE
         launch({
             val detail = repository.fetchMovieDetail(url)
             movieDetail.value = detail
             viewState.value = Constants.ViewState.DONE
-            loadDataState.value = Constants.ViewState.DONE
+            isLoading.value = false
         }, {
             Toast.makeText(App.getContext(), it.message, Toast.LENGTH_SHORT).show()
             viewState.value = Constants.ViewState.ERROR
-            loadDataState.value = Constants.ViewState.ERROR
+            isLoading.value = false
         })
     }
 }
