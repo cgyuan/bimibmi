@@ -115,12 +115,6 @@ object HtmlDataParser {
         return sectionList
     }
 
-//    <li class="item">
-//    <a href="/bangumi/bi/1998/" title="刀剑神域 Alicization War of Underworld" target="_blank" class="img">
-//    <img class="lazy" data-original="https://wxt.sinaimg.cn/large/006MDjU7ly1g7q2kg95e5j307i0am3z5.jpg" src="/template/bimibimi_pc/images/grey.png" alt="刀剑神域 Alicization War of Underworld" width="170" height="224"/>
-//    <span class="mask"><i class="iconfont icon-play"></i></span></a><div class="info">
-//    <a href="/bangumi/bi/1998/">刀剑神域 Alicization War of Underworld</a><p><span class="fl">更新至05话</span></p></div></li>
-
     fun parseMovieDetail(url: String, callback: ParseResultCallback<MovieDetail>?) {
         StringRequest().url(url)
             .listen(object: Callback {
@@ -267,10 +261,8 @@ object HtmlDataParser {
     }
 
     private val GET_VIDEO_SRC_JS = "var video = document.getElementsByTagName('video')[0];\n" +
-                    "console.log('VIDEO = ' + video);\n" +
                     "var t = setInterval(function () {\n" +
-                            "console.log('VIDEO = ' + video);\n" +
-                            "if(video === undefined) {\n" +
+                        "if(video === undefined) {\n" +
                             "video = document.getElementsByTagName('video')[0];\n" +
                         "} else {\n" +
                             "clearInterval(t);\n" +
