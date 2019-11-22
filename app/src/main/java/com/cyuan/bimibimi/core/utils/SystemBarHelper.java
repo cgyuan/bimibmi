@@ -12,7 +12,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.core.view.ViewCompat;

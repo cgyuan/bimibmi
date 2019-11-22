@@ -2,7 +2,6 @@ package com.cyuan.bimibimi.db.repository
 
 import com.cyuan.bimibimi.db.dao.HistoryDao
 import com.cyuan.bimibimi.model.History
-import com.cyuan.bimibimi.model.Movie
 
 class HistoryRepository private constructor(private val historyDao: HistoryDao) {
 

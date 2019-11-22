@@ -1,18 +1,12 @@
 package com.cyuan.bimibimi.widget
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
+import android.graphics.Paint.FILTER_BITMAP_FLAG
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
-
 import androidx.appcompat.widget.AppCompatImageView
-
-import android.graphics.Paint.FILTER_BITMAP_FLAG
 
 class PosterItemView @JvmOverloads constructor(
     context: Context,

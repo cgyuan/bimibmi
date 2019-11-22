@@ -3,9 +3,7 @@ package com.cyuan.bimibimi.db.dao
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
-import com.cyuan.bimibimi.db.dao.BaseDao
 import com.cyuan.bimibimi.model.FavoriteMovie
-import com.cyuan.bimibimi.model.Movie
 
 @Dao
 interface FavoriteMovieDao: BaseDao<FavoriteMovie> {

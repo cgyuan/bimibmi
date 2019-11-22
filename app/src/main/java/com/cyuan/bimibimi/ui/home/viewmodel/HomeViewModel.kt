@@ -1,7 +1,6 @@
 package com.cyuan.bimibimi.ui.home.viewmodel
 
 import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cyuan.bimibimi.constant.Constants

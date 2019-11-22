@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
-import android.text.TextUtils
 import android.webkit.*
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants

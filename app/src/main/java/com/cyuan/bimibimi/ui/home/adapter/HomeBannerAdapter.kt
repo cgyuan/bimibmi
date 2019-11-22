@@ -10,9 +10,9 @@ import com.alibaba.android.vlayout.LayoutHelper
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.core.utils.GlideImageLoader
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.home.holder.HomeBannerViewHolder
-import com.cyuan.bimibimi.core.utils.GlideImageLoader
 
 class HomeBannerAdapter(
     private val context: Context,

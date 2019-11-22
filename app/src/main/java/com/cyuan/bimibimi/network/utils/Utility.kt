@@ -6,10 +6,10 @@ import android.provider.Settings
 import android.text.TextUtils
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.extension.logWarn
 import com.cyuan.bimibimi.core.utils.GlobalUtil.getApplicationMetaData
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SignUtil
-import com.cyuan.bimibimi.core.extension.logWarn
 import java.util.*
 
 /**

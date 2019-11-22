@@ -19,10 +19,7 @@ import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModelFactory
 import com.cyuan.bimibimi.widget.GridDividerItemDecoration
 import com.cyuan.bimibimi.widget.MessageDialog
 import kotlinx.android.synthetic.main.fragment_favorite.*
-import kotlinx.android.synthetic.main.fragment_favorite.recyclerView
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
-import kotlinx.android.synthetic.main.toolbar_layout.toolbar
 
 class HistoryFragment : Fragment(), View.OnLongClickListener {
 

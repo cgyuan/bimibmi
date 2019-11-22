@@ -5,9 +5,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.cyuan.bimibimi.core.App;
-import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.cyuan.bimibimi.ui.player.widgets.FloatController;
 import com.cyuan.bimibimi.ui.player.widgets.FloatView;
+import com.dueeeke.videoplayer.player.IjkVideoView;
 
 /**
  * 悬浮播放

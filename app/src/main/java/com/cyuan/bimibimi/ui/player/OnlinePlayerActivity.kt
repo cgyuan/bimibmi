@@ -23,7 +23,6 @@ import com.dueeeke.videoplayer.player.PlayerConfig
 import kotlinx.android.synthetic.main.activity_player_main.*
 import zmovie.com.dlan.DlnaPresenter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class OnlinePlayerActivity : AppCompatActivity() {
 

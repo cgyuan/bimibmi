@@ -9,14 +9,13 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
-import com.cyuan.bimibimi.model.DataSource
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.detail.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
-import java.util.ArrayList
+import java.util.*
 
 class OnlinePlayListAdapter(private val context: Context,
                             private val episodes: ArrayList<Episode>,
