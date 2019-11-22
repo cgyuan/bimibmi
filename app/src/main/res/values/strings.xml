@@ -1,6 +1,9 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name" translatable="false">Bimibimi</string>
+
+    <string name="elapsed_time_short_format_mm_ss">"<xliff:g id="MINUTES">%1$02d</xliff:g>:<xliff:g id="SECONDS">%2$02d</xliff:g>"</string>
+    <!-- no translation found for elapsed_time_short_format_h_mm_ss (2997059666628785039) -->
+    <string name="elapsed_time_short_format_h_mm_ss">"<xliff:g id="HOURS">%1$d</xliff:g>:<xliff:g id="MINUTES">%2$02d</xliff:g>:<xliff:g id="SECONDS">%3$02d</xliff:g>"</string>
 
     <string name="clear">清空</string>
     <string name="search_history">搜索历史：</string>
@@ -23,4 +26,9 @@
     <string name="prompt_empty">暂时还没有收藏记录～</string>
     <string name="prompt_error">加载数据出错了!</string>
     <string name="prompt_loading">加载中…</string>
+
+    <string name="delete_history_msg">确定要删除这条播放记录吗？</string>
+    <string name="clear_history_msg">确定要清空所有播放记录吗？</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_cancel">取消</string>
 </resources>

@@ -21,9 +21,18 @@ class History(
      */
     @ColumnInfo(name = "url") var url: String,
     /**
-     * 标题：片名 + 剧集名
+     * 标题：片名
      */
     @ColumnInfo(name = "title") var title: String,
+
+    /**
+     * 数据源索引号
+     */
+    @ColumnInfo(name = "data_source_index") var dataSourceIndex: Int,
+    /**
+     * 剧集名
+     */
+    @ColumnInfo(name = "episode_name") var episodeName: String,
     /**
      * 剧集索引
      */
@@ -32,6 +41,10 @@ class History(
      * 播放进度
      */
     @ColumnInfo(name = "position") var position: Long,
+    /**
+     * 视频时长
+     */
+    @ColumnInfo(name = "duration") var duration: Long,
     /**
      * 封面
      */

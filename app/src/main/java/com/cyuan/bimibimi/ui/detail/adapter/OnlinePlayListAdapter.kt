@@ -5,9 +5,11 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.model.DataSource
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.parser.HtmlDataParser
@@ -19,7 +21,8 @@ import java.util.ArrayList
 class OnlinePlayListAdapter(private val context: Context,
                             private val episodes: ArrayList<Episode>,
                             private val movieDetail: MovieDetail,
-                            private val bgSector: Int = 0):
+                            var dataSourceIndex: Int,
+                            @DrawableRes private val bgSector: Int = 0):
     RecyclerView.Adapter<OnlinePlayHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnlinePlayHolder {
@@ -44,6 +47,7 @@ class OnlinePlayListAdapter(private val context: Context,
                     intent.putExtra(PlayerKeys.URL, url)
                     intent.putExtra(PlayerKeys.MOVIE_TITLE, movieDetail.title)
                     intent.putExtra(PlayerKeys.EPISODE_NAME, episodes[position].title)
+                    intent.putExtra(PlayerKeys.DATA_SOURCE_INDEX, dataSourceIndex)
                     intent.putExtra(PlayerKeys.EPISODE_INDEX, position)
                     intent.putExtra(PlayerKeys.MOVIE_DETAIL_HREF, movieDetail.href)
                     intent.putExtra(PlayerKeys.MOVIE_COVER, movieDetail.cover)

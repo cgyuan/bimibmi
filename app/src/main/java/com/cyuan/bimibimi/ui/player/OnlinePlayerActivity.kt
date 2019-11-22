@@ -27,6 +27,7 @@ import kotlin.collections.ArrayList
 
 class OnlinePlayerActivity : AppCompatActivity() {
 
+    private var dataSourceIndex: Int = 0
     private lateinit var movieCover: String
     private lateinit var movieDetailHref: String
     private var playPosition: Long = 0
@@ -97,6 +98,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         currentUrl = intent.getStringExtra(PlayerKeys.URL)!!
         movieTitle = intent.getStringExtra(PlayerKeys.MOVIE_TITLE)!!
         episodeName = intent.getStringExtra(PlayerKeys.EPISODE_NAME)!!
+        dataSourceIndex = intent.getIntExtra(PlayerKeys.DATA_SOURCE_INDEX, 0)
         episodeIndex = intent.getIntExtra(PlayerKeys.EPISODE_INDEX, 0)
         episodeList = intent.getParcelableArrayListExtra(PlayerKeys.EPISODE_LIST)
         movieDetailHref = intent.getStringExtra(PlayerKeys.MOVIE_DETAIL_HREF)!!
@@ -169,10 +171,12 @@ class OnlinePlayerActivity : AppCompatActivity() {
         super.onStop()
         val historyRepository = HistoryRepository
             .getInstance(AppDatabase.instance.historyDao())
-        val history = History(movieDetailHref, currentUrl,
-            ijkVideoView.title, episodeIndex, ijkVideoView.currentPosition,
-            movieCover, "", Calendar.getInstance())
-        historyRepository.saveHistory(history)
+        if (ijkVideoView.duration > 0) {
+            val history = History(movieDetailHref, currentUrl,
+                movieTitle, dataSourceIndex, episodeName, episodeIndex, ijkVideoView.currentPosition,
+                ijkVideoView.duration, movieCover, "", Calendar.getInstance())
+            historyRepository.saveHistory(history)
+        }
     }
 
     override fun onDestroy() {

@@ -19,4 +19,7 @@ interface HistoryDao: BaseDao<History> {
 
     @Query("SELECT * FROM history ORDER BY date DESC")
     fun queryAllHistory(): List<History>
+
+    @Query("DELETE FROM history")
+    fun deleteAll()
 }

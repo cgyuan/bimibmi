@@ -18,12 +18,14 @@ class HistoryRepository private constructor(private val historyDao: HistoryDao) 
 
     fun removeHistory(href: String) = historyDao.deleteHistory(href)
 
-    fun removeHistory(movie: Movie) = historyDao.deleteHistory(movie.href)
+    fun removeHistory(history: History) = historyDao.deleteHistory(history.href)
 
 
     fun getAllHistoryByPage() = historyDao.queryAllHistoryByPage()
 
     fun getAllHistory() = historyDao.queryAllHistory()
+
+    fun clearAll() = historyDao.deleteAll()
 
     companion object {
         @Volatile

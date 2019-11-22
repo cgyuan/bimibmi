@@ -34,6 +34,15 @@
     <dimen name="dkplayer_play_btn_size">50dp</dimen>
 
 
+    <color name="dialog_bg">#ffffff</color>
+    <color name="dialog_bg_press">#f0f0f0</color>
+
+    <color name="dialog_confirm">#007aff</color>
+    <color name="dialog_cancel">#f44336</color>
+
+    <color name="dialog_line">#2c000000</color>
+
+
     <color name="recommendTitleColor">#fd2d2d2d</color>
 
     <color name="shimmerBase0">#c2c2c2</color>

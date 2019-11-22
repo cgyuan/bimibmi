@@ -13,7 +13,7 @@ import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.History
 
 
-@Database(entities = [FavoriteMovie::class, History::class], version = 3, exportSchema = false)
+@Database(entities = [FavoriteMovie::class, History::class], version = 4, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
 
@@ -39,11 +39,21 @@ abstract class AppDatabase: RoomDatabase() {
 
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE history ADD COLUMN data_source_index INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE history ADD COLUMN episode_name TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE history ADD COLUMN duration INTEGER NOT NULL DEFAULT 0")
+            }
+
+        }
+
         val instance by lazy {
             Room.databaseBuilder(App.getContext(), AppDatabase::class.java, "Bimibimi-db")
                 .allowMainThreadQueries()
 //                .fallbackToDestructiveMigration()
                 .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_3_4)
                 .build()
         }
     }

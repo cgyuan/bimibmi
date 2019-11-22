@@ -67,10 +67,11 @@ fun LinearLayout.movieSource(movieDetail: MovieDetail?) = movieDetail?.let {
         context,
         arrayListOf(),
         movieDetail,
+        0,
         R.drawable.bottom_sheet_play_bt_shape
     )
     bottomSheetPlayList.adapter = bottomSheetAdapter
-    for (dataSource in movieDetail.dataSources) {
+    movieDetail.dataSources.forEachIndexed { index, dataSource ->
         val view = LayoutInflater.from(context).inflate(R.layout.online_detail_data_source_hold_layout, this, false)
         val dataSourceLabel = view.findViewById<TextView>(R.id.dataSourceLabel)
         val btnViewALl = view.findViewById<TextView>(R.id.viewAll)
@@ -82,14 +83,15 @@ fun LinearLayout.movieSource(movieDetail: MovieDetail?) = movieDetail?.let {
         episodesRV.adapter = OnlinePlayListAdapter(
             context,
             dataSource.episodes,
-            movieDetail
+            movieDetail,
+            dataSourceIndex = index
         )
 
         btnViewALl.setOnClickListener {
             bottomSheetDialog.show()
+            bottomSheetAdapter.dataSourceIndex = index
             bottomSheetAdapter.refreshData(dataSource.episodes)
         }
         addView(view)
     }
-
 }
