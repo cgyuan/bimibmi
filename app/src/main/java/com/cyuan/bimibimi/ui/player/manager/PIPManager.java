@@ -104,6 +104,7 @@ public class PIPManager {
     public void reset() {
         if (isShowing) return;
         removePlayerFormParent();
+        mVideoView.stopFullScreen();
         mVideoView.release();
         mVideoView.setVideoController(null);
         mPlayingPosition = -1;

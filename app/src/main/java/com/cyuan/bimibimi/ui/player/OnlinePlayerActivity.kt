@@ -141,6 +141,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
      */
     fun startFloatWindow() {
         if (WindowPermissionCheck.checkPermission(this)) {
+            controller.stopFullScreen()
             mPIPManager.startFloatWindow()
             finish()
         }
@@ -172,11 +173,6 @@ class OnlinePlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         mPIPManager.reset()
         super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        mVideoView.stopFullScreen()
     }
 
 }
