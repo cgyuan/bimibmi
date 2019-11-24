@@ -2,6 +2,7 @@ package com.cyuan.bimibimi.repository
 import android.os.SystemClock
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.model.HomeInfo
+import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
@@ -44,6 +45,22 @@ open class OnlineMovieRepository private constructor() {
         val result = suspendCoroutine<MovieDetail> {
             HtmlDataParser.parseMovieDetail(url, object : ParseResultCallback<MovieDetail> {
                 override fun onSuccess(data: MovieDetail) {
+                    it.resume(data)
+                }
+
+                override fun onFail(msg: String) {
+                    it.resumeWithException(Throwable(msg))
+                }
+
+            })
+        }
+        result
+    }
+
+    suspend fun fetchDailyUpdateMovie() = withContext(Dispatchers.IO) {
+        val result = suspendCoroutine<List<List<Movie>>> {
+            HtmlDataParser.parseDailyUpdate(object : ParseResultCallback<List<List<Movie>>> {
+                override fun onSuccess(data: List<List<Movie>>) {
                     it.resume(data)
                 }
 

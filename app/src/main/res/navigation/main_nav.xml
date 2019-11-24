@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_homeFragment_to_historyFragment"
             app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_dailyUpdateFragment"
+            app:destination="@id/dailyUpdateFragment" />
     </fragment>
     <activity
         android:id="@+id/movieDetailActivity"
@@ -35,4 +38,8 @@
         android:id="@+id/historyFragment"
         android:name="com.cyuan.bimibimi.ui.home.HistoryFragment"
         android:label="HistoryFragment" />
+    <fragment
+        android:id="@+id/dailyUpdateFragment"
+        android:name="com.cyuan.bimibimi.ui.home.DailyUpdateFragment"
+        android:label="DailyUpdateFragment" />
 </navigation>

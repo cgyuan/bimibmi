@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModel" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <include layout="@layout/toolbar_layout" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <q.rorbin.verticaltablayout.VerticalTabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                app:indicator_color="@color/white"
+                app:indicator_gravity="fill"
+                app:tab_height="50dp"
+                app:indicator_width="50dp"
+                app:tab_margin="10dp"
+                app:tab_mode="scrollable" />
+
+            <View
+                android:id="@+id/navigation_divider"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/gray_dark" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/daily_update_section_layout" />
+
+                <com.cyuan.bimibimi.widget.EmptyView
+                    android:id="@+id/emptyView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    bind:viewStatus="@{viewModel.viewState}"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

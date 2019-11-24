@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.cyuan.bimibimi.R
 import com.google.android.material.snackbar.Snackbar
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(){
         homeItem = navigationView.menu.findItem(R.id.homeFragment)
         navigationView.setNavigationItemSelectedListener {
             closeDrawer()
-            if (it.itemId in listOf(R.id.homeFragment, R.id.favoriteFragment, R.id.historyFragment)) {
+            if (it.itemId in listOf(R.id.homeFragment, R.id.favoriteFragment, R.id.historyFragment, R.id.dailyUpdateFragment)) {
                 NavigationUI.onNavDestinationSelected(it, navController)
             }
             true
@@ -45,6 +46,8 @@ class MainActivity : AppCompatActivity(){
      */
     private var mExitTime: Long = 0
     override fun onBackPressed() {
+//        val navHostFragment = this.supportFragmentManager.fragments.first() as NavHostFragment
+//        val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
         if (System.currentTimeMillis() - mExitTime > 2000) run {
             Snackbar.make(content, "再按一次退出", Snackbar.LENGTH_SHORT).show()
             mExitTime = System.currentTimeMillis()

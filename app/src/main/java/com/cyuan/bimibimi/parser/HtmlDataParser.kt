@@ -395,4 +395,38 @@ object HtmlDataParser {
                 }
             })
     }
+
+
+    fun parseDailyUpdate(callback: ParseResultCallback<List<List<Movie>>>?) {
+        StringRequest().listen(object : Callback {
+            override fun onFailure(e: Exception) {
+                callback?.onFail(e.message!!)
+            }
+
+            override fun onResponseString(response: String) {
+                val document = Jsoup.parse(response)
+                val dailyEles = document.select("ul[class=tab-content]")
+                val dailyList = mutableListOf<List<Movie>>()
+                dailyEles.forEachIndexed { index, element ->
+                    val movieEles = element.getElementsByTag("li")
+                    val movieList = mutableListOf<Movie>()
+                    for (movieELe in movieEles) {
+                        val movie = Movie()
+                        val linkEle = movieELe.getElementsByTag("a")[0]
+                        val imgEle = movieELe.getElementsByTag("img")[0]
+                        movie.cover = imgEle.attr("src")
+                        if (!movie.cover.startsWith("http")) {
+                            movie.cover = Constants.BIMIBIMI_INDEX + movie.cover
+                        }
+                        movie.title = linkEle.attr("title")
+                        movie.href = linkEle.attr("href")
+                        movie.label = movieELe.select("span")[0].text()
+                        movieList.add(movie)
+                    }
+                    dailyList.add(movieList)
+                }
+                callback?.onSuccess(dailyList)
+            }
+        })
+    }
 }

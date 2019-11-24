@@ -8,6 +8,12 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="主页" />
 
+        <item
+            android:id="@+id/dailyUpdateFragment"
+            android:checked="true"
+            android:icon="@drawable/ic_schedule_24dp"
+            android:title="新番时间表" />
+
 
         <item
             android:id="@+id/item_download"
