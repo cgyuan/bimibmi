@@ -214,11 +214,12 @@ object HtmlDataParser {
                         parseVideoUrlById(url, callback)
                     } else if (url.endsWith(".html")) {
                         // parseVideoUrlWithWebView(context, url, callback)
+                        // https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/19rrok4nt0.m3u8
                         // "https://api.nmbaojie.com/api/video/youkuplay.php?url=https://api.nmbaojie.com/api/data/iqiyim3u8/19rrok4pg4.m3u8"
                         // https://www.iqiyi.com/v_19rrok4pg4.html
                         if (url.contains("iqiyi")) {
                             val vid = UrlHelper.extractIqyVideoId(url)
-                            url = "https://api.nmbaojie.com/api/video/youkuplay.php?url=https://api.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
+                            url = "https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
                             callback?.onSuccess(url)
                         } else if (url.contains("v.qq.com")) {
                             // https://v.qq.com/x/cover/enj7gj9pcksq89p/g0761hr9ih3.html

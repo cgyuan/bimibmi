@@ -22,7 +22,7 @@ class BimibimiApp : MultiDexApplication() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
 
             private var visibleActivityCount: Int = 0
-            private var uetoolDismissY = 50
+            private var uetoolDismissY = -1
 
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
