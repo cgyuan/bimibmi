@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list>
+    <item n1:drawable="@drawable/dkplayer_ic_action_battery" n1:minLevel="95" n1:maxLevel="100"
+      xmlns:n1="http://schemas.android.com/apk/res/android" />
+    <item n2:drawable="@drawable/dkplayer_ic_action_battery_10" n2:minLevel="0" n2:maxLevel="15"
+      xmlns:n2="http://schemas.android.com/apk/res/android" />
+    <item n3:drawable="@drawable/dkplayer_ic_action_battery_20" n3:minLevel="15" n3:maxLevel="25"
+      xmlns:n3="http://schemas.android.com/apk/res/android" />
+    <item n4:drawable="@drawable/dkplayer_ic_action_battery_30" n4:minLevel="25" n4:maxLevel="35"
+      xmlns:n4="http://schemas.android.com/apk/res/android" />
+    <item n5:drawable="@drawable/dkplayer_ic_action_battery_40" n5:minLevel="35" n5:maxLevel="45"
+      xmlns:n5="http://schemas.android.com/apk/res/android" />
+    <item n6:drawable="@drawable/dkplayer_ic_action_battery_50" n6:minLevel="45" n6:maxLevel="55"
+      xmlns:n6="http://schemas.android.com/apk/res/android" />
+    <item n7:drawable="@drawable/dkplayer_ic_action_battery_60" n7:minLevel="55" n7:maxLevel="65"
+      xmlns:n7="http://schemas.android.com/apk/res/android" />
+    <item n8:drawable="@drawable/dkplayer_ic_action_battery_70" n8:minLevel="65" n8:maxLevel="75"
+      xmlns:n8="http://schemas.android.com/apk/res/android" />
+    <item n9:drawable="@drawable/dkplayer_ic_action_battery_80" n9:minLevel="75" n9:maxLevel="85"
+      xmlns:n9="http://schemas.android.com/apk/res/android" />
+    <item n10:drawable="@drawable/dkplayer_ic_action_battery_90" n10:minLevel="85" n10:maxLevel="95"
+      xmlns:n10="http://schemas.android.com/apk/res/android" />
+</level-list>

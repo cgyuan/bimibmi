@@ -1,2 +1,2 @@
-include ':app',':modules:dkplayer-java', ':modules:dlnalib'
+include ':app', ':modules:dlnalib'
 rootProject.name='BimibimiClient'

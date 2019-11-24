@@ -35,8 +35,10 @@ import com.cyuan.bimibimi.model.Episode;
 import com.cyuan.bimibimi.ui.player.callback.OnPlaySpeedChangedListener;
 import com.cyuan.bimibimi.ui.player.receiver.BatteryReceiver;
 import com.cyuan.bimibimi.widget.MarqueeTextView;
+import com.dueeeke.videocontroller.StatusView;
 import com.dueeeke.videoplayer.controller.GestureVideoController;
-import com.dueeeke.videoplayer.player.IjkVideoView;
+import com.dueeeke.videoplayer.controller.MediaPlayerControl;
+import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.L;
 import com.github.ybq.android.spinkit.SpinKitView;
 
@@ -46,7 +48,8 @@ import per.goweii.anylayer.AnimatorHelper;
 import per.goweii.anylayer.AnyLayer;
 import per.goweii.anylayer.Layer;
 
-public class CustomController extends GestureVideoController implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class CustomController<T extends MediaPlayerControl> extends GestureVideoController<T>
+        implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, GestureVideoController.GestureListener {
 
     public static int CurrentIndex = 0;
     private Context activity;
@@ -85,6 +88,8 @@ public class CustomController extends GestureVideoController implements View.OnC
     private RelativeLayout loadingContainer;
     private NetSpeedUtil util;
     private TextView tvSpeed;
+
+    protected StatusView mStatusView;
 
     Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -163,10 +168,29 @@ public class CustomController extends GestureVideoController implements View.OnC
         mRefreshButton.setOnClickListener(this);
         speedDialog = new SpeedDialog(getContext());
 
+        mStatusView = new StatusView(getContext());
+
         util = new NetSpeedUtil();
     }
 
 
+    @Override
+    public void setMediaPlayer(T mediaPlayer) {
+        super.setMediaPlayer(mediaPlayer);
+        mStatusView.attachMediaPlayer(mediaPlayer);
+    }
+
+    /**
+     * 显示移动网络播放警告
+     */
+    @Override
+    public boolean showNetWarning() {
+        //现在是按父类的逻辑显示移动网络播放警告
+        if (super.showNetWarning()) {
+            mStatusView.showNetWarning(this);
+        }
+        return super.showNetWarning();
+    }
 
 
     @Override
@@ -194,9 +218,9 @@ public class CustomController extends GestureVideoController implements View.OnC
         } else if (i == R.id.iv_play || i == R.id.thumb) {
             doPauseResume();
         } else if (i == R.id.iv_replay) {
-            mMediaPlayer.retry();
+            mMediaPlayer.replay(true);
         } else if (i == R.id.iv_refresh) {
-            mMediaPlayer.refresh();
+            mMediaPlayer.replay(false);
         } else if (i == R.id.pic2pic) {
             if (changeListener != null) {
                 changeListener.onPic2Pic();
@@ -268,8 +292,9 @@ public class CustomController extends GestureVideoController implements View.OnC
 
     @Override
     public void setPlayerState(int playerState) {
+        super.setPlayerState(playerState);
         switch (playerState) {
-            case IjkVideoView.PLAYER_NORMAL:
+            case VideoView.PLAYER_NORMAL:
                 L.e("PLAYER_NORMAL");
                 if (mIsLocked) return;
                 setLayoutParams(new LayoutParams(
@@ -284,7 +309,7 @@ public class CustomController extends GestureVideoController implements View.OnC
                 mBatteryLevel.setVisibility(View.GONE);
                 mTopContainer.setVisibility(View.GONE);
                 break;
-            case IjkVideoView.PLAYER_FULL_SCREEN:
+            case VideoView.PLAYER_FULL_SCREEN:
                 L.e("PLAYER_FULL_SCREEN");
                 if (mIsLocked) return;
                 mIsGestureEnabled = true;
@@ -307,12 +332,11 @@ public class CustomController extends GestureVideoController implements View.OnC
     public void setPlayState(int playState) {
         super.setPlayState(playState);
         switch (playState) {
-            case IjkVideoView.STATE_IDLE:
+            case VideoView.STATE_IDLE:
                 L.e("STATE_IDLE");
                 hide();
                 mIsLocked = false;
                 mLockButton.setSelected(false);
-                mMediaPlayer.setLock(false);
                 mBottomProgress.setProgress(0);
                 mBottomProgress.setSecondaryProgress(0);
                 mVideoProgress.setProgress(0);
@@ -323,7 +347,7 @@ public class CustomController extends GestureVideoController implements View.OnC
                 mStartPlayButton.setVisibility(View.VISIBLE);
                 mThumb.setVisibility(View.VISIBLE);
                 break;
-            case IjkVideoView.STATE_PLAYING:
+            case VideoView.STATE_PLAYING:
                 L.e("STATE_PLAYING");
                 post(mShowProgress);
                 mPlayButton.setSelected(true);
@@ -332,25 +356,25 @@ public class CustomController extends GestureVideoController implements View.OnC
                 mThumb.setVisibility(View.GONE);
                 mStartPlayButton.setVisibility(View.GONE);
                 break;
-            case IjkVideoView.STATE_PAUSED:
+            case VideoView.STATE_PAUSED:
                 L.e("STATE_PAUSED");
                 mPlayButton.setSelected(false);
                 mStartPlayButton.setVisibility(View.GONE);
                 break;
-            case IjkVideoView.STATE_PREPARING:
+            case VideoView.STATE_PREPARING:
                 L.e("STATE_PREPARING");
                 mCompleteContainer.setVisibility(View.GONE);
                 mStartPlayButton.setVisibility(View.GONE);
                 showLoadingContent();
 //                mThumb.setVisibility(View.VISIBLE);
                 break;
-            case IjkVideoView.STATE_PREPARED:
+            case VideoView.STATE_PREPARED:
                 L.e("STATE_PREPARED");
                 if (!mIsLive) mBottomProgress.setVisibility(View.VISIBLE);
 //                mLoadingProgress.setVisibility(GONE);
                 mStartPlayButton.setVisibility(View.GONE);
                 break;
-            case IjkVideoView.STATE_ERROR:
+            case VideoView.STATE_ERROR:
                 L.e("STATE_ERROR");
                 mStartPlayButton.setVisibility(View.GONE);
                 hideLoadingContent();
@@ -358,19 +382,19 @@ public class CustomController extends GestureVideoController implements View.OnC
                 mBottomProgress.setVisibility(View.GONE);
                 mTopContainer.setVisibility(View.GONE);
                 break;
-            case IjkVideoView.STATE_BUFFERING:
+            case VideoView.STATE_BUFFERING:
                 L.e("STATE_BUFFERING");
                 mStartPlayButton.setVisibility(View.GONE);
                 showLoadingContent();
                 mThumb.setVisibility(View.GONE);
                 break;
-            case IjkVideoView.STATE_BUFFERED:
+            case VideoView.STATE_BUFFERED:
                 hideLoadingContent();
                 mStartPlayButton.setVisibility(View.GONE);
                 mThumb.setVisibility(View.GONE);
                 L.e("STATE_BUFFERED");
                 break;
-            case IjkVideoView.STATE_PLAYBACK_COMPLETED:
+            case VideoView.STATE_PLAYBACK_COMPLETED:
                 L.e("STATE_PLAYBACK_COMPLETED");
                 hide();
                 removeCallbacks(mShowProgress);
@@ -380,7 +404,6 @@ public class CustomController extends GestureVideoController implements View.OnC
                 mBottomProgress.setProgress(0);
                 mBottomProgress.setSecondaryProgress(0);
                 mIsLocked = false;
-                mMediaPlayer.setLock(false);
                 break;
         }
     }
@@ -419,7 +442,6 @@ public class CustomController extends GestureVideoController implements View.OnC
             mLockButton.setSelected(true);
             Toast.makeText(getContext(), R.string.dkplayer_locked, Toast.LENGTH_SHORT).show();
         }
-        mMediaPlayer.setLock(mIsLocked);
     }
 
     /**
@@ -670,6 +692,31 @@ public class CustomController extends GestureVideoController implements View.OnC
 
     public void setOnItemClickListener(OnItemClickedListener clickedListener) {
         this.clickedListener = clickedListener;
+    }
+
+    @Override
+    public void onStartSlide() {
+
+    }
+
+    @Override
+    public void onStopSlide() {
+
+    }
+
+    @Override
+    public void onPositionChange(int slidePosition, int currentPosition, int duration) {
+
+    }
+
+    @Override
+    public void onBrightnessChange(int percent) {
+
+    }
+
+    @Override
+    public void onVolumeChange(int percent) {
+
     }
 
     public interface OnstateChangeListener {

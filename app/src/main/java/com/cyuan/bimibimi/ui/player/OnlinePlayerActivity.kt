@@ -16,10 +16,12 @@ import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.player.CustomController.OnstateChangeListener
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
+import com.dueeeke.videoplayer.controller.MediaPlayerControl
+import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.AbstractPlayer
-import com.dueeeke.videoplayer.player.IjkPlayer
-import com.dueeeke.videoplayer.player.IjkVideoView
-import com.dueeeke.videoplayer.player.PlayerConfig
+import com.dueeeke.videoplayer.player.AndroidMediaPlayerFactory
+import com.dueeeke.videoplayer.player.PlayerFactory
+import com.dueeeke.videoplayer.player.VideoView
 import kotlinx.android.synthetic.main.activity_player_main.*
 import zmovie.com.dlan.DlnaPresenter
 import java.util.*
@@ -36,10 +38,10 @@ class OnlinePlayerActivity : AppCompatActivity() {
     private lateinit var movieTitle: String
     private lateinit var currentUrl: String
     private lateinit var dlnaPresenter: DlnaPresenter
-    private lateinit var player: AbstractPlayer
-    private lateinit var ijkVideoView: IjkVideoView
+    private lateinit var playerFactory: PlayerFactory<out AbstractPlayer>
+    private lateinit var mVideoView: VideoView<out AbstractPlayer>
     private lateinit var mPIPManager: PIPManager
-    private lateinit var controller: CustomController
+    private lateinit var controller: CustomController<out MediaPlayerControl>
     private val stateChangeListener = object: OnstateChangeListener {
         override fun onAirPlay() {
             dlnaPresenter.showDialogTip(this@OnlinePlayerActivity, currentUrl, "【${movieTitle}】$episodeName")
@@ -61,13 +63,12 @@ class OnlinePlayerActivity : AppCompatActivity() {
             override fun onSuccess(url: String) {
                 this@OnlinePlayerActivity.currentUrl = url
                 episodeName = episode.title
-                ijkVideoView.stopPlayback()
-                ijkVideoView.release()
+                mVideoView.stopPlayback()
+                mVideoView.release()
 
-                ijkVideoView.setUrl(url)
-                ijkVideoView.title = "【${movieTitle}】$episodeName"
+                mVideoView.setUrl(url)
                 controller.setTitle("【${movieTitle}】$episodeName")
-                ijkVideoView.start()
+                mVideoView.start()
             }
 
             override fun onFail(msg: String) {
@@ -90,9 +91,9 @@ class OnlinePlayerActivity : AppCompatActivity() {
         controller.setOnItemClickListener(episodeItemClickListener)
 
         mPIPManager = PIPManager.getInstance()
-        ijkVideoView = mPIPManager.ijkVideoView
+        mVideoView = mPIPManager.videoView
 
-        ijkVideoView.setVideoController(controller)
+        mVideoView.setVideoController(controller)
 
         currentUrl = intent.getStringExtra(PlayerKeys.URL)!!
         movieTitle = intent.getStringExtra(PlayerKeys.MOVIE_TITLE)!!
@@ -109,33 +110,23 @@ class OnlinePlayerActivity : AppCompatActivity() {
         }
 
         if (currentUrl.endsWith("m3u8")) {
-            player = AndroidMediaPlayer(this)
+            playerFactory = AndroidMediaPlayerFactory.create()
         } else {
-            player = IjkPlayer(this)
+            playerFactory = IjkPlayerFactory.create()
         }
 
         if (mPIPManager.isStartFloatWindow) {
             mPIPManager.stopFloatWindow()
-            controller.setPlayerState(ijkVideoView.currentPlayerState)
-            controller.setPlayState(ijkVideoView.currentPlayState)
+            controller.setPlayerState(mVideoView.currentPlayerState)
+            controller.setPlayState(mVideoView.currentPlayState)
         } else {
-            ijkVideoView.setUrl(currentUrl)
-            ijkVideoView.title = "【${movieTitle}】$episodeName"
+            mVideoView.setUrl(currentUrl)
             controller.setTitle("【${movieTitle}】$episodeName")
-            val playerConfig = PlayerConfig.Builder()
-                //启用边播边缓存功能
-                //  .autoRotate() //启用重力感应自动进入/退出全屏功能
-                //                .enableMediaCodec()//启动硬解码，启用后可能导致视频黑屏，音画不同步
-                .savingProgress() //保存播放进度
-                .disableAudioFocus() //关闭AudioFocusChange监听
-                .setCustomMediaPlayer(player)
-                .build()
-            ijkVideoView.setPlayerConfig(playerConfig)
         }
-        playView.addView(ijkVideoView)
-        ijkVideoView.startFullScreen()
-        ijkVideoView.start()
-        ijkVideoView.seekTo(playPosition)
+        playView.addView(mVideoView)
+        mVideoView.startFullScreen()
+        mVideoView.start()
+        mVideoView.seekTo(playPosition)
 
         initDLNA()
     }
@@ -170,10 +161,10 @@ class OnlinePlayerActivity : AppCompatActivity() {
         super.onStop()
         val historyRepository = HistoryRepository
             .getInstance(AppDatabase.instance.historyDao())
-        if (ijkVideoView.duration > 0) {
+        if (mVideoView.duration > 0) {
             val history = History(movieDetailHref, currentUrl,
-                movieTitle, dataSourceIndex, episodeName, episodeIndex, ijkVideoView.currentPosition,
-                ijkVideoView.duration, movieCover, "", Calendar.getInstance())
+                movieTitle, dataSourceIndex, episodeName, episodeIndex, mVideoView.currentPosition,
+                mVideoView.duration, movieCover, "", Calendar.getInstance())
             historyRepository.saveHistory(history)
         }
     }
@@ -181,6 +172,11 @@ class OnlinePlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         mPIPManager.reset()
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        mVideoView.stopFullScreen()
     }
 
 }
