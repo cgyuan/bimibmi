@@ -33,6 +33,8 @@ class DailyUpdateFragment : Fragment() , UICallback {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val dayOfWeekList = listOf("一", "二", "三", "四", "五", "六", "日")
     private lateinit var topSmoothScroller: TopSmoothScroller
+    private var mSuspensionHeight: Int = 0
+    private var mCurrentPosition = 0
 
     private val viewModel by viewModels<DailyUpdateViewModel> {
         DailyUpdateViewModelFactory()
@@ -101,11 +103,38 @@ class DailyUpdateFragment : Fragment() , UICallback {
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                mSuspensionHeight = mSuspensionBar.height
+            }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 tabLayout.setTabSelected(linearLayoutManager.findFirstVisibleItemPosition(), false)
+
+                //找到下一个itemView
+                val view = linearLayoutManager.findViewByPosition(mCurrentPosition + 1)
+                view?.let {
+                    if (view.top in 1..mSuspensionHeight) {
+                        //需要对悬浮条进行移动
+                        mSuspensionBar.y = (-(mSuspensionHeight - view.top)).toFloat()
+                    } else {
+                        //保持在原来的位置
+                        mSuspensionBar.y = 0f
+                    }
+                }
+
+                if (mCurrentPosition != linearLayoutManager.findFirstVisibleItemPosition()) {
+                    mCurrentPosition = linearLayoutManager.findFirstVisibleItemPosition()
+                    updateSuspensionBar()
+                }
             }
         })
+        updateSuspensionBar()
+    }
+
+    private fun updateSuspensionBar() {
+        mSuspensionBar.text = "星期${dayOfWeekList[mCurrentPosition]}"
     }
 
 

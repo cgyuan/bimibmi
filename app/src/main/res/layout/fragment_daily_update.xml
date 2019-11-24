@@ -52,12 +52,22 @@
                     android:scrollbars="none"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/daily_update_section_layout" />
+                <TextView
+                    android:id="@+id/mSuspensionBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="星期一"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:background="@color/colorPrimary"/>
 
                 <com.cyuan.bimibimi.widget.EmptyView
                     android:id="@+id/emptyView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    bind:viewStatus="@{viewModel.viewState}"/>
+                    bind:viewStatus="@{viewModel.viewState}" />
 
             </FrameLayout>
 
