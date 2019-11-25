@@ -126,7 +126,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/dkplayer_controller_time_text_size"
             android:layout_marginLeft="20dp"
-            android:layout_below="@+id/seekBar"
+            android:layout_below="@id/seekBar"
             tools:text="00:00" />
 
         <SeekBar
@@ -159,7 +159,7 @@
             android:textSize="@dimen/dkplayer_controller_time_text_size"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            android:layout_below="@+id/seekBar"
+            android:layout_below="@id/seekBar"
             tools:text="00:00" />
 
         <Button
@@ -167,7 +167,7 @@
             android:layout_width="50dp"
             android:layout_height="26dp"
             android:textColor="@android:color/white"
-            android:layout_below="@+id/seekBar"
+            android:layout_below="@id/seekBar"
             android:layout_alignParentRight="true"
             android:layout_marginTop="26dp"
             android:layout_marginRight="20dp"

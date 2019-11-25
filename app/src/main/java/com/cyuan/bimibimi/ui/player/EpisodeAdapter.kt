@@ -10,7 +10,7 @@ import per.goweii.anylayer.Layer
 class EpisodeAdapter(
     private val episodeList: MutableList<Episode>,
     private val choseEpisodeLayer: Layer,
-    private val clickedListener: CustomController.OnItemClickedListener
+    private val clickedListener: CustomVideoController.OnItemClickedListener
 ) : RecyclerView.Adapter<EpisodeHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeHolder {

@@ -13,7 +13,6 @@ import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
-import com.cyuan.bimibimi.ui.player.CustomController.OnstateChangeListener
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
 import com.dueeeke.videoplayer.controller.MediaPlayerControl
@@ -41,8 +40,8 @@ class OnlinePlayerActivity : AppCompatActivity() {
     private lateinit var playerFactory: PlayerFactory<out AbstractPlayer>
     private lateinit var mVideoView: VideoView<out AbstractPlayer>
     private lateinit var mPIPManager: PIPManager
-    private lateinit var controller: CustomController<out MediaPlayerControl>
-    private val stateChangeListener = object: OnstateChangeListener {
+    private lateinit var controller: CustomVideoController<out MediaPlayerControl>
+    private val stateChangeListener = object: CustomVideoController.OnStateChangeListener {
         override fun onAirPlay() {
             dlnaPresenter.showDialogTip(this@OnlinePlayerActivity, currentUrl, "【${movieTitle}】$episodeName")
         }
@@ -57,7 +56,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
     }
 
-    private val episodeItemClickListener = CustomController.OnItemClickedListener { position ->
+    private val episodeItemClickListener = CustomVideoController.OnItemClickedListener { position ->
         val episode = episodeList!![position]
         HtmlDataParser.parseVideoSource(this@OnlinePlayerActivity, episode, object : ParseResultCallback<String> {
             override fun onSuccess(url: String) {
@@ -85,9 +84,9 @@ class OnlinePlayerActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_player_main)
-        controller = CustomController(this)
+        controller = CustomVideoController(this)
 
-        controller.setOnstateChangeListener(stateChangeListener)
+        controller.setOnStateChangeListener(stateChangeListener)
         controller.setOnItemClickListener(episodeItemClickListener)
 
         mPIPManager = PIPManager.getInstance()

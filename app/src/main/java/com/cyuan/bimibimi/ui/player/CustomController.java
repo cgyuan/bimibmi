@@ -76,7 +76,6 @@ public class CustomController<T extends MediaPlayerControl> extends GestureVideo
     private Animation mHideAnim = AnimationUtils.loadAnimation(getContext(), R.anim.dkplayer_anim_alpha_out);
     private BatteryReceiver mBatteryReceiver;
     protected ImageView mRefreshButton;
-    private SpeedDialog speedDialog;
     private ImageView pic2pic;
     private ImageView airPlay;
     private String loadingTips = "";
@@ -166,8 +165,6 @@ public class CustomController<T extends MediaPlayerControl> extends GestureVideo
         mBatteryReceiver = new BatteryReceiver(mBatteryLevel);
         mRefreshButton = mControllerView.findViewById(R.id.iv_refresh);
         mRefreshButton.setOnClickListener(this);
-        speedDialog = new SpeedDialog(getContext());
-
         mStatusView = new StatusView(getContext());
 
         util = new NetSpeedUtil();
@@ -258,9 +255,9 @@ public class CustomController<T extends MediaPlayerControl> extends GestureVideo
         }
         anyLayer.show();
         RecyclerView playList = anyLayer.getView(R.id.play_list);
-        EpisodeAdapter adapter = new EpisodeAdapter(mPlayList, anyLayer, clickedListener);
-        playList.setLayoutManager(new GridLayoutManager(activity, 6));
-        playList.setAdapter(adapter);
+//        EpisodeAdapter adapter = new EpisodeAdapter(mPlayList, anyLayer, clickedListener);
+//        playList.setLayoutManager(new GridLayoutManager(activity, 6));
+//        playList.setAdapter(adapter);
 
         anyLayer.getView(R.id.chose_root).setOnTouchListener(new OnTouchListener() {
             @Override
@@ -285,9 +282,6 @@ public class CustomController<T extends MediaPlayerControl> extends GestureVideo
     }
 
     private void toggleSpeed() {
-        if (speedDialog != null && !speedDialog.isShowing()) {
-            speedDialog.show();
-        }
     }
 
     @Override
@@ -656,17 +650,12 @@ public class CustomController<T extends MediaPlayerControl> extends GestureVideo
     }
 
     public void setOnCheckListener(OnPlaySpeedChangedListener listener) {
-        if (speedDialog != null) {
-            speedDialog.setOnPlaySpeedChangedListener(listener);
-        }
+
     }
 
     public void setCheckUpdate(String text) {
         if (mFullScreenButton != null) {
             mFullScreenButton.setText(text);
-        }
-        if (speedDialog != null && speedDialog.isShowing()) {
-            speedDialog.dismiss();
         }
     }
 
