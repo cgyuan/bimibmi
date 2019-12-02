@@ -35,6 +35,7 @@ class DailyUpdateFragment : Fragment() , UICallback {
     private lateinit var topSmoothScroller: TopSmoothScroller
     private var mSuspensionHeight: Int = 0
     private var mCurrentPosition = 0
+    private var isClickedTab = false
 
     private val viewModel by viewModels<DailyUpdateViewModel> {
         DailyUpdateViewModelFactory()
@@ -97,6 +98,7 @@ class DailyUpdateFragment : Fragment() , UICallback {
             override fun onTabSelected(tab: TabView?, position: Int) {
                 topSmoothScroller.targetPosition = position
                 linearLayoutManager.startSmoothScroll(topSmoothScroller)
+                isClickedTab = true
             }
 
         })
@@ -106,11 +108,16 @@ class DailyUpdateFragment : Fragment() , UICallback {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 mSuspensionHeight = mSuspensionBar.height
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    isClickedTab = false
+                }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                tabLayout.setTabSelected(linearLayoutManager.findFirstVisibleItemPosition(), false)
+                if (!isClickedTab) {
+                    tabLayout.setTabSelected(linearLayoutManager.findFirstVisibleItemPosition(), false)
+                }
 
                 //找到下一个itemView
                 val view = linearLayoutManager.findViewByPosition(mCurrentPosition + 1)
