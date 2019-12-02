@@ -2,6 +2,7 @@ package com.cyuan.bimibimi.constant
 
 interface Constants {
     companion object {
+        const val IS_NIGHT_MODE_KEY: String = "IS_NIGHT_MODE_KEY"
         const val UUID = "ud"
         const val BIMIBIMI_INDEX = "http://www.bimibimi.tv/"
     }

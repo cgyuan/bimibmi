@@ -3,7 +3,8 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/window_background">
 
     <FrameLayout
         android:id="@+id/content"
@@ -27,6 +28,8 @@
         android:background="@color/navigation_background_light"
         android:overScrollMode="never"
         app:menu="@menu/navigation_main"
+        app:itemIconTint="@color/navigation_menu_item_color"
+        app:itemTextColor="@color/navigation_menu_item_color"
         app:headerLayout="@layout/navigation_header_layout"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

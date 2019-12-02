@@ -55,7 +55,7 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
         }
 
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(GridDividerItemDecoration(context!!, dp2px(15F), dp2px(15F), isNeedSpace = true, isLastRowNeedSpace = true))
+        recyclerView.addItemDecoration(GridDividerItemDecoration(context!!, dp2px(15F), dp2px(15F), isNeedSpace = true, isLastRowNeedSpace = true, color = resources.getColor(R.color.window_background)))
 
         viewModel.movies.observe(this, Observer {
             if (it != null) {

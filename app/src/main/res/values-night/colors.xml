@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3b3b3b</color>
+    <color name="colorPrimaryDark">#222323</color>
+    <color name="colorAccent">@color/black</color>
+    <color name="black">#000000</color>
+
+    <color name="navigation_background_light">#3b3b3b</color>
+    <color name="window_background">#2B2B2B</color>
+
+    <color name="navigation_color_selected">#BFFFFFFF</color>
+    <color name="navigation_color_default">#FFFFFFFF</color>
+
+    <color name="title_color">#ffffff</color>
+
+    <color name="card_view_background">#3A3A3A</color>
+
+    <color name="text_selected">#1effe9</color>
+    <color name="text_un_selected">#f9f9f9</color>
+
+    <color name="controller_bg_dark">#66000000</color>
+    <color name="controller_bg_light">#00000000</color>
+
+
+    <!--<color name="dialog_message_bg_color">@color/window_background</color>
+    <color name="dialog_bg">@color/window_background</color>
+    <color name="dialog_bg_press">#f0f0f0</color>-->
+
+    <color name="dialog_confirm">#007aff</color>
+    <color name="dialog_cancel">#f44336</color>
+
+    <color name="dialog_line">#2c000000</color>
+</resources>

@@ -3,7 +3,7 @@
     android:shape="rectangle"
     android:useLevel="true">
 
-    <solid android:color="#ffffffff" />
+    <solid android:color="@color/dialog_message_bg_color" />
 
     <!-- 圆角半径是高度的一般就是一个圆弧了 -->
     <corners android:radius="@dimen/dialog_message_round_size" />

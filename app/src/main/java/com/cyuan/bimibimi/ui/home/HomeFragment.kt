@@ -23,6 +23,7 @@ import com.cyuan.bimibimi.ui.search.SearchActivity
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.fragment_home.*
 
+
 class HomeFragment : Fragment() , UICallback {
 
     private lateinit var adapters: DelegateAdapter

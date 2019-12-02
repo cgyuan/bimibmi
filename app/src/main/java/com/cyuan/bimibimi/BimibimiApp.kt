@@ -2,8 +2,11 @@ package com.cyuan.bimibimi
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.utils.SharedUtil
 import me.ele.uetool.UETool
 import zmovie.com.dlan.DlanLib
 
@@ -12,12 +15,15 @@ class BimibimiApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
-
-
 //        UETool.putFilterClass(FilterOutView::class.java!!)
 //        UETool.putAttrsProviderClass(CustomAttribution::class.java!!)
         App.initialize(this)
         DlanLib.initDlan(this)
+
+        val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)
+        if (isNight) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
 

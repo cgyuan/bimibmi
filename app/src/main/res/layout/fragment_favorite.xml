@@ -7,7 +7,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/window_background">
 
         <include layout="@layout/toolbar_layout" />
 
@@ -15,6 +15,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/window_background"
             android:scrollbars="none"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/movie_card_item_layout"

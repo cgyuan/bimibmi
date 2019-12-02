@@ -5,6 +5,9 @@
     <color name="colorAccent">#249bb3</color>
     <color name="black">#000000</color>
 
+    <color name="navigation_color_selected">@color/colorPrimary</color>
+    <color name="navigation_color_default">#727272</color>
+
     <color name="timeBar_buffered_color">#1effe9</color>
     <!--已经播放过视频的颜色-->
     <color name="timeBar_played_color">#1effe9</color>
@@ -13,26 +16,14 @@
     <!--视频进度圆点的颜色-->
     <color name="timeBar_scrubber_color">#1effe9</color>
 
+    <color name="dialog_message_bg_color">#FFFFFF</color>
+
 
     <color name="text_selected">#1effe9</color>
     <color name="text_un_selected">#f9f9f9</color>
 
     <color name="controller_bg_dark">#66000000</color>
     <color name="controller_bg_light">#00000000</color>
-
-    <color name="dkplayer_background_color">#96000000</color>
-    <color name="dkplayer_theme_color">#39C5BB</color>
-    <color name="dkplayer_theme_color_translucent">#9939C5BB</color>
-    <dimen name="dkplayer_controller_height">46dp</dimen>
-    <dimen name="dkplayer_controller_icon_padding">12dp</dimen>
-    <dimen name="dkplayer_controller_seekbar_max_size">1dp</dimen>
-    <dimen name="dkplayer_controller_seekbar_size_n">14dp</dimen>
-    <dimen name="dkplayer_controller_seekbar_size_s">14dp</dimen>
-    <dimen name="dkplayer_controller_text_size">16sp</dimen>
-    <dimen name="dkplayer_controller_time_text_size">14sp</dimen>
-    <dimen name="dkplayer_default_spacing">10dp</dimen>
-    <dimen name="dkplayer_play_btn_size">50dp</dimen>
-
 
     <color name="dialog_bg">#ffffff</color>
     <color name="dialog_bg_press">#f0f0f0</color>
@@ -43,7 +34,7 @@
     <color name="dialog_line">#2c000000</color>
 
 
-    <color name="recommendTitleColor">#fd2d2d2d</color>
+    <color name="title_color">#fd2d2d2d</color>
 
     <color name="shimmerBase0">#c2c2c2</color>
     <color name="shimmerHighlight0">#ffffff</color>
@@ -72,10 +63,8 @@
     <color name="font_gray">#656565</color>
     <color name="line_bg">#e6e6e6</color>
     <color name="navigation_background_light">#FFF8F8F8</color>
-    <color name="navigation_subtitle_primary_text">#FFFFFFFF</color>
-    <color name="navigation_subtitle_secondary_text">#BFFFFFFF</color>
     <color name="item_tag_stroke_background">@color/white_30</color>
-    <color name="card_view_background">@color/white</color>
+    <color name="card_view_background">@color/cardview_light_background</color>
     <color name="pink_text_color">#fb7299</color>
     <color name="item_tag_background">@color/white</color>
     <color name="refresh_pink_background">#fb7299</color>

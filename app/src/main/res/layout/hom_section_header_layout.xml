@@ -12,6 +12,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:paddingLeft="10dp"
+        android:textColor="@color/title_color"
         android:text="今日热播"/>
 
     <TextView
@@ -25,7 +26,8 @@
         android:paddingRight="10dp"
         android:drawableRight="@drawable/ic_seri_more"
         android:drawablePadding="5dp"
-        android:drawableTint="@color/black"
+        android:drawableTint="@color/title_color"
+        android:textColor="@color/title_color"
         android:text="更多"/>
 
 </RelativeLayout>
