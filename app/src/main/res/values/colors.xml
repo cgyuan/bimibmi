@@ -5,7 +5,7 @@
     <color name="colorAccent">#249bb3</color>
     <color name="black">#000000</color>
 
-    <color name="colorTabIndicate">#015364</color>
+    <color name="colorTabIndicate">#32B4C8</color>
 
     <color name="navigation_color_selected">@color/colorPrimary</color>
     <color name="navigation_color_default">#727272</color>
