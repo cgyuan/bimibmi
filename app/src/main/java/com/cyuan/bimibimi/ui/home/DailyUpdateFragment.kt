@@ -83,8 +83,8 @@ class DailyUpdateFragment : Fragment() , UICallback {
             override fun getTitle(position: Int): ITabView.TabTitle {
                 return ITabView.TabTitle.Builder()
                     .setContent(dayOfWeekList[position])
-                    .setTextColor(ContextCompat.getColor(context!!, R.color.colorPrimary),
-                        ContextCompat.getColor(context!!, R.color.gray_dark))
+                    .setTextColor(ContextCompat.getColor(context!!, R.color.white),
+                        ContextCompat.getColor(context!!, R.color.gray_light_30))
                     .build()
             }
 
@@ -108,7 +108,8 @@ class DailyUpdateFragment : Fragment() , UICallback {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 mSuspensionHeight = mSuspensionBar.height
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE ||
+                        newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     isClickedTab = false
                 }
             }

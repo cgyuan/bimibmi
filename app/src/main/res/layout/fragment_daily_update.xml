@@ -26,13 +26,14 @@
             <q.rorbin.verticaltablayout.VerticalTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                app:indicator_color="@color/white"
+                android:layout_height="match_parent"
+                app:indicator_color="@color/colorTabIndicate"
                 app:indicator_gravity="fill"
                 app:tab_height="50dp"
                 app:indicator_width="50dp"
                 app:tab_margin="10dp"
-                app:tab_mode="scrollable" />
+                app:tab_mode="scrollable"
+                android:background="@color/colorPrimary"/>
 
             <View
                 android:id="@+id/navigation_divider"

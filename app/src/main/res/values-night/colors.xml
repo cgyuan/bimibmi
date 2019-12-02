@@ -5,6 +5,8 @@
     <color name="colorAccent">@color/black</color>
     <color name="black">#000000</color>
 
+    <color name="colorTabIndicate">@color/gray_dark</color>
+
     <color name="navigation_background_light">#3b3b3b</color>
     <color name="window_background">#2B2B2B</color>
 
