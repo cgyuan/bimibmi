@@ -8,6 +8,11 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import me.ele.uetool.UETool
+import skin.support.SkinCompatManager
+import skin.support.app.SkinAppCompatViewInflater
+import skin.support.app.SkinCardViewInflater
+import skin.support.constraint.app.SkinConstraintViewInflater
+import skin.support.design.app.SkinMaterialViewInflater
 import zmovie.com.dlan.DlanLib
 
 
@@ -24,6 +29,17 @@ class BimibimiApp : MultiDexApplication() {
         if (isNight) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+
+        SkinCompatManager.withoutActivity(this)
+            .addInflater(SkinAppCompatViewInflater()) // 基础控件换肤
+            .addInflater(SkinMaterialViewInflater()) // material design
+            .addInflater(SkinConstraintViewInflater()) // ConstraintLayout
+            .addInflater(SkinCardViewInflater()) // CardView v7
+            .setSkinStatusBarColorEnable(true)              // 关闭状态栏换肤
+//                .setSkinWindowBackgroundEnable(false)           // 关闭windowBackground换肤
+                .setSkinAllActivityEnable(true)                // true: 默认所有的Activity都换肤; false: 只有实现SkinCompatSupportable接口的Activity换肤
+            .loadSkin()
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
 

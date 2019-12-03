@@ -32,6 +32,12 @@ android {
 
         sourceSets {
             androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+            main {
+                res.srcDirs = ['src/main/res', 'src/main/res-blue',
+                               'src/main/res-pink', 'src/main/res-red',
+                               'src/main/res-green', 'src/main/res-yellow',
+                               'src/main/res-purple']
+            }
         }
     }
     buildTypes {
@@ -120,8 +126,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation 'androidx.room:room-runtime:2.2.1'
-    kapt 'androidx.room:room-compiler:2.2.1'
+    implementation 'androidx.room:room-runtime:2.2.2'
+    kapt 'androidx.room:room-compiler:2.2.2'
     implementation 'androidx.paging:paging-runtime:2.1.0'
     // Test helpers
     testImplementation "android.arch.persistence.room:testing:2.1.0"
@@ -136,4 +142,10 @@ dependencies {
     implementation 'com.github.dueeeke.dkplayer:dkplayer-java:3.1.3'
     implementation 'com.github.dueeeke.dkplayer:dkplayer-ui:3.1.3'
     implementation 'com.github.dueeeke.dkplayer:player-exo:3.1.3'
+
+    implementation 'skin.support:skin-support:4.0.4'                   // skin-support
+    implementation 'skin.support:skin-support-appcompat:4.0.4'         // skin-support 基础控件支持
+    implementation 'skin.support:skin-support-design:4.0.4'            // skin-support-design material design 控件支持[可选]
+    implementation 'skin.support:skin-support-cardview:4.0.4'          // skin-support-cardview CardView 控件支持[可选]
+    implementation 'skin.support:skin-support-constraint-layout:4.0.4' // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
 }

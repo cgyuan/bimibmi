@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:title="主题选择"
+        app:titleTextColor="@color/toolbar_title"
+        app:navigationIcon="@drawable/ic_arrow_back_24dp"/>
+
+    <RadioGroup
+        android:id="@+id/mThemeGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:divider="@drawable/vertical_layout_divider"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/mCyan"
+            android:drawableLeft="@drawable/rectangle_color_shape_cyan"
+            android:text="系统青"
+            android:tag="cyan"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mPink"
+            android:drawableLeft="@drawable/rectangle_color_shape_pink"
+            android:text="少女粉"
+            android:tag="pink"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mNight"
+            android:drawableLeft="@drawable/rectangle_color_shape_night"
+            android:text="夜间模式"
+            android:tag="night"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mRed"
+            android:drawableLeft="@drawable/rectangle_color_shape_red"
+            android:text="姨妈红"
+            android:tag="red"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mYellow"
+            android:drawableLeft="@drawable/rectangle_color_shape_yellow"
+            android:text="咸蛋黄"
+            android:tag="yellow"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mGreen"
+            android:drawableLeft="@drawable/rectangle_color_shape_green"
+            android:text="早苗绿"
+            android:tag="green"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mBlue"
+            android:drawableLeft="@drawable/rectangle_color_shape_blue"
+            android:text="胖次蓝"
+            android:tag="blue"
+            style="@style/ChooseThemeRadioBtn" />
+
+        <RadioButton
+            android:id="@+id/mPurple"
+            android:drawableLeft="@drawable/rectangle_color_shape_purple"
+            android:text="基佬紫"
+            android:tag="purple"
+            style="@style/ChooseThemeRadioBtn" />
+
+    </RadioGroup>
+
+</LinearLayout>

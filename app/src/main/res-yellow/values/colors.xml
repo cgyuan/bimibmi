@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary_yellow">#FBC02D</color>
+    <color name="colorPrimaryDark_yellow">#FBC02D</color>
+    <color name="colorAccent_yellow">#FBC02D</color>
+
+    <color name="colorTabIndicate_yellow">#FFC83C</color>
+
+</resources>

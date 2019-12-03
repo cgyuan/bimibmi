@@ -24,7 +24,7 @@
             android:orientation="horizontal">
 
             <q.rorbin.verticaltablayout.VerticalTabLayout
-                android:id="@+id/tabLayout"
+                android:id="@+id/mTabLayout"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 app:indicator_color="@color/colorTabIndicate"

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logDebug
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.parser.HtmlDataParser
@@ -109,7 +110,7 @@ class CategoryFragment(private var category: String) : Fragment() {
                 isLoading = false
                 isLoadFailed = true
                 categoryAdapter.notifyItemChanged(categoryAdapter.itemCount - 1)
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(App.getContext(), msg, Toast.LENGTH_SHORT).show()
             }
 
         })

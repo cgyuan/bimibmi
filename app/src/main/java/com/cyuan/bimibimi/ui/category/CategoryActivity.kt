@@ -1,14 +1,16 @@
 package com.cyuan.bimibimi.ui.category
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.core.utils.SupportSkinHelper
+import com.cyuan.bimibimi.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_category.*
+import skin.support.widget.SkinCompatSupportable
 
-class CategoryActivity : AppCompatActivity() {
+class CategoryActivity : BaseActivity(), SkinCompatSupportable {
 
     private val pagesPath = listOf(
         "/type/riman", "/type/guoman", "/type/fanzu", "/type/juchang", "/type/move"
@@ -26,7 +28,7 @@ class CategoryActivity : AppCompatActivity() {
         val category = intent.getStringExtra(PlayerKeys.MOVIE_CATEGORY)
         val currentPage = pagesPath.indexOf(category!!)
 
-        tabLayout.setupWithViewPager(viewPager)
+        mTabLayout.setupWithViewPager(viewPager)
 
         viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
@@ -41,6 +43,12 @@ class CategoryActivity : AppCompatActivity() {
 
         }
         viewPager.currentItem = currentPage
+        applySkin()
+    }
+
+    override fun applySkin() {
+        SupportSkinHelper.tintStatusBar(this)
+        SupportSkinHelper.tintViewBackground(this, mTabLayout)
     }
 
 }

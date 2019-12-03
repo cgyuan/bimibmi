@@ -19,7 +19,7 @@
             app:layout_scrollFlags="scroll|enterAlways">
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+                android:id="@+id/mTabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@color/colorPrimary"

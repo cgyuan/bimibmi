@@ -16,11 +16,12 @@ import com.cyuan.bimibimi.core.extension.hideSoftKeyboard
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
+import com.cyuan.bimibimi.ui.base.BaseActivity
 import com.kotlin.base.widgets.DefaultTextWatcher
 import kotlinx.android.synthetic.main.fragment_category.*
 import kotlinx.android.synthetic.main.search_input_layout.*
 
-class SearchActivity: AppCompatActivity() {
+class SearchActivity: BaseActivity() {
 
     private lateinit var searchKeyWord: String
     private lateinit var searchAdapter: SearchGridHelperAdapter

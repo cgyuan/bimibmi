@@ -1,11 +1,11 @@
 package com.cyuan.bimibimi.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
@@ -13,10 +13,14 @@ import androidx.navigation.ui.NavigationUI
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.SharedUtil
+import com.cyuan.bimibimi.core.utils.SupportSkinHelper
+import com.cyuan.bimibimi.ui.base.BaseActivity
+import com.cyuan.bimibimi.ui.theme.ChooseThemeActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import skin.support.widget.SkinCompatSupportable
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : BaseActivity(), SkinCompatSupportable{
 
     private lateinit var switchModeBtn: ImageView
     private lateinit var navController: NavController
@@ -28,15 +32,17 @@ class MainActivity : AppCompatActivity(){
 
         navController = Navigation.findNavController(this, R.id.fragment)
 
-        homeItem = navigationView.menu.findItem(R.id.homeFragment)
-        navigationView.setNavigationItemSelectedListener {
+        homeItem = mNavigationView.menu.findItem(R.id.homeFragment)
+        mNavigationView.setNavigationItemSelectedListener {
             closeDrawer()
             if (it.itemId in listOf(R.id.homeFragment, R.id.favoriteFragment, R.id.historyFragment, R.id.dailyUpdateFragment)) {
                 NavigationUI.onNavDestinationSelected(it, navController)
+            } else if (it.itemId == R.id.item_theme) {
+                startActivity(Intent(this@MainActivity, ChooseThemeActivity::class.java))
             }
             true
         }
-        switchModeBtn = navigationView.getHeaderView(0).findViewById<ImageView>(R.id.iv_head_switch_mode)
+        switchModeBtn = mNavigationView.getHeaderView(0).findViewById<ImageView>(R.id.iv_head_switch_mode)
         val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)
         if (isNight) {
             switchModeBtn.setImageResource(R.drawable.ic_switch_daily)
@@ -77,13 +83,28 @@ class MainActivity : AppCompatActivity(){
     private fun switchNightMode() {
         val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)
         if (isNight) { // 日间模式
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            SharedUtil.save(Constants.IS_NIGHT_MODE_KEY, false)
+            val skinName = SharedUtil.read(Constants.SKIN_NAME_BEFORE_NIGHT_MODE, "cyan")
+            SupportSkinHelper.setSkin(skinName)
             switchModeBtn.setImageResource(R.drawable.ic_switch_daily)
         } else { // 夜间模式
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            SharedUtil.save(Constants.IS_NIGHT_MODE_KEY, true)
+            SupportSkinHelper.setSkin("night")
             switchModeBtn.setImageResource(R.drawable.ic_switch_night)
+        }
+    }
+
+    override fun applySkin() {
+        SupportSkinHelper.tintStatusBar(this)
+
+        val fragments = this.supportFragmentManager.fragments
+        if (fragments.isNotEmpty()) {
+            val navHostFragment = fragments.first() as NavHostFragment
+            if (navHostFragment.isAdded) {
+                navHostFragment.childFragmentManager.fragments.forEach {
+                    if (it is SkinCompatSupportable) {
+                        it.applySkin()
+                    }
+                }
+            }
         }
     }
 

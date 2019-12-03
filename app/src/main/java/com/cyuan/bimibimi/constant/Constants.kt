@@ -2,6 +2,9 @@ package com.cyuan.bimibimi.constant
 
 interface Constants {
     companion object {
+        const val SKIN_NAME: String = "SKIN_NAME"
+        const val SKIN_NAME_BEFORE_NIGHT_MODE: String = "SKIN_NAME_BEFORE_NIGHT_MODE"
+        const val DEFAULT_SKIN: String = "cyan"
         const val IS_NIGHT_MODE_KEY: String = "IS_NIGHT_MODE_KEY"
         const val UUID = "ud"
         const val BIMIBIMI_INDEX = "http://www.bimibimi.tv/"

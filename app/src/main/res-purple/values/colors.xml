@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary_purple">#673AB7</color>
+    <color name="colorPrimaryDark_purple">#673AB7</color>
+    <color name="colorAccent_purple">#673AB7</color>
+
+    <color name="colorTabIndicate_purple">#7846C3</color>
+
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary_green">#8BC34A</color>
+    <color name="colorPrimaryDark_green">#8BC34A</color>
+    <color name="colorAccent_green">#8BC34A</color>
+
+    <color name="colorTabIndicate_green">#96CD55</color>
+
+</resources>

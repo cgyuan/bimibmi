@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.databinding.FragmentDailyUpdateBinding
 import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
@@ -26,9 +27,10 @@ import q.rorbin.verticaltablayout.VerticalTabLayout
 import q.rorbin.verticaltablayout.adapter.TabAdapter
 import q.rorbin.verticaltablayout.widget.ITabView
 import q.rorbin.verticaltablayout.widget.TabView
+import skin.support.widget.SkinCompatSupportable
 
 
-class DailyUpdateFragment : Fragment() , UICallback {
+class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val dayOfWeekList = listOf("一", "二", "三", "四", "五", "六", "日")
@@ -73,7 +75,7 @@ class DailyUpdateFragment : Fragment() , UICallback {
             recyclerView.adapter = DailySectionAdapter(context!!, dayOfWeekList, it)
         })
 
-        tabLayout.setTabAdapter(object: TabAdapter {
+        mTabLayout.setTabAdapter(object: TabAdapter {
             override fun getIcon(position: Int) = null
 
             override fun getBadge(position: Int) = null
@@ -92,7 +94,7 @@ class DailyUpdateFragment : Fragment() , UICallback {
 
         })
 
-        tabLayout.addOnTabSelectedListener(object : VerticalTabLayout.OnTabSelectedListener {
+        mTabLayout.addOnTabSelectedListener(object : VerticalTabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabView?, position: Int) {}
 
             override fun onTabSelected(tab: TabView?, position: Int) {
@@ -117,7 +119,7 @@ class DailyUpdateFragment : Fragment() , UICallback {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!isClickedTab) {
-                    tabLayout.setTabSelected(linearLayoutManager.findFirstVisibleItemPosition(), false)
+                    mTabLayout.setTabSelected(linearLayoutManager.findFirstVisibleItemPosition(), false)
                 }
 
                 //找到下一个itemView
@@ -139,6 +141,7 @@ class DailyUpdateFragment : Fragment() , UICallback {
             }
         })
         updateSuspensionBar()
+        applySkin()
     }
 
     private fun updateSuspensionBar() {
@@ -148,6 +151,10 @@ class DailyUpdateFragment : Fragment() , UICallback {
 
     override fun reload() {
         viewModel.fetchDailyUpdateMovie()
+    }
+
+    override fun applySkin() {
+        SupportSkinHelper.tintVerticalTabLayout(activity!!, mTabLayout)
     }
 
 }

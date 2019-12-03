@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary_pink">#F8739C</color>
+    <color name="colorPrimaryDark_pink">#F8739C</color>
+    <color name="colorAccent_pink">#F8739C</color>
+
+    <color name="colorTabIndicate_pink">#FF81A0</color>
+
+</resources>
