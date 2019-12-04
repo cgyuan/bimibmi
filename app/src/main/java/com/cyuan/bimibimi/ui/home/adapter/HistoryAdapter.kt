@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedListAdapter
@@ -18,6 +19,7 @@ import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.DateUtils
 import com.cyuan.bimibimi.databinding.HistoryCardItemLayoutBinding
 import com.cyuan.bimibimi.model.History
+import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModel
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
 import kotlinx.coroutines.launch
@@ -44,7 +46,12 @@ class HistoryAdapter(
 
         holder.itemView.setOnClickListener {
             viewModel.viewModelScope.launch {
-                val movieDetail = viewModel.fetchMovieDetail(Constants.BIMIBIMI_INDEX + history.href)
+                var movieDetail: MovieDetail? = null
+                try {
+                    movieDetail = viewModel.fetchMovieDetail(Constants.BIMIBIMI_INDEX + history.href)
+                } catch (e: Exception) {
+                    Toast.makeText(App.getContext(), e.message, Toast.LENGTH_SHORT).show()
+                }
                 val intent = Intent(App.getContext(), OnlinePlayerActivity::class.java)
                 intent.putExtra(PlayerKeys.MOVIE_DETAIL_HREF, history.href)
                 intent.putExtra(PlayerKeys.URL, history.url)
@@ -52,7 +59,7 @@ class HistoryAdapter(
                 intent.putExtra(PlayerKeys.EPISODE_NAME, history.episodeName)
                 intent.putExtra(PlayerKeys.EPISODE_INDEX, history.episodeIndex)
                 intent.putExtra(PlayerKeys.MOVIE_COVER, history.cover)
-                intent.putParcelableArrayListExtra(PlayerKeys.EPISODE_LIST, movieDetail.dataSources[history.dataSourceIndex].episodes)
+                intent.putParcelableArrayListExtra(PlayerKeys.EPISODE_LIST, movieDetail?.dataSources?.get(history.dataSourceIndex)?.episodes)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 App.getContext().startActivity(intent)
             }
