@@ -21,11 +21,11 @@ class EpisodeAdapter(
     override fun getItemCount() = episodeList.size
 
     override fun onBindViewHolder(holder: EpisodeHolder, position: Int) {
-        holder.btn.isSelected = CustomController.CurrentIndex == position
+        holder.btn.isSelected = CustomVideoController.sCurrentIndex == position
         holder.btn.text = episodeList[position].title
         holder.btn.setOnClickListener {
             clickedListener.clicked(position)
-            CustomController.CurrentIndex = position
+            CustomVideoController.sCurrentIndex = position
             choseEpisodeLayer.dismiss()
             notifyDataSetChanged()
         }

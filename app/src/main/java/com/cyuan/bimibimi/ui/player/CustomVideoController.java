@@ -101,7 +101,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     private ImageView mDlnaCastBtn;
     private TextView mSpeedUpBtn;
     private boolean showChoseBtn = false;
-    public static int CurrentIndex = 0;
+    public static int sCurrentIndex = 0;
 
     Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -239,7 +239,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 
     public void configPlayList(List<Episode> playList, int currentIndex) {
         if (playList.size() > 1) {
-            CurrentIndex = currentIndex;
+            sCurrentIndex = currentIndex;
             this.showChoseBtn = true;
             this.mPlayList = playList;
             invalidate();
