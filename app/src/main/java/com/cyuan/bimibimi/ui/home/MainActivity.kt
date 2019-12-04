@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
@@ -15,6 +14,7 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
+import com.cyuan.bimibimi.ui.setting.SettingActivity
 import com.cyuan.bimibimi.ui.theme.ChooseThemeActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -39,6 +39,8 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
                 NavigationUI.onNavDestinationSelected(it, navController)
             } else if (it.itemId == R.id.item_theme) {
                 startActivity(Intent(this@MainActivity, ChooseThemeActivity::class.java))
+            } else if (it.itemId == R.id.item_settings) {
+                startActivity(Intent(this@MainActivity, SettingActivity::class.java))
             }
             true
         }

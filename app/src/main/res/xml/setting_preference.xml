@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.Preference
+        android:key="clearCache"
+        app:iconSpaceReserved="false"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:title="清除缓存" />
+
+    <androidx.preference.Preference
+        android:key="checkUpdate"
+        app:iconSpaceReserved="false"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        android:title="检查更新" />
+
+    <androidx.preference.Preference
+        android:key="selectPlayer"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:iconSpaceReserved="false"
+        android:summary="Exo Player"
+        android:title="播放器设置"/>
+
+
+</androidx.preference.PreferenceScreen>

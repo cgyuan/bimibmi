@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.db.AppDatabase
@@ -16,6 +18,7 @@ import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
 import com.dueeeke.videoplayer.controller.MediaPlayerControl
+import com.dueeeke.videoplayer.exo.ExoMediaPlayerFactory
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
 import com.dueeeke.videoplayer.player.AbstractPlayer
 import com.dueeeke.videoplayer.player.AndroidMediaPlayerFactory
@@ -108,10 +111,19 @@ class OnlinePlayerActivity : AppCompatActivity() {
             controller.configPlayList(episodeList, episodeIndex)
         }
 
-        if (currentUrl.endsWith("m3u8")) {
-            playerFactory = AndroidMediaPlayerFactory.create()
-        } else {
-            playerFactory = IjkPlayerFactory.create()
+        val player = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString(Constants.SET_PLAYER, Constants.Player.EXO_PLAYER)
+
+        when (player) {
+            Constants.Player.MEDIA_PLAYER -> {
+                playerFactory = AndroidMediaPlayerFactory.create()
+            }
+            Constants.Player.IJK_PLAYER -> {
+                playerFactory = IjkPlayerFactory.create()
+            }
+            Constants.Player.EXO_PLAYER -> {
+                playerFactory = ExoMediaPlayerFactory.create()
+            }
         }
 
         if (mPIPManager.isStartFloatWindow) {
@@ -123,6 +135,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
             controller.setTitle("【${movieTitle}】$episodeName")
         }
         playView.addView(mVideoView)
+        mVideoView.setPlayerFactory(playerFactory)
         mVideoView.startFullScreen()
         mVideoView.start()
         mVideoView.seekTo(playPosition)

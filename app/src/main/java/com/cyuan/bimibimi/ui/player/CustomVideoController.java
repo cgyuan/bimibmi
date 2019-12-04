@@ -218,7 +218,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 
     private void initChooseSpeedPanel() {
         mChooseSpeedPanel = mControllerView.findViewById(R.id.choose_speed_panel);
-        mChooseSpeedPanel.check(R.id.check1);
+        mChooseSpeedPanel.check(R.id.normal);
         mChooseSpeedPanel.setOnCheckedChangeListener((group, checkedId) -> {
             float speed = Float.parseFloat((String) mChooseSpeedPanel.findViewById(checkedId).getTag());
             mMediaPlayer.setSpeed(speed);
