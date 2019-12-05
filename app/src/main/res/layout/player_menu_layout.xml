@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_menu"
+    android:layout_width="360dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_shap_border"
+    android:visibility="gone"
+    android:layout_gravity="right"
+    android:layout_alignParentRight="true"
+    tools:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="end">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:showDividers="middle"
+                android:divider="@drawable/horizontal_layout_divider_transparent">
+
+                <LinearLayout
+                    android:id="@+id/play_background_btn"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        app:srcCompat="@drawable/ic_play_background"
+                        app:tint="@color/menu_item_background_color"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:text="后台播放"
+                        android:textColor="@color/menu_item_background_color"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mirror_flip_btn"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        app:srcCompat="@drawable/ic_mirror_transition"
+                        app:tint="@color/menu_item_background_color"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:text="镜像翻转"
+                        android:textColor="@color/menu_item_background_color"/>
+
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="画面尺寸"/>
+
+            <RadioGroup
+                android:id="@+id/screen_aspect_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <!--
+                    SCREEN_SCALE_DEFAULT = 0; 适应
+                    SCREEN_SCALE_16_9 = 1;
+                    SCREEN_SCALE_4_3 = 2;
+                    SCREEN_SCALE_MATCH_PARENT = 3; 拉伸
+                    SCREEN_SCALE_ORIGINAL = 4;
+                    SCREEN_SCALE_CENTER_CROP = 5;  填充/中间裁剪
+                -->
+
+                <RadioButton
+                    android:id="@+id/screen_default"
+                    android:text="适应"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="0"/>
+
+                <RadioButton
+                    android:text="拉伸"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="3"/>
+
+                <RadioButton
+                    android:text="填充"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="5"/>
+
+                <RadioButton
+                    android:text="16:9"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="1"/>
+
+                <RadioButton
+                    android:text="4:3"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="2"/>
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="播放方式"/>
+
+            <RadioGroup
+                android:id="@+id/play_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <RadioButton
+                    android:text="自动连播"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="0"/>
+
+                <RadioButton
+                    android:text="列表循环"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="1"/>
+
+                <RadioButton
+                    android:text="单集循环"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="2"/>
+
+                <RadioButton
+                    android:text="播放暂停"
+                    style="@style/MenuItemRadioBtn"
+                    android:tag="3"/>
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

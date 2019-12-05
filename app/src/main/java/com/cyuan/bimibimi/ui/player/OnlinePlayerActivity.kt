@@ -60,24 +60,32 @@ class OnlinePlayerActivity : AppCompatActivity() {
     }
 
     private val episodeItemClickListener = CustomVideoController.OnItemClickedListener { position ->
+        playByEpisodeIndex(position)
+    }
+
+    fun playByEpisodeIndex(position: Int) {
         val episode = episodeList!![position]
-        HtmlDataParser.parseVideoSource(this@OnlinePlayerActivity, episode, object : ParseResultCallback<String> {
-            override fun onSuccess(url: String) {
-                this@OnlinePlayerActivity.currentUrl = url
-                episodeName = episode.title
-                mVideoView.stopPlayback()
-                mVideoView.release()
+        HtmlDataParser.parseVideoSource(
+            this@OnlinePlayerActivity,
+            episode,
+            object : ParseResultCallback<String> {
+                override fun onSuccess(url: String) {
+                    this@OnlinePlayerActivity.currentUrl = url
+                    episodeName = episode.title
+                    mVideoView.stopPlayback()
+                    mVideoView.release()
 
-                mVideoView.setUrl(url)
-                controller.setTitle("【${movieTitle}】$episodeName")
-                mVideoView.start()
-            }
+                    mVideoView.setUrl(url)
+                    controller.setTitle("【${movieTitle}】$episodeName")
+                    mVideoView.start()
+                    controller.disableMirrorFlip()
+                }
 
-            override fun onFail(msg: String) {
-                Toast.makeText(this@OnlinePlayerActivity, msg, Toast.LENGTH_SHORT).show()
-            }
+                override fun onFail(msg: String) {
+                    Toast.makeText(this@OnlinePlayerActivity, msg, Toast.LENGTH_SHORT).show()
+                }
 
-        })
+            })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,7 +175,9 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        mPIPManager.pause()
+        if (!controller.isAllowPlayBackground) {
+            mPIPManager.pause()
+        }
     }
 
     override fun onStop() {

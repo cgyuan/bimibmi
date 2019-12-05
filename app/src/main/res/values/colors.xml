@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00249BB3</color>
     <color name="colorAccent">#249bb3</color>
     <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
 
     <color name="cyan">#249bb3</color>
 

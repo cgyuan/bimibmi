@@ -9,6 +9,8 @@ interface Constants {
         const val IS_NIGHT_MODE_KEY: String = "IS_NIGHT_MODE_KEY"
         const val UUID = "ud"
         const val BIMIBIMI_INDEX = "http://www.bimibimi.tv/"
+        const val ALLOW_PLAY_IN_BACKGROUND = "ALLOW_PLAY_IN_BACKGROUND"
+        const val PALY_BEHAVIOR = "PALY_BEHAVIOR"
     }
 
     interface Player {
@@ -16,6 +18,15 @@ interface Constants {
             const val MEDIA_PLAYER = "Media Player"
             const val EXO_PLAYER = "Exo Player"
             const val IJK_PLAYER = "Ijk Player"
+        }
+    }
+
+    interface PlayBehavior {
+        companion object {
+            const val PLAY_NEXT = 0
+            const val LIST_CYCLE = 1
+            const val SINGLE_CYCLE = 2
+            const val PAUSE = 3
         }
     }
 

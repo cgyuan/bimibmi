@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -33,6 +34,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cyuan.bimibimi.R;
+import com.cyuan.bimibimi.constant.Constants;
+import com.cyuan.bimibimi.core.utils.SharedUtil;
 import com.cyuan.bimibimi.model.Episode;
 import com.dueeeke.videocontroller.BatteryReceiver;
 import com.dueeeke.videocontroller.CenterView;
@@ -56,6 +59,7 @@ import per.goweii.anylayer.Layer;
 
 public class CustomVideoController<T extends MediaPlayerControl> extends GestureVideoController<T>
         implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, GestureVideoController.GestureListener {
+    private OnlinePlayerActivity mActivity;
     protected TextView mTotalTime, mCurrTime;
 //    protected ImageView mFullScreenButton;
     protected RelativeLayout mBottomContainer;
@@ -116,8 +120,15 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     };
     private DialogLayer anyLayer;
     private RadioGroup mChooseSpeedPanel;
-    private Animation mChooseSpeedPanelShowAnim;
-    private Animation mChooseSpeedPanelHideAnim;
+    private Animation mMenuPanelShowAnim;
+    private Animation mMenuPanelHideAnim;
+    private View mMenuPanel;
+    private RadioGroup mScreenAspectGroup;
+    private View mPlayBackgroundBtn;
+    private View mMirrorFlipBtn;
+    private boolean isAllowPlayBackground;
+    private boolean isMirrorFlip;
+    private RadioGroup mPlayBehaviorGroup;
 
     private void loadNetSpeed(){
         if (mNetSpeedUtil==null){
@@ -132,6 +143,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 
     public CustomVideoController(@NonNull Context context) {
         this(context, null);
+        mActivity = (OnlinePlayerActivity) context;
     }
 
     public CustomVideoController(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -185,6 +197,16 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mBatteryLevel = mControllerView.findViewById(R.id.iv_battery);
 
 
+        mControllerView.findViewById(R.id.setting_more).setOnClickListener(this);
+        mPlayBackgroundBtn = mControllerView.findViewById(R.id.play_background_btn);
+        mPlayBackgroundBtn.setOnClickListener(this);
+        mMirrorFlipBtn = mControllerView.findViewById(R.id.mirror_flip_btn);
+        mMirrorFlipBtn.setOnClickListener(this);
+
+        isAllowPlayBackground = SharedUtil.read(Constants.ALLOW_PLAY_IN_BACKGROUND, false);
+        mPlayBackgroundBtn.setSelected(isAllowPlayBackground);
+
+
         mChooseEpisodeBtn =  mControllerView.findViewById(R.id.choose_list);
         mChooseEpisodeBtn.setOnClickListener(this);
 
@@ -208,6 +230,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         addView(mCenterView);
 
         initChooseSpeedPanel();
+        initMenuPanel();
 
         mHideAnim = new AlphaAnimation(1f, 0f);
         mHideAnim.setDuration(300);
@@ -223,18 +246,50 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
             float speed = Float.parseFloat((String) mChooseSpeedPanel.findViewById(checkedId).getTag());
             mMediaPlayer.setSpeed(speed);
         });
-        mChooseSpeedPanelShowAnim = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_in);
-        mChooseSpeedPanelHideAnim = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_out);
+        mMenuPanelShowAnim = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_in);
+        mMenuPanelHideAnim = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_out);
+    }
+
+    private void initMenuPanel() {
+        mMenuPanel = mControllerView.findViewById(R.id.settings_menu);
+
+        mScreenAspectGroup = mMenuPanel.findViewById(R.id.screen_aspect_group);
+        mScreenAspectGroup.check(R.id.screen_default);
+
+        mScreenAspectGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            int scaleType = Integer.parseInt((String) mScreenAspectGroup.findViewById(checkedId).getTag());
+            mMediaPlayer.setScreenScaleType(scaleType);
+        });
+
+        mPlayBehaviorGroup = mMenuPanel.findViewById(R.id.play_behavior);
+
+        int behavior = SharedUtil.read(Constants.PALY_BEHAVIOR, Constants.PlayBehavior.PAUSE);
+        ((RadioButton)mPlayBehaviorGroup.getChildAt(behavior)).setChecked(true);
+
+        mPlayBehaviorGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            int playBehavior = Integer.parseInt((String) mPlayBehaviorGroup.findViewById(checkedId).getTag());
+            SharedUtil.save(Constants.PALY_BEHAVIOR, playBehavior);
+        });
+    }
+
+    private void showMenuPanel() {
+        mMenuPanel.setVisibility(View.VISIBLE);
+        mMenuPanel.startAnimation(mMenuPanelShowAnim);
+    }
+
+    private void hideMenuPanel() {
+        mMenuPanel.setVisibility(View.GONE);
+        mMenuPanel.startAnimation(mMenuPanelHideAnim);
     }
 
     private void showChooseSpeedPanel() {
         mChooseSpeedPanel.setVisibility(View.VISIBLE);
-        mChooseSpeedPanel.startAnimation(mChooseSpeedPanelShowAnim);
+        mChooseSpeedPanel.startAnimation(mMenuPanelShowAnim);
     }
 
     private void hideChooseSpeedPanel() {
         mChooseSpeedPanel.setVisibility(View.GONE);
-        mChooseSpeedPanel.startAnimation(mChooseSpeedPanelHideAnim);
+        mChooseSpeedPanel.startAnimation(mMenuPanelHideAnim);
     }
 
     public void configPlayList(List<Episode> playList, int currentIndex) {
@@ -243,6 +298,18 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
             this.showChoseBtn = true;
             this.mPlayList = playList;
             invalidate();
+        }
+    }
+
+    public boolean isAllowPlayBackground() {
+        return isAllowPlayBackground;
+    }
+
+    public void disableMirrorFlip() {
+        if (isMirrorFlip) {
+            isMirrorFlip = false;
+            mMirrorFlipBtn.setSelected(false);
+            mMediaPlayer.setMirrorRotation(false);
         }
     }
 
@@ -259,6 +326,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     public void setOnItemClickListener(OnItemClickedListener clickedListener) {
         this.clickedListener = clickedListener;
     }
+
 
     /**
      * 显示选集对话框
@@ -429,6 +497,17 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         } else if (i == R.id.speed_up) {
             showChooseSpeedPanel();
             hide();
+        } else if (i == R.id.setting_more) {
+            showMenuPanel();
+            hide();
+        } else if (i == R.id.play_background_btn) {
+            isAllowPlayBackground = !isAllowPlayBackground;
+            SharedUtil.save(Constants.ALLOW_PLAY_IN_BACKGROUND, isAllowPlayBackground);
+            mPlayBackgroundBtn.setSelected(isAllowPlayBackground);
+        } else if (i == R.id.mirror_flip_btn) {
+            isMirrorFlip = !isMirrorFlip;
+            mMediaPlayer.setMirrorRotation(isMirrorFlip);
+            mMirrorFlipBtn.setSelected(isMirrorFlip);
         }
     }
 
@@ -568,19 +647,43 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 break;
             case VideoView.STATE_PLAYBACK_COMPLETED:
                 L.e("STATE_PLAYBACK_COMPLETED");
-                hide();
-                removeCallbacks(mShowProgress);
-                mStartPlayButton.setVisibility(GONE);
-                mThumb.setVisibility(VISIBLE);
-                mCompleteContainer.setVisibility(VISIBLE);
-//                mStopFullscreen.setVisibility(mMediaPlayer.isFullScreen() ? VISIBLE : GONE);
-                mBottomProgress.setVisibility(GONE);
-                mBottomProgress.setProgress(0);
-                mBottomProgress.setSecondaryProgress(0);
-                mLoadingContainer.setVisibility(GONE);
+                int behavior = SharedUtil.read(Constants.PALY_BEHAVIOR, Constants.PlayBehavior.PAUSE);
+                if (behavior == Constants.PlayBehavior.PAUSE) {
+                    pauseAndShowReplay();
+                } else if (behavior == Constants.PlayBehavior.PLAY_NEXT ||
+                        behavior == Constants.PlayBehavior.LIST_CYCLE) {
+                    sCurrentIndex += 1;
+                    if (mPlayList == null || sCurrentIndex >= mPlayList.size()) {
+                        if (behavior == Constants.PlayBehavior.LIST_CYCLE) {
+                            sCurrentIndex = 0;
+                            mActivity.playByEpisodeIndex(sCurrentIndex);
+                        } else {
+                            sCurrentIndex--;
+                            pauseAndShowReplay();
+                        }
+                    } else {
+                        mActivity.playByEpisodeIndex(sCurrentIndex);
+                    }
+                } else if (behavior == Constants.PlayBehavior.SINGLE_CYCLE) {
+                    mMediaPlayer.replay(true);
+                }
+
                 mIsLocked = false;
                 break;
         }
+    }
+
+    private void pauseAndShowReplay() {
+        hide();
+        removeCallbacks(mShowProgress);
+        mStartPlayButton.setVisibility(GONE);
+        mThumb.setVisibility(VISIBLE);
+        mCompleteContainer.setVisibility(VISIBLE);
+//                mStopFullscreen.setVisibility(mMediaPlayer.isFullScreen() ? VISIBLE : GONE);
+        mBottomProgress.setVisibility(GONE);
+        mBottomProgress.setProgress(0);
+        mBottomProgress.setSecondaryProgress(0);
+        mLoadingContainer.setVisibility(GONE);
     }
 
     /**
@@ -748,6 +851,10 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     public void show() {
         if (mChooseSpeedPanel.isShown()) {
             hideChooseSpeedPanel();
+            return;
+        }
+        if (mMenuPanel.isShown()) {
+            hideMenuPanel();
             return;
         }
         show(mDefaultTimeout);

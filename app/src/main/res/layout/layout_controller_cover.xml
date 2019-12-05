@@ -300,4 +300,6 @@
     </LinearLayout>
 
     <include layout="@layout/speed_list"/>
+
+    <include layout="@layout/player_menu_layout" />
 </RelativeLayout>

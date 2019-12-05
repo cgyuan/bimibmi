@@ -11,7 +11,6 @@
     android:orientation="vertical"
     android:layout_alignParentRight="true"
     android:visibility="gone"
-    tools:visibility="visible"
     android:gravity="center_horizontal">
 
     <RadioButton
