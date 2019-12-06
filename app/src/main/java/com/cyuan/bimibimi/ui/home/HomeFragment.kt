@@ -77,7 +77,6 @@ class HomeFragment : Fragment() , UICallback {
                         section.title, section.moreLink
                     )
                 )
-                // adapters.addAdapter(GridHelperAdapter(this@MainActivity, section))
             }
             recyclerView.adapter = adapters
         })

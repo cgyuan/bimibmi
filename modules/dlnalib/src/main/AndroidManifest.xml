@@ -3,8 +3,7 @@
     package="zmovie.com.dlan">
 
     <application>
-        <activity android:name=".DlanLocalActivity"></activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".DlanLocalActivity"/>
         <activity android:name=".DeviceListActivityPage" />
         <activity
             android:name=".MediaPlayActivity"

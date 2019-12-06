@@ -13,7 +13,7 @@ import skin.support.app.SkinAppCompatViewInflater
 import skin.support.app.SkinCardViewInflater
 import skin.support.constraint.app.SkinConstraintViewInflater
 import skin.support.design.app.SkinMaterialViewInflater
-import zmovie.com.dlan.DlanLib
+import zmovie.com.dlan.DlnaLib
 
 
 class BimibimiApp : MultiDexApplication() {
@@ -23,7 +23,7 @@ class BimibimiApp : MultiDexApplication() {
 //        UETool.putFilterClass(FilterOutView::class.java!!)
 //        UETool.putAttrsProviderClass(CustomAttribution::class.java!!)
         App.initialize(this)
-        DlanLib.initDlan(this)
+        DlnaLib.initDlna(this)
 
         val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)
         if (isNight) {

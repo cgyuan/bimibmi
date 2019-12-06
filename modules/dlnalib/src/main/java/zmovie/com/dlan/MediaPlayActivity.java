@@ -422,8 +422,10 @@ public class MediaPlayActivity extends AppCompatActivity implements View.OnClick
 //                  finish();
                 }
             }
-            if (!TextUtils.isEmpty(avtInfo.getMediaDuration())) {
-                playMaxTimeView.setText(avtInfo.getMediaDuration());
+            String mediaDuration = avtInfo.getMediaDuration();
+            if (!TextUtils.isEmpty(mediaDuration)) {
+                playMaxTimeView.setText(mediaDuration);
+                progressSeekbar.setMax((int) VMDate.fromTimeString(mediaDuration));
             }
             if (!TextUtils.isEmpty(avtInfo.getTimePosition())) {
                 long progress = VMDate.fromTimeString(avtInfo.getTimePosition());

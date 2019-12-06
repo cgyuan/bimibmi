@@ -4,18 +4,12 @@ import android.util.Log;
 
 
 import org.fourthline.cling.model.meta.Device;
-import org.fourthline.cling.model.types.UDN;
 import org.fourthline.cling.support.model.item.Item;
 
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.security.MessageDigest;
 import java.util.Enumeration;
-import java.util.UUID;
-
-import zmovie.com.dlan.DlanLib;
 
 public class UpnpUtil {
 

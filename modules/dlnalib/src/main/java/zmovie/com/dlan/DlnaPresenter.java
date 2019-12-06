@@ -15,8 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yanbo.lib_screen.entity.ClingDevice;
 import com.yanbo.lib_screen.entity.RemoteItem;
+import com.yanbo.lib_screen.event.DeviceEvent;
 import com.yanbo.lib_screen.manager.ClingManager;
 import com.yanbo.lib_screen.manager.DeviceManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import per.goweii.anylayer.AnyLayer;
 import per.goweii.anylayer.DialogLayer;
@@ -30,6 +35,7 @@ import per.goweii.anylayer.DialogLayer;
 public class DlnaPresenter {
 
     private Context context;
+    private ClingDeviceAdapter mDeviceAdapter;
 
 
     /**
@@ -46,6 +52,11 @@ public class DlnaPresenter {
      */
     public void initService() {
         ClingManager.getInstance().startClingService();
+        EventBus.getDefault().register(this);
+    }
+
+    public void removeEventRegister() {
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -55,13 +66,14 @@ public class DlnaPresenter {
      */
     public void startPlay(RemoteItem remoteItem) {
         ClingManager.getInstance().setRemoteItem(remoteItem);
+
         context.startActivity(new Intent(context,MediaPlayActivity.class));
     }
 
     public void startPlay(String path, String title) {
-        RemoteItem itemurl1 = new RemoteItem(title, "425703", "张杰",
-                107362668, "00:04:33", "1280x720", path);
-        startPlay(itemurl1);
+        RemoteItem item = new RemoteItem(title, "", "",
+                1, "", "1280x720", path);
+        startPlay(item);
     }
 
     /**
@@ -100,15 +112,15 @@ public class DlnaPresenter {
         anyLayer.show();
         final RecyclerView deviceList = anyLayer.getView(R.id.dlan_device_list);
         deviceList.setLayoutManager(new LinearLayoutManager(context));
-        final ClingDeviceAdapter adapter = new ClingDeviceAdapter(context);
-        deviceList.setAdapter(adapter);
+        mDeviceAdapter = new ClingDeviceAdapter(context);
+        deviceList.setAdapter(mDeviceAdapter);
 
         final View loading = anyLayer.getView(R.id.search_loading);
         anyLayer.getView(R.id.dlan_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (deviceList!=null){
-                    adapter.refresh();
+                    mDeviceAdapter.refresh();
                     if (!loading.isShown()){
                         loading.setVisibility(View.VISIBLE);
 
@@ -133,7 +145,7 @@ public class DlnaPresenter {
                 }
             }
         });
-        adapter.setItemClickListener(new ClingDeviceAdapter.OnDeviceCheckedListener() {
+        mDeviceAdapter.setItemClickListener(new ClingDeviceAdapter.OnDeviceCheckedListener() {
             @Override
             public void onItemChecked(int position, Object object) {
                 ClingDevice device = (ClingDevice) object;
@@ -143,12 +155,12 @@ public class DlnaPresenter {
                 }
                 DeviceManager.getInstance().setCurrClingDevice(device);
                 Toast.makeText(context,"选择了设备 " + device.getDevice().getDetails().getFriendlyName(),Toast.LENGTH_LONG).show();
-                refresh(adapter,deviceList);
+                mDeviceAdapter.refresh();
             }
 
             @Override
             public void onItemCancelChose(int position, Object device) {
-                refresh(adapter, deviceList);
+                mDeviceAdapter.refresh();
             }
 
             @Override
@@ -156,7 +168,7 @@ public class DlnaPresenter {
                 if (hasDeviceConnect()){
                     tips.setText("已连接设备，点击确定按钮开始投屏");
                     confirm.setEnabled(true);
-                }else {
+                } else {
                     tips.setText("当前没有设备连接，请点击刷新按钮搜索设备");
                     confirm.setEnabled(false);
                 }
@@ -165,13 +177,9 @@ public class DlnaPresenter {
         });
     }
 
-    public void refresh(final ClingDeviceAdapter adapter, RecyclerView deviceList) {
-        deviceList.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adapter.refresh();
-            }
-        },300);
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventBus(DeviceEvent event) {
+        mDeviceAdapter.refresh();
     }
+
 }

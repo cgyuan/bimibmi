@@ -194,6 +194,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         mPIPManager.reset()
+        dlnaPresenter.removeEventRegister()
         super.onDestroy()
     }
 
