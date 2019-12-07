@@ -103,38 +103,18 @@ public class DlnaPresenter {
     public void showDialogTip(final Context context, final String path, final String title) {
 
         final DialogLayer anyLayer = AnyLayer.dialog(context)
-                .contentView(R.layout.dlan_tip_layout)
+                .contentView(R.layout.dlna_device_pop_layout)
                 .backgroundBlurPercent(0.15f)
                 .backgroundColorInt(Color.parseColor("#33ffffff"))
-                .gravity(Gravity.TOP)
+                .gravity(Gravity.CENTER)
                 .cancelableOnTouchOutside(true)
                 .cancelableOnClickKeyBack(true);
         anyLayer.show();
-        final RecyclerView deviceList = anyLayer.getView(R.id.dlan_device_list);
+        final RecyclerView deviceList = anyLayer.getView(R.id.device_list);
         deviceList.setLayoutManager(new LinearLayoutManager(context));
         mDeviceAdapter = new ClingDeviceAdapter(context);
         deviceList.setAdapter(mDeviceAdapter);
 
-        final View loading = anyLayer.getView(R.id.search_loading);
-        anyLayer.getView(R.id.dlan_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (deviceList!=null){
-                    mDeviceAdapter.refresh();
-                    if (!loading.isShown()){
-                        loading.setVisibility(View.VISIBLE);
-
-                        deviceList.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                loading.setVisibility(View.INVISIBLE);
-                            }
-                        },3000);
-                    }
-                }
-            }
-        });
-        final TextView tips =  anyLayer.getView(R.id.dlan_statu_text);
        final Button confirm =  anyLayer.getView(R.id.confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,10 +146,10 @@ public class DlnaPresenter {
             @Override
             public void onRefreshed() {
                 if (hasDeviceConnect()){
-                    tips.setText("已连接设备，点击确定按钮开始投屏");
+//                    tips.setText("已连接设备，点击确定按钮开始投屏");
                     confirm.setEnabled(true);
                 } else {
-                    tips.setText("当前没有设备连接，请点击刷新按钮搜索设备");
+//                    tips.setText("当前没有设备连接，请点击刷新按钮搜索设备");
                     confirm.setEnabled(false);
                 }
             }

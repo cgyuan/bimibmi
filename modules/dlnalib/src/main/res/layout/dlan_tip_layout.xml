@@ -56,7 +56,7 @@
        <Button
            android:layout_width="70dp"
            android:layout_height="62dp"
-            android:background="@drawable/ic_bofang"
+            android:background="@drawable/ic_play_btn"
            android:id="@+id/confirm"
            android:textColor="#fff"
            android:textSize="14sp"

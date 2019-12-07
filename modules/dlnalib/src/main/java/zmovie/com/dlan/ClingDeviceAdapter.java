@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +15,6 @@ import com.yanbo.lib_screen.manager.DeviceManager;
 
 import java.util.List;
 
-/**
- * 描述：
- *
- * @author Yanbo
- * @date 2018/11/6
- */
 public class ClingDeviceAdapter extends RecyclerView.Adapter<ClingDeviceAdapter.ClingHolder> {
 
     private LayoutInflater layoutInflater;
@@ -39,7 +32,7 @@ public class ClingDeviceAdapter extends RecyclerView.Adapter<ClingDeviceAdapter.
     @NonNull
     @Override
     public ClingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_common_layout, parent, false);
+        View view = layoutInflater.inflate(R.layout.device_item_layout, parent, false);
         return new ClingHolder(view);
     }
 
@@ -47,16 +40,14 @@ public class ClingDeviceAdapter extends RecyclerView.Adapter<ClingDeviceAdapter.
     public void onBindViewHolder(@NonNull ClingHolder holder, final int position) {
         final ClingDevice device = clingDevices.get(position);
         if (device != null && device == DeviceManager.getInstance().getCurrClingDevice()) {
-            holder.dlanstatu.setText("已连接");
-            holder.dlan_signal.setSelected(true);
+            holder.dlnaStatusTv.setText("已连接");
 
         } else {
-            holder.dlanstatu.setText("已断开");
-            holder.dlan_signal.setSelected(false);
+            holder.dlnaStatusTv.setText("未连接");
         }
 
         if (device == null) {
-            holder.nameView.setText("Unknow device");
+            holder.deviceNameTv.setText("Unknow device");
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -64,7 +55,7 @@ public class ClingDeviceAdapter extends RecyclerView.Adapter<ClingDeviceAdapter.
                 }
             });
         } else {
-            holder.nameView.setText(device.getDevice().getDetails().getFriendlyName());
+            holder.deviceNameTv.setText(device.getDevice().getDetails().getFriendlyName());
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -99,16 +90,12 @@ public class ClingDeviceAdapter extends RecyclerView.Adapter<ClingDeviceAdapter.
     }
 
     static class ClingHolder extends RecyclerView.ViewHolder {
-        TextView nameView;
-        ImageView iconView;
-        TextView dlanstatu;
-        ImageView dlan_signal;
+        TextView deviceNameTv;
+        TextView dlnaStatusTv;
         public ClingHolder(View itemView) {
             super(itemView);
-            nameView = itemView.findViewById(R.id.text_name);
-            iconView = itemView.findViewById(R.id.img_icon);
-            dlanstatu = itemView.findViewById(R.id.dlan_statu);
-            dlan_signal = itemView.findViewById(R.id.dlan_signal);
+            deviceNameTv = itemView.findViewById(R.id.device_name);
+            dlnaStatusTv = itemView.findViewById(R.id.dlna_status);
         }
     }
 
