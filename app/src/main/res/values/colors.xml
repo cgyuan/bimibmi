@@ -42,6 +42,9 @@
 
     <color name="title_color">#fd2d2d2d</color>
 
+    <color name="sub_title_color">#FC3C3C3C</color>
+
+
     <color name="shimmerBase0">#c2c2c2</color>
     <color name="shimmerHighlight0">#ffffff</color>
     <color name="shimmerHighlight1">#DFDEDE</color>

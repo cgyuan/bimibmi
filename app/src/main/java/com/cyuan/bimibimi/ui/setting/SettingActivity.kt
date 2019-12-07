@@ -12,9 +12,10 @@ class SettingActivity : BaseActivity(), SkinCompatSupportable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
+        toolbar.title = "设置与帮助"
         toolbar.run {
             setSupportActionBar(this)
-            title = "设置"
+            title = "设置与帮助"
             setNavigationIcon(R.drawable.ic_arrow_back_24dp)
             setNavigationOnClickListener { finish() }
         }

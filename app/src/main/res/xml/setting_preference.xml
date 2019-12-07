@@ -7,14 +7,16 @@
         app:iconSpaceReserved="false"
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
-        android:title="清除缓存" />
+        android:title="清除缓存"
+        android:layout="@layout/custom_preference"/>
 
     <androidx.preference.Preference
         android:key="checkUpdate"
         app:iconSpaceReserved="false"
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
-        android:title="检查更新" />
+        android:title="检查更新"
+        android:layout="@layout/custom_preference"/>
 
     <androidx.preference.Preference
         android:key="selectPlayer"
@@ -22,7 +24,8 @@
         app:allowDividerBelow="true"
         app:iconSpaceReserved="false"
         android:summary="Exo Player"
-        android:title="播放器设置"/>
+        android:title="播放器设置"
+        android:layout="@layout/custom_preference"/>
 
 
 </androidx.preference.PreferenceScreen>

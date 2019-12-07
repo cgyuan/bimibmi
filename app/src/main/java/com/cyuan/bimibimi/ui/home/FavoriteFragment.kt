@@ -51,7 +51,16 @@ class FavoriteFragment : Fragment() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.addItemDecoration(GridDividerItemDecoration(context!!, dp2px(15F), dp2px(15F), isNeedSpace = true, isLastRowNeedSpace = true, color = resources.getColor(R.color.window_background)))
+        recyclerView.addItemDecoration(
+            GridDividerItemDecoration(
+                context!!,
+                dp2px(15F),
+                dp2px(15F),
+                isNeedSpace = true,
+                isLastRowNeedSpace = true,
+                color = resources.getColor(R.color.window_background)
+            )
+        )
 
         viewModel.movies.observe(this, Observer {
             if (it != null) {

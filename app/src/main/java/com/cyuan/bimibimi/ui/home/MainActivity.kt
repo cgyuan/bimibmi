@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.utils.DensityUtils
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
@@ -28,6 +29,7 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DensityUtils.setDensity(application, this)
         setContentView(R.layout.activity_main)
 
         navController = Navigation.findNavController(this, R.id.fragment)
