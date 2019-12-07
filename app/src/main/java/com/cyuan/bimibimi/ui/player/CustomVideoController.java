@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -35,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cyuan.bimibimi.R;
 import com.cyuan.bimibimi.constant.Constants;
+import com.cyuan.bimibimi.core.utils.ImageUtils;
 import com.cyuan.bimibimi.core.utils.SharedUtil;
 import com.cyuan.bimibimi.model.Episode;
 import com.dueeeke.videocontroller.BatteryReceiver;
@@ -129,6 +132,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     private boolean isAllowPlayBackground;
     private boolean isMirrorFlip;
     private RadioGroup mPlayBehaviorGroup;
+    private View mScreenShotBtn;
 
     private void loadNetSpeed(){
         if (mNetSpeedUtil==null){
@@ -205,6 +209,9 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 
         isAllowPlayBackground = SharedUtil.read(Constants.ALLOW_PLAY_IN_BACKGROUND, false);
         mPlayBackgroundBtn.setSelected(isAllowPlayBackground);
+
+        mScreenShotBtn = mControllerView.findViewById(R.id.screen_shot_btn);
+        mScreenShotBtn.setOnClickListener(this);
 
 
         mChooseEpisodeBtn =  mControllerView.findViewById(R.id.choose_list);
@@ -508,6 +515,13 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
             isMirrorFlip = !isMirrorFlip;
             mMediaPlayer.setMirrorRotation(isMirrorFlip);
             mMirrorFlipBtn.setSelected(isMirrorFlip);
+        } else if (i == R.id.screen_shot_btn) {
+            Bitmap bitmap = mMediaPlayer.doScreenShot();
+            String path = ImageUtils.INSTANCE.saveBitmap(bitmap);
+            if (!TextUtils.isEmpty(path)) {
+                ImageUtils.INSTANCE.insertImageToSystem(getContext(), path);
+                Toast.makeText(mActivity, "截图已保存到" + path, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -559,6 +573,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 if (mShowing) {
                     mLockButton.setVisibility(VISIBLE);
                     mTopContainer.setVisibility(VISIBLE);
+                    mScreenShotBtn.setVisibility(VISIBLE);
                 } else {
                     mLockButton.setVisibility(GONE);
                 }
@@ -810,6 +825,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mTopContainer.startAnimation(mHideAnim);
         mBottomContainer.setVisibility(GONE);
         mBottomContainer.startAnimation(mHideAnim);
+        mScreenShotBtn.setVisibility(GONE);
     }
 
     private void show(int timeout) {
@@ -845,6 +861,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mBottomContainer.startAnimation(mShowAnim);
         mTopContainer.setVisibility(VISIBLE);
         mTopContainer.startAnimation(mShowAnim);
+        mScreenShotBtn.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.cyuan.bimibimi.ui.splash
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -23,6 +24,9 @@ import kotlinx.android.synthetic.main.splash_layout.*
 class SplashActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        try {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } catch (e: Exception) {}
         super.onCreate(savedInstanceState)
         DensityUtils.setDensity(application, this)
         setContentView(R.layout.splash_layout)

@@ -299,6 +299,16 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/screen_shot_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_screenshot_24dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:visibility="visible"/>
+
     <include layout="@layout/speed_list"/>
 
     <include layout="@layout/player_menu_layout" />

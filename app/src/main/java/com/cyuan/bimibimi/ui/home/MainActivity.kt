@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -12,6 +13,7 @@ import androidx.navigation.ui.NavigationUI
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.DensityUtils
+import com.cyuan.bimibimi.core.utils.PermissionsMgr
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
@@ -31,6 +33,12 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
         super.onCreate(savedInstanceState)
         DensityUtils.setDensity(application, this)
         setContentView(R.layout.activity_main)
+
+        if(!PermissionsMgr.isAllPermissionReady(this)) {
+            PermissionsMgr.requestAllPermissionsAppNeed(this, {}, {
+                Toast.makeText(this, "为了保证程序正常运行请打开读写外部存储权限", Toast.LENGTH_SHORT).show()
+            })
+        }
 
         navController = Navigation.findNavController(this, R.id.fragment)
 
@@ -94,6 +102,14 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
             SupportSkinHelper.setSkin("night")
             switchModeBtn.setImageResource(R.drawable.ic_switch_night)
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        PermissionsMgr.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun applySkin() {
