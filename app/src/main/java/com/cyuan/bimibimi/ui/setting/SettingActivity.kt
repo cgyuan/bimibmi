@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
-import kotlinx.android.synthetic.main.toolbar_layout.toolbar
+import kotlinx.android.synthetic.main.toolbar_layout.mToolbar
 import skin.support.widget.SkinCompatSupportable
 
 class SettingActivity : BaseActivity(), SkinCompatSupportable {
@@ -12,8 +12,8 @@ class SettingActivity : BaseActivity(), SkinCompatSupportable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
-        toolbar.title = "设置与帮助"
-        toolbar.run {
+        mToolbar.title = "设置与帮助"
+        mToolbar.run {
             setSupportActionBar(this)
             title = "设置与帮助"
             setNavigationIcon(R.drawable.ic_arrow_back_24dp)

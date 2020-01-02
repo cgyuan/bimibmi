@@ -30,7 +30,7 @@
             android:layout_height="80dp">
 
             <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
+                    android:id="@+id/mToolbar"
                     android:layout_width="match_parent"
                     app:titleTextAppearance="@style/ToolbarTitle"
                     android:fitsSystemWindows="true"

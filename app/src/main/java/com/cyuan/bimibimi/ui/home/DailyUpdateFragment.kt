@@ -59,9 +59,9 @@ class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
         bindEmptyViewCallback(this)
         emptyView.bind(recyclerView)
         setHasOptionsMenu(true)
-        toolbar.title = "新番播放表"
-        toolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
-        toolbar.setNavigationOnClickListener {
+        mToolbar.title = "新番播放表"
+        mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
+        mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
 

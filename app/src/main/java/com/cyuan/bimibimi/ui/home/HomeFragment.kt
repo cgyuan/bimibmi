@@ -1,5 +1,6 @@
 package com.cyuan.bimibimi.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ import com.cyuan.bimibimi.repository.OnlineMovieRepository
 import com.cyuan.bimibimi.ui.base.CommonGridHelperAdapter
 import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
+import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.HomeViewModel
 import com.cyuan.bimibimi.ui.search.SearchActivity
@@ -52,8 +54,8 @@ class HomeFragment : Fragment() , UICallback {
         bindEmptyViewCallback(this)
         emptyView.bind(recyclerView)
         setHasOptionsMenu(true)
-        toolbar.title = ""
-        (activity as MainActivity).setSupportActionBar(toolbar)
+        mToolbar.title = ""
+        (activity as MainActivity).setSupportActionBar(mToolbar)
         initSearchView()
         initRecyclerView()
 
@@ -118,5 +120,12 @@ class HomeFragment : Fragment() , UICallback {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
         searchView.setMenuItem(menu.findItem(R.id.id_action_search))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.id_action_download) {
+            startActivity(Intent(activity, DownloadActivity::class.java))
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

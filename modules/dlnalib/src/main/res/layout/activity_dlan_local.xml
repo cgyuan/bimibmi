@@ -8,7 +8,7 @@
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:id="@+id/toolbar"
+        android:id="@+id/mToolbar"
         android:layout_marginTop="30dp"
         android:layout_height="60dp">
 
@@ -54,7 +54,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/mToolbar"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:id="@+id/local_content"

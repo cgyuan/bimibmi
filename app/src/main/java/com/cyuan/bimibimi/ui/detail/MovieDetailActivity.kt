@@ -2,6 +2,7 @@ package com.cyuan.bimibimi.ui.detail
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -36,6 +37,7 @@ import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.detail.adapter.RecommendMovieAdapter
+import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.widget.FocusLayoutManager
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import kotlinx.android.synthetic.main.content_online_detail_page.*
@@ -67,8 +69,8 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         detail_veilLayout_body.shimmer = ShimmerUtils.getGrayShimmer(this)
 
         root.setBackgroundColor(Color.rgb(110, 110, 100))
-        toolbar.setBackgroundColor(Color.rgb(110, 110, 100))
-        setSupportActionBar(toolbar)
+        mToolbar.setBackgroundColor(Color.rgb(110, 110, 100))
+        setSupportActionBar(mToolbar)
 
         initThemeColor()
 
@@ -183,7 +185,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
                 }
                 colorAnim.addUpdateListener {
                     root.setBackgroundColor(it.animatedValue as Int)
-                    toolbar.setBackgroundColor(it.animatedValue as Int)
+                    mToolbar.setBackgroundColor(it.animatedValue as Int)
                 }
                 colorAnim.duration = 300
                 colorAnim.repeatMode = ValueAnimator.RESTART
@@ -220,6 +222,8 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.favorite) {
             toggleFavor(item)
+        } else if (item.itemId == R.id.download) {
+            startActivity(Intent(this, DownloadActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

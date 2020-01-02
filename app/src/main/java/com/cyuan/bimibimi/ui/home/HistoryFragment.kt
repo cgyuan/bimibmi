@@ -47,10 +47,10 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
-        (activity as MainActivity).setSupportActionBar(toolbar)
-        toolbar.title = "历史记录"
-        toolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
-        toolbar.setNavigationOnClickListener {
+        (activity as MainActivity).setSupportActionBar(mToolbar)
+        mToolbar.title = "历史记录"
+        mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
+        mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
 

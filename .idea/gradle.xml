@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/dlnalib" />
+            <option value="$PROJECT_DIR$/modules/thumder" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

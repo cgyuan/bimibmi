@@ -43,6 +43,7 @@
         <activity android:name=".ui.search.SearchActivity" />
         <activity android:name=".ui.theme.ChooseThemeActivity" />
         <activity android:name=".ui.setting.SettingActivity" />
+        <activity android:name=".ui.download.DownloadActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

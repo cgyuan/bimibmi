@@ -43,9 +43,9 @@ class FavoriteFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        toolbar.title = "我的收藏"
-        toolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
-        toolbar.setNavigationOnClickListener {
+        mToolbar.title = "我的收藏"
+        mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
+        mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
 
