@@ -60,6 +60,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
     }
 
     private val episodeItemClickListener = CustomVideoController.OnItemClickedListener { position ->
+        controller.showSingleBackBtn()
         playByEpisodeIndex(position)
     }
 
@@ -147,6 +148,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         mVideoView.startFullScreen()
         mVideoView.start()
         mVideoView.seekTo(playPosition)
+        controller.showSingleBackBtn()
 
         initDLNA()
     }

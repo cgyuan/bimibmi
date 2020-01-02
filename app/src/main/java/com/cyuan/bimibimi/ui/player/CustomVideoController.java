@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -50,7 +51,6 @@ import com.dueeeke.videoplayer.controller.MediaPlayerControl;
 import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.L;
 import com.dueeeke.videoplayer.util.PlayerUtils;
-import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     protected int mPadding;
     private int mCurrentOrientation = -1;
 
-    private SpinKitView mLoadingProgress;
+    private ImageView mLoadingProgress;
     private NetSpeedUtil mNetSpeedUtil;
     private TextView mCenterNetSpeedView;
     private TextView mTopNetSpeedView;
@@ -114,9 +114,9 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==111){
-                loadNetSpeed();
-                handler.sendEmptyMessageDelayed(111,1000);
+            if (msg.what==0){
+                refreshNetSpeed();
+                handler.sendEmptyMessageDelayed(0,1000);
             }
 
         }
@@ -133,8 +133,13 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     private boolean isMirrorFlip;
     private RadioGroup mPlayBehaviorGroup;
     private View mScreenShotBtn;
+    private AnimationDrawable mLoadingAnimDrawable;
+    private View mSingleBackBtn;
 
-    private void loadNetSpeed(){
+    /**
+     * 刷新网速
+     */
+    private void refreshNetSpeed(){
         if (mNetSpeedUtil==null){
             mNetSpeedUtil = new NetSpeedUtil();
         }
@@ -142,6 +147,14 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
             String netSpeeds = mNetSpeedUtil.getNetSpeed(getContext());
             mCenterNetSpeedView.setText(netSpeeds);
         }
+        if (mTopNetSpeedView.isShown()){
+            String netSpeeds = mNetSpeedUtil.getNetSpeed(getContext());
+            mTopNetSpeedView.setText(netSpeeds);
+        }
+    }
+
+    public void showSingleBackBtn() {
+        mSingleBackBtn.setVisibility(VISIBLE);
     }
 
 
@@ -185,6 +198,9 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mStartPlayButton = mControllerView.findViewById(R.id.start_play);
         mLoadingContainer = mControllerView.findViewById(R.id.loading_content);
         mLoadingProgress = mControllerView.findViewById(R.id.play_loading);
+        mSingleBackBtn = mControllerView.findViewById(R.id.single_back_btn);
+        mSingleBackBtn.setOnClickListener(this);
+        mLoadingAnimDrawable = (AnimationDrawable) mLoadingProgress.getDrawable();
         mCenterNetSpeedView = mControllerView.findViewById(R.id.net_speed);
 
         mTopNetSpeedView = mControllerView.findViewById(R.id.net_speed_tv);
@@ -304,6 +320,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
             sCurrentIndex = currentIndex;
             this.showChoseBtn = true;
             this.mPlayList = playList;
+            mChooseEpisodeBtn.setVisibility(VISIBLE);
             invalidate();
         }
     }
@@ -479,7 +496,8 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.fullscreen || i == R.id.cover_player_controller_image_view_back_icon || i == R.id.stop_fullscreen) {
+        if (i == R.id.fullscreen || i == R.id.cover_player_controller_image_view_back_icon || i == R.id.stop_fullscreen
+            || i == R.id.single_back_btn) {
             Activity activity = PlayerUtils.scanForActivity(getContext());
             if (activity != null) {
                 activity.finish();
@@ -549,6 +567,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 //                mFullScreenButton.setSelected(false);
                 mBackButton.setVisibility(GONE);
                 mLockButton.setVisibility(GONE);
+                mScreenShotBtn.setVisibility(GONE);
                 mTitle.setVisibility(INVISIBLE);
                 mTitle.setNeedFocus(false);
                 mSysTime.setVisibility(GONE);
@@ -576,6 +595,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                     mScreenShotBtn.setVisibility(VISIBLE);
                 } else {
                     mLockButton.setVisibility(GONE);
+                    mScreenShotBtn.setVisibility(GONE);
                 }
                 break;
         }
@@ -598,6 +618,8 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 mCompleteContainer.setVisibility(GONE);
                 mBottomProgress.setVisibility(GONE);
                 mLoadingContainer.setVisibility(GONE);
+                mLoadingContainer.setBackgroundResource(R.drawable.preview_bg);
+                mLoadingAnimDrawable.stop();
                 mStatusView.dismiss();
                 mStartPlayButton.setVisibility(VISIBLE);
                 mThumb.setVisibility(VISIBLE);
@@ -609,6 +631,9 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 mPlayButton.setSelected(true);
                 mLoadingContainer.setVisibility(GONE);
                 mCompleteContainer.setVisibility(GONE);
+                mLoadingContainer.setBackground(null);
+                mSingleBackBtn.setVisibility(GONE);
+                mLoadingAnimDrawable.stop();
                 mThumb.setVisibility(GONE);
                 mStartPlayButton.setVisibility(GONE);
                 break;
@@ -626,12 +651,14 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 showLoadingContent();
                 mLoadingContainer.setVisibility(VISIBLE);
 //                mThumb.setVisibility(VISIBLE);
+                mLoadingAnimDrawable.start();
                 break;
             case VideoView.STATE_PREPARED:
                 L.e("STATE_PREPARED");
                 if (!mIsLive) mBottomProgress.setVisibility(VISIBLE);
 //                mLoadingProgress.setVisibility(GONE);
                 mStartPlayButton.setVisibility(GONE);
+                show(8000);
                 break;
             case VideoView.STATE_ERROR:
                 L.e("STATE_ERROR");
@@ -641,6 +668,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 removeCallbacks(mShowProgress);
                 mStartPlayButton.setVisibility(GONE);
                 mLoadingContainer.setVisibility(GONE);
+                mLoadingAnimDrawable.stop();
                 mThumb.setVisibility(GONE);
                 mBottomProgress.setVisibility(GONE);
                 mTopContainer.setVisibility(GONE);
@@ -649,6 +677,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 L.e("STATE_BUFFERING");
                 mStartPlayButton.setVisibility(GONE);
                 mLoadingContainer.setVisibility(VISIBLE);
+                mLoadingAnimDrawable.start();
                 mThumb.setVisibility(GONE);
                 showLoadingContent();
                 mPlayButton.setSelected(mMediaPlayer.isPlaying());
@@ -657,6 +686,9 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 L.e("STATE_BUFFERED");
                 mLoadingContainer.setVisibility(GONE);
                 mStartPlayButton.setVisibility(GONE);
+                mLoadingContainer.setBackground(null);
+                mSingleBackBtn.setVisibility(GONE);
+                mLoadingAnimDrawable.stop();
                 mThumb.setVisibility(GONE);
                 mPlayButton.setSelected(mMediaPlayer.isPlaying());
                 break;
@@ -699,6 +731,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mBottomProgress.setProgress(0);
         mBottomProgress.setSecondaryProgress(0);
         mLoadingContainer.setVisibility(GONE);
+        mLoadingAnimDrawable.stop();
     }
 
     /**
@@ -706,23 +739,10 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
      */
     private void showLoadingContent() {
         mLoadingContainer.setVisibility(View.VISIBLE);
+        mLoadingAnimDrawable.start();
         //开始获取网速
         refreshNetSpeed();
-        handler.sendEmptyMessage(111);
-    }
-
-    /**
-     * 刷新网速
-     */
-    private void refreshNetSpeed() {
-        if (mNetSpeedUtil==null){
-            mNetSpeedUtil = new NetSpeedUtil();
-        }
-        if (mTopNetSpeedView.isShown()){
-            String netSpeeds = mNetSpeedUtil.getNetSpeed(getContext());
-            mTopNetSpeedView.setText(netSpeeds);
-        }
-
+        handler.sendEmptyMessage(0);
     }
 
     /**
@@ -805,6 +825,8 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
             if (mMediaPlayer.isFullScreen()) {
                 mLockButton.setVisibility(GONE);
                 mLockButton.setAnimation(mHideAnim);
+                mScreenShotBtn.setVisibility(GONE);
+                mScreenShotBtn.setAnimation(mHideAnim);
                 if (!mIsLocked) {
                     hideAllViews();
                 }
@@ -836,6 +858,8 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
                 if (mLockButton.getVisibility() != VISIBLE) {
                     mLockButton.setVisibility(VISIBLE);
                     mLockButton.setAnimation(mShowAnim);
+                    mScreenShotBtn.setVisibility(VISIBLE);
+                    mScreenShotBtn.setAnimation(mShowAnim);
                 }
                 if (!mIsLocked) {
                     showAllViews();
@@ -861,7 +885,6 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mBottomContainer.startAnimation(mShowAnim);
         mTopContainer.setVisibility(VISIBLE);
         mTopContainer.startAnimation(mShowAnim);
-        mScreenShotBtn.setVisibility(View.VISIBLE);
     }
 
     @Override
