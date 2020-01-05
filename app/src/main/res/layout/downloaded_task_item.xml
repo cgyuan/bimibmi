@@ -40,8 +40,9 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="8dp"
                 android:text="武庚纪：三界缘起第3集"
                 android:maxLines="2"
                 android:textSize="16sp"
@@ -52,34 +53,12 @@
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="TextView"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="15dp"
+                android:text="下载完成"
                 android:textColor="@color/font_gray"
-                android:layout_above="@id/progress_bar"/>
+                android:layout_below="@id/title" />
 
-            <TextView
-                android:id="@+id/speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3M/s"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/font_gray"
-                android:layout_above="@id/progress_bar"/>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:max="100"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:progressDrawable="@drawable/dkplayer_layer_progress_bar" />
 
 
         </RelativeLayout>

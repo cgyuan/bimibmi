@@ -60,7 +60,7 @@ class DownloadingTaskAdapter :
         if (taskInfo.speed.isNotEmpty()) {
             speed = taskInfo.speed + "/s"
         }
-        holder.mTitleView.text = taskInfo.title
+        holder.mTitleView.text = "【${taskInfo.title}】${taskInfo.episodeName}"
         holder.mSpeedView.text = ""
         when (taskInfo.taskStatus) {
             -1 -> {
@@ -84,10 +84,16 @@ class DownloadingTaskAdapter :
         holder.itemView.setOnClickListener {
             mOnItemClickListener?.onClick(taskInfo)
         }
+
+        holder.itemView.setOnLongClickListener {
+            mOnItemClickListener?.onLongClick(taskInfo)
+            true
+        }
     }
 
     interface OnItemClickListener {
         fun onClick(task: DownloadTaskInfo)
+        fun onLongClick(task: DownloadTaskInfo)
     }
 
 

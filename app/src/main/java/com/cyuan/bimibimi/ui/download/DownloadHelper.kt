@@ -1,40 +1,44 @@
 package com.cyuan.bimibimi.ui.download
 
 import android.content.Context
-import android.os.Environment
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.utils.FileUtils
+import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.ITask
 import com.cyuan.bimibimi.ui.download.viewmodel.DownloadViewModel
+import com.cyuan.bimibimi.ui.download.viewmodel.DownloadViewModelFactory
 import com.hdl.m3u8.M3U8DownloadTask
 import com.hdl.m3u8.bean.OnDownloadListener
 import com.hdl.m3u8.utils.NetSpeedUtils
 import com.xunlei.downloadlib.XLDownloadManager
 import com.xunlei.downloadlib.XLTaskHelper
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DownloadHelper(
     val context: Context,
     private var iTask: ITask?
 ) {
     private var taskId: String? = null
-    private var newTaskId: String? = null
-    private var mDownloadingTasks = ArrayList<DownloadTaskInfo>()
     private lateinit var downloadViewModel: DownloadViewModel
-
-    fun refreshTaskList() {
-        downloadViewModel.mDownloadTasks.postValue(mDownloadingTasks)
-    }
 
 
     fun addTask(taskInfo: DownloadTaskInfo) {
-        val taskName = XLTaskHelper.instance().getFileName(taskInfo.taskUrl)
-        val path = App.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)!!.path
+        val repository = RepositoryProvider.providerDownloadTaskRepository()
+        val taskExist = repository.isTaskDownloading(taskInfo)
+
+        if (taskExist) {
+            Toast.makeText(App.getContext(), "任务已存在", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val path = FileUtils.cachePath
 //        taskInfo.title = taskName
-        taskInfo.filePath = "$path/$taskName"
+        taskInfo.localPath = path
+        val fileName = "【${taskInfo.title}】${taskInfo.episodeName}.mp4"
+        taskInfo.filePath = "$path/$fileName"
         taskInfo.taskStatus = -1
         if (taskInfo.taskUrl.toLowerCase().endsWith("m3u8")) {
             if (taskInfo.taskId.isEmpty()) {
@@ -42,7 +46,7 @@ class DownloadHelper(
             }
             val downloadTask = M3U8DownloadTask(taskId)
 
-            downloadTask.saveFilePath = "$path/${taskInfo.title}"
+            downloadTask.saveFilePath = "$path/${fileName}"
             downloadTask.isClearTempDir = true
             downloadTask.download(taskInfo.taskUrl, object : OnDownloadListener {
 
@@ -80,22 +84,22 @@ class DownloadHelper(
                     taskInfo.taskStatus = 1
                 }
 
-
             })
 
         } else if (taskInfo.taskUrl.contains("magnet") || XLTaskHelper.instance().getFileName(taskInfo.taskUrl).endsWith("torrent")) {
             taskId = if (taskInfo.taskUrl.startsWith("magnet")) {
-                addMagnetTask(taskInfo.taskUrl, path, taskInfo.title)
+                addMagnetTask(taskInfo.taskUrl, path, fileName)
             } else {
-                addMagnetTask(getRealUrl(taskInfo.taskUrl), path, taskInfo.title)
+                addMagnetTask(getRealUrl(taskInfo.taskUrl), path, fileName)
             }
         } else {
-            taskId = addThunderTask(taskInfo.taskUrl, path, taskInfo.title)
+            taskId = addThunderTask(taskInfo.taskUrl, path, fileName)
         }
         taskInfo.taskId = taskId!!
-        if(!mDownloadingTasks.map { task -> task.taskUrl }.contains(taskInfo.taskUrl)) {
+        /*if(!mDownloadingTasks.map { task -> task.taskUrl }.contains(taskInfo.taskUrl)) {
             mDownloadingTasks.add(taskInfo)
-        }
+        }*/
+        repository.saveTask(taskInfo)
     }
 
     private fun addMagnetTask(url: String, savePath: String, fileName: String?): String? {
@@ -134,10 +138,14 @@ class DownloadHelper(
     }
 
     fun initDownloadLiveData(activity: DownloadActivity) {
-        downloadViewModel = ViewModelProviders.of(activity).get(DownloadViewModel::class.java)
-        downloadViewModel.mDownloadTasks.postValue(mDownloadingTasks)
+        downloadViewModel = ViewModelProviders.of(activity, DownloadViewModelFactory()).get(DownloadViewModel::class.java)
+//        downloadViewModel.mDownloadTasks.postValue(mDownloadingTasks)
         downloadViewModel.mDownloadTasks.observe(activity, Observer {
             iTask?.updateIngTask(it)
+        })
+
+        downloadViewModel.mDownloadedTask.observe(activity, Observer {
+            iTask?.updateDoneTask(it)
         })
     }
 

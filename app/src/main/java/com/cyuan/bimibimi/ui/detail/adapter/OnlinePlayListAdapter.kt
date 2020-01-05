@@ -78,7 +78,12 @@ class OnlinePlayListAdapter(private val context: Context,
                                     taskInfo.coverUrl = movieDetail.cover
                                     taskInfo.receiveSize = "0"
                                     taskInfo.totalSize = "0"
-                                    taskInfo.title = "【${movieDetail.title}】${episodes[position].title}.mp4"
+                                    taskInfo.title = movieDetail.title
+                                    taskInfo.dataSourceIndex = dataSourceIndex
+                                    taskInfo.episodeIndex = position
+                                    taskInfo.episodeName = episodes[position].title
+                                    taskInfo.href = movieDetail.href
+                                    taskInfo.episodeHref = episodes[position].href
                                     val downloadHelper = DownloadHelper.getInstance(context, null)
                                     downloadHelper.addTask(taskInfo)
                                 }

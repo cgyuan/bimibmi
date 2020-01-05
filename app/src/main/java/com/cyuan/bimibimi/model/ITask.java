@@ -9,4 +9,5 @@ public interface ITask {
 
     void updateIngTask(List<DownloadTaskInfo> taskInfo);
 
+    void updateDoneTask(List<DownloadTaskInfo> taskInfo);
 }

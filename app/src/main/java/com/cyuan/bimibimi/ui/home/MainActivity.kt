@@ -17,6 +17,7 @@ import com.cyuan.bimibimi.core.utils.PermissionsMgr
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
+import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.ui.setting.SettingActivity
 import com.cyuan.bimibimi.ui.theme.ChooseThemeActivity
 import com.google.android.material.snackbar.Snackbar
@@ -51,6 +52,8 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
                 startActivity(Intent(this@MainActivity, ChooseThemeActivity::class.java))
             } else if (it.itemId == R.id.item_settings) {
                 startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+            } else if (it.itemId == R.id.item_download) {
+                startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
             }
             true
         }

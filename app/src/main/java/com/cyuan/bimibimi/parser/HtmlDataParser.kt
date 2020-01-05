@@ -9,6 +9,7 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.extension.logWarn
 import com.cyuan.bimibimi.core.utils.UrlHelper
+import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.SearchRequest
@@ -151,7 +152,7 @@ object HtmlDataParser {
                         playList.forEach {
                             val episode = Episode()
                             episode.title = it.text()
-                            episode.href = Constants.BIMIBIMI_INDEX + it.attr("href")
+                            episode.href = Constants.BIMIBIMI_INDEX.substring(0, Constants.BIMIBIMI_INDEX.length - 1) + it.attr("href")
                             episodes.add(episode)
                         }
                         dataSource.episodes = episodes
@@ -195,9 +196,20 @@ object HtmlDataParser {
             })
     }
 
-    fun parseVideoSource(context: Context, episode: Episode, callback: ParseResultCallback<String>?) {
+    fun parseVideoSource(
+        context: Context,
+        episode: Episode,
+        callback: ParseResultCallback<String>?
+    ) {
+        val repository = RepositoryProvider.providerDownloadTaskRepository()
+        val taskInfo = repository.getFinishedTask(episode.href)
+        if (taskInfo != null) {
+            callback?.onSuccess(taskInfo.filePath)
+            return
+        }
+
         StringRequest().url(episode.href)
-            .listen(object: Callback {
+            .listen(object : Callback {
                 override fun onFailure(e: Exception) {
                     callback?.onFail(e.message ?: "解析视频失败")
                 }
@@ -219,7 +231,8 @@ object HtmlDataParser {
                         // https://www.iqiyi.com/v_19rrok4pg4.html
                         if (url.contains("iqiyi")) {
                             val vid = UrlHelper.extractIqyVideoId(url)
-                            url = "https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
+                            url =
+                                "https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
                             callback?.onSuccess(url)
                         } else if (url.contains("v.qq.com")) {
                             // https://v.qq.com/x/cover/enj7gj9pcksq89p/g0761hr9ih3.html

@@ -2,6 +2,7 @@ package com.cyuan.bimibimi.core.utils
 
 import android.os.Environment
 import android.util.Log
+import com.cyuan.bimibimi.core.App
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -40,6 +41,9 @@ object FileUtils {
             return arrayOf(usable, total)
         }
 
+    val cachePath: String
+        get() = SharedUtil.read("VIDEO_CACHE_PATH", App.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)!!.path)
+
     /**
      * 获取下载目录文件大小
      * @return
@@ -47,7 +51,7 @@ object FileUtils {
     val cacheSize: String
         get() {
             try {
-                val localPath = SharedUtil.read("LOCAL_PATH", Environment.getExternalStorageDirectory().toString() + "/MovieDownload")
+                val localPath = cachePath
                 val path = isExistDir(localPath)
                 val file = File(path)
                 return convertFileSize(

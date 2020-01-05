@@ -325,6 +325,12 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         }
     }
 
+    public void setNeedSpeedVisible(boolean b) {
+        int visibility = b ? VISIBLE : INVISIBLE;
+        mTopNetSpeedView.setVisibility(visibility);
+        mCenterNetSpeedView.setVisibility(visibility);
+    }
+
     public boolean isAllowPlayBackground() {
         return isAllowPlayBackground;
     }

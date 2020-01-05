@@ -72,6 +72,8 @@ class OnlinePlayerActivity : AppCompatActivity() {
             object : ParseResultCallback<String> {
                 override fun onSuccess(url: String) {
                     this@OnlinePlayerActivity.currentUrl = url
+                    val netSpeedVisible = !currentUrl.startsWith("file") && !currentUrl.startsWith("/")
+                    controller.setNeedSpeedVisible(netSpeedVisible)
                     episodeName = episode.title
                     mVideoView.stopPlayback()
                     mVideoView.release()
@@ -119,6 +121,9 @@ class OnlinePlayerActivity : AppCompatActivity() {
         if (!episodeList.isNullOrEmpty()) {
             controller.configPlayList(episodeList, episodeIndex)
         }
+
+        val netSpeedVisible = !currentUrl.startsWith("file") && !currentUrl.startsWith("/")
+        controller.setNeedSpeedVisible(netSpeedVisible)
 
         val player = PreferenceManager.getDefaultSharedPreferences(this)
             .getString(Constants.SET_PLAYER, Constants.Player.EXO_PLAYER)
