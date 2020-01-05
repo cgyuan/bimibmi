@@ -29,7 +29,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     compileOnly 'javax.enterprise:cdi-api:2.0'
-    implementation 'com.github.yanbo469:VideoDlnaScreen:v1.0'
+    api 'com.github.yanbo469:VideoDlnaScreen:v1.0'
 
     //loading
     api 'com.github.ybq:Android-SpinKit:1.2.0'

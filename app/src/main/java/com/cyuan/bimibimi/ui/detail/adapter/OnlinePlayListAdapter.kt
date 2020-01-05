@@ -1,5 +1,6 @@
 package com.cyuan.bimibimi.ui.detail.adapter
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -7,14 +8,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
+import com.cyuan.bimibimi.BimibimiApp
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.ui.download.DownloadHelper
+import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.detail.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
+import com.cyuan.bimibimi.widget.MessageDialog
 import java.util.*
 
 class OnlinePlayListAdapter(private val context: Context,
@@ -58,6 +64,35 @@ class OnlinePlayListAdapter(private val context: Context,
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             })
+        }
+        holder.itemView.setOnLongClickListener {
+            HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
+                override fun onSuccess(data: String) {
+                    App.getHandler().post {
+                        MessageDialog.Builder((App.getContext() as BimibimiApp).getCurrentActivity())
+                            .setMessage("缓存视频？")
+                            .setListener(object : MessageDialog.OnListener {
+                                override fun confirm(dialog: Dialog?) {
+                                    val taskInfo = DownloadTaskInfo()
+                                    taskInfo.taskUrl = data
+                                    taskInfo.coverUrl = movieDetail.cover
+                                    taskInfo.receiveSize = "0"
+                                    taskInfo.totalSize = "0"
+                                    taskInfo.title = "【${movieDetail.title}】${episodes[position].title}.mp4"
+                                    val downloadHelper = DownloadHelper.getInstance(context, null)
+                                    downloadHelper.addTask(taskInfo)
+                                }
+
+                                override fun cancel(dialog: Dialog?) {}
+                            }).show()
+                    }
+                }
+
+                override fun onFail(msg: String) {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
+            })
+            true
         }
     }
 

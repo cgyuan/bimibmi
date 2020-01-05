@@ -3,6 +3,7 @@ package com.cyuan.bimibimi
 import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.FragmentActivity
 import androidx.multidex.MultiDexApplication
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
@@ -14,9 +15,12 @@ import skin.support.app.SkinCardViewInflater
 import skin.support.constraint.app.SkinConstraintViewInflater
 import skin.support.design.app.SkinMaterialViewInflater
 import zmovie.com.dlan.DlnaLib
+import java.lang.ref.WeakReference
 
 
 class BimibimiApp : MultiDexApplication() {
+
+    var currentActivityWeakRef: WeakReference<FragmentActivity>? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -59,6 +63,7 @@ class BimibimiApp : MultiDexApplication() {
                 if (visibleActivityCount == 1 && uetoolDismissY >= 0) {
                     UETool.showUETMenu(uetoolDismissY)
                 }
+                currentActivityWeakRef = WeakReference(activity as FragmentActivity)
             }
 
             override fun onActivityPaused(activity: Activity) {
@@ -81,4 +86,9 @@ class BimibimiApp : MultiDexApplication() {
             }
         })
     }
+
+    fun getCurrentActivity() :FragmentActivity? {
+        return currentActivityWeakRef?.get()
+    }
+
 }

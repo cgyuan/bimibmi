@@ -85,7 +85,15 @@ android {
 
 }
 
+repositories{
+    flatDir{
+        dirs 'libs'
+    }
+}
+
+
 dependencies {
+    implementation (name:'M3U8Manger-v2.3.1', ext:'aar')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -116,6 +124,7 @@ dependencies {
     }
 
     implementation project(':modules:dlnalib')
+    implementation project(':modules:thunder')
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation "com.github.skydoves:androidveil:1.0.7"

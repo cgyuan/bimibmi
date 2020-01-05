@@ -1,2 +1,2 @@
-include ':app', ':modules:dlnalib', ":modules:thumder"
+include ':app', ':modules:dlnalib', ":modules:thunder"
 rootProject.name='BimibimiClient'
