@@ -59,6 +59,7 @@ class HistoryAdapter(
                 intent.putExtra(PlayerKeys.EPISODE_NAME, history.episodeName)
                 intent.putExtra(PlayerKeys.EPISODE_INDEX, history.episodeIndex)
                 intent.putExtra(PlayerKeys.MOVIE_COVER, history.cover)
+                intent.putExtra(PlayerKeys.PLAY_POSITION, history.position)
                 intent.putParcelableArrayListExtra(PlayerKeys.EPISODE_LIST, movieDetail?.dataSources?.get(history.dataSourceIndex)?.episodes)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 App.getContext().startActivity(intent)

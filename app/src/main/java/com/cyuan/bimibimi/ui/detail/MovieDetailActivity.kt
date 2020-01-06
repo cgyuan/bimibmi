@@ -31,8 +31,8 @@ import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
 import com.cyuan.bimibimi.core.utils.ShimmerUtils
 import com.cyuan.bimibimi.databinding.ActivityMovieDetailBinding
-import com.cyuan.bimibimi.db.AppDatabase
 import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
+import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
@@ -202,7 +202,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.cat_topappbar_menu, menu)
         val item = menu!!.findItem(R.id.favorite)
-        favoriteMovieRepository = FavoriteMovieRepository.getInstance(AppDatabase.instance.favoriteMovieDao())
+        favoriteMovieRepository = RepositoryProvider.providerFavoriteMovieRepository()
         val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
         item.setIcon(if (isFavorMovie) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
         if (isFavorMovie) {

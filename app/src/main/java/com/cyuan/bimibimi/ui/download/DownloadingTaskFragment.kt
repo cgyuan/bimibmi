@@ -63,13 +63,18 @@ class DownloadingTaskFragment: Fragment(), DownloadingTaskAdapter.OnItemClickLis
             .setMessage("确定删除当前任务吗？")
             .setListener(object : MessageDialog.OnListener {
                 override fun confirm(dialog: Dialog?) {
-                    val m3U8DownloadTask = M3U8DownloadTask(task.taskId)
-                    m3U8DownloadTask.stop()
-                    task.taskStatus = 0
-                    val tempDir = Reflector.on(m3U8DownloadTask::class.java).field("tempDir").get<String>(m3U8DownloadTask)
-                    MUtils.clearDir(File(tempDir))
-                    val repository = RepositoryProvider.providerDownloadTaskRepository()
-                    repository.deleteTask(task)
+                    if (task.taskUrl.toLowerCase().endsWith("m3u8")) {
+                        val m3U8DownloadTask = M3U8DownloadTask(task.taskId)
+                        m3U8DownloadTask.stop()
+                        task.taskStatus = 0
+                        val tempDir = Reflector.on(m3U8DownloadTask::class.java).field("tempDir").get<String>(m3U8DownloadTask)
+                        MUtils.clearDir(File(tempDir))
+                        val repository = RepositoryProvider.providerDownloadTaskRepository()
+                        repository.deleteTask(task)
+                    } else {
+                        File(task.filePath).deleteOnExit()
+                        File("${task.filePath}.js").deleteOnExit()
+                    }
                     Toast.makeText(activity, "删除成功", Toast.LENGTH_SHORT).show()
                 }
                 override fun cancel(dialog: Dialog?) {}

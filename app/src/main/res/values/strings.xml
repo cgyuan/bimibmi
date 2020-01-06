@@ -28,6 +28,7 @@
     <string name="prompt_loading">加载中…</string>
 
     <string name="delete_history_msg">确定要删除这条播放记录吗？</string>
+    <string name="delete_favorite_msg">确定要删除这条收藏记录吗？</string>
     <string name="clear_history_msg">确定要清空所有播放记录吗？</string>
     <string name="dialog_confirm">确定</string>
     <string name="dialog_cancel">取消</string>

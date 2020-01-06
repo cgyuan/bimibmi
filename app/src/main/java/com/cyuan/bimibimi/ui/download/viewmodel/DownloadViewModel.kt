@@ -48,7 +48,6 @@ class DownloadViewModel(
                 repository.saveTask(taskInfo)
             }
         }
-//        DownloadHelper.getInstance(App.getContext(), null).refreshTaskList()
     }
 
     override fun onCleared() {

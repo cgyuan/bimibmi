@@ -17,7 +17,9 @@ import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.detail.MovieDetailActivity
 
-class FavoriteMovieAdapter(): PagedListAdapter<FavoriteMovie, FavoriteMovieAdapter.FavoriteItemHolder>(FavoriteMovieCallback()) {
+class FavoriteMovieAdapter(
+    private val longClickCallback: View.OnLongClickListener? = null
+): PagedListAdapter<FavoriteMovie, FavoriteMovieAdapter.FavoriteItemHolder>(FavoriteMovieCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteItemHolder {
         val binding = MovieCardItemLayoutBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -39,6 +41,8 @@ class FavoriteMovieAdapter(): PagedListAdapter<FavoriteMovie, FavoriteMovieAdapt
             intent.putExtra(PlayerKeys.MOVIE, mv)
             App.getContext().startActivity(intent)
         }
+        holder.itemView.tag = movie
+        holder.itemView.setOnLongClickListener(longClickCallback)
     }
 
 

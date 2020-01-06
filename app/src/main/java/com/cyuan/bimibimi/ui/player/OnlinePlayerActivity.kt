@@ -148,11 +148,11 @@ class OnlinePlayerActivity : AppCompatActivity() {
             mVideoView.setUrl(currentUrl)
             controller.setTitle("【${movieTitle}】$episodeName")
         }
+        controller.setInitPlayPosition(playPosition)
         playView.addView(mVideoView)
         mVideoView.setPlayerFactory(playerFactory)
         mVideoView.startFullScreen()
         mVideoView.start()
-        mVideoView.seekTo(playPosition)
         controller.showSingleBackBtn()
 
         initDLNA()

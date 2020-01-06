@@ -135,6 +135,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     private View mScreenShotBtn;
     private AnimationDrawable mLoadingAnimDrawable;
     private View mSingleBackBtn;
+    private long mInitPosition;
 
     /**
      * 刷新网速
@@ -345,6 +346,10 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 
     public void stopFullScreen() {
         stopFullScreenFromUser();
+    }
+
+    public void setInitPlayPosition(long playPosition) {
+        mInitPosition = playPosition;
     }
 
     public interface OnItemClickedListener {
@@ -665,6 +670,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 //                mLoadingProgress.setVisibility(GONE);
                 mStartPlayButton.setVisibility(GONE);
                 show(8000);
+                mMediaPlayer.seekTo(mInitPosition);
                 break;
             case VideoView.STATE_ERROR:
                 L.e("STATE_ERROR");

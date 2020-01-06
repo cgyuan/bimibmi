@@ -55,11 +55,22 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
         }
 
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(GridDividerItemDecoration(context!!, dp2px(15F), dp2px(15F), isNeedSpace = true, isLastRowNeedSpace = true, color = resources.getColor(R.color.window_background)))
+        recyclerView.addItemDecoration(
+            GridDividerItemDecoration(
+                context!!,
+                dp2px(15F),
+                dp2px(15F),
+                isNeedSpace = true,
+                isLastRowNeedSpace = true,
+                color = resources.getColor(R.color.window_background)
+            )
+        )
 
         viewModel.movies.observe(this, Observer {
             if (it != null) {
                 adapter.submitList(it)
+                // TODO 前面UI刷新会导致卡片变形，边距错乱，使用全局刷新以避免，待后续优化
+                adapter.notifyDataSetChanged()
             }
         })
     }
