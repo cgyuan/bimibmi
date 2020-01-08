@@ -8,15 +8,21 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:expanded="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
+        app:expanded="true">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/mToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextColor="@color/toolbar_title"
+                app:navigationIcon="@drawable/ic_arrow_back_24dp"
+                app:title="番剧类型"/>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/mTabLayout"
@@ -27,8 +33,6 @@
                 android:isScrollContainer="true"
                 app:tabMode="scrollable"
                 app:tabIndicatorColor="@color/design_default_color_primary"/>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
 

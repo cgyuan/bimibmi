@@ -25,10 +25,16 @@ class CategoryActivity : BaseActivity(), SkinCompatSupportable {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
 
-        val category = intent.getStringExtra(PlayerKeys.MOVIE_CATEGORY)
-        val currentPage = pagesPath.indexOf(category!!)
+        val category = intent.getStringExtra(PlayerKeys.MOVIE_CATEGORY) ?: pagesPath[0]
+        val currentPage = pagesPath.indexOf(category)
+
+        mToolbar.setNavigationOnClickListener {
+            finish()
+        }
 
         mTabLayout.setupWithViewPager(viewPager)
+
+        viewPager.offscreenPageLimit = pagesPath.size
 
         viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {

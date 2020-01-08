@@ -12,11 +12,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
-import com.cyuan.bimibimi.core.utils.DensityUtils
 import com.cyuan.bimibimi.core.utils.PermissionsMgr
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
+import com.cyuan.bimibimi.ui.category.CategoryActivity
 import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.ui.setting.SettingActivity
 import com.cyuan.bimibimi.ui.theme.ChooseThemeActivity
@@ -54,6 +54,8 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
                 startActivity(Intent(this@MainActivity, SettingActivity::class.java))
             } else if (it.itemId == R.id.item_download) {
                 startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
+            } else if (it.itemId == R.id.item_category) {
+                startActivity(Intent(this@MainActivity, CategoryActivity::class.java))
             }
             true
         }

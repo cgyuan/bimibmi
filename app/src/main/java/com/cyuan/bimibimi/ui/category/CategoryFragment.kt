@@ -68,25 +68,29 @@ class CategoryFragment(private var category: String) : Fragment() {
         categoryAdapter = CategoryGridHelperAdapter(
             this,
             movieList,
-            R.layout.movie_card_item_layout,
+            R.layout.home_movie_card_layout,
             R.layout.loading_footer
         )
         adapters.addAdapter(categoryAdapter)
         recyclerView.adapter = adapters
+    }
 
-        loadData()
+    override fun onResume() {
+        super.onResume()
+        if (currentPage == 1) {
+            loadData()
+            recyclerView.addOnScrollListener(object : InfiniteScrollListener(recyclerView.layoutManager!!) {
+                override fun onLoadMore() {
+                    currentPage += 1
+                    loadData()
+                }
 
-        recyclerView.addOnScrollListener(object : InfiniteScrollListener(recyclerView.layoutManager!!) {
-            override fun onLoadMore() {
-                currentPage += 1
-                loadData()
-            }
+                override fun isDataLoading() = isLoading
 
-            override fun isDataLoading() = isLoading
+                override fun isNoMoreData() = isNoMoreData
 
-            override fun isNoMoreData() = isNoMoreData
-
-        })
+            })
+        }
     }
 
     fun loadData() {
