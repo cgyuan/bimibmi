@@ -32,7 +32,7 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DensityUtils.setDensity(application, this)
+//        DensityUtils.setDensity(application, this)
         setContentView(R.layout.activity_main)
 
         if(!PermissionsMgr.isAllPermissionReady(this)) {

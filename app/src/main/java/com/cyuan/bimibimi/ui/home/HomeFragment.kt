@@ -74,7 +74,7 @@ class HomeFragment : Fragment() , UICallback {
                 adapters.addAdapter(
                     CommonGridHelperAdapter(
                         context!!, section.list,
-                        R.layout.movie_card_item_layout,
+                        R.layout.home_movie_card_layout,
                         R.layout.hom_section_header_layout,
                         section.title, section.moreLink
                     )

@@ -8,17 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.core.extension.dp2px
-import com.cyuan.bimibimi.databinding.FragmentFavoriteBinding
+import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.databinding.FragmentHistoryBinding
 import com.cyuan.bimibimi.db.AppDatabase
 import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.ui.home.adapter.HistoryAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModelFactory
-import com.cyuan.bimibimi.widget.GridDividerItemDecoration
 import com.cyuan.bimibimi.widget.MessageDialog
-import kotlinx.android.synthetic.main.fragment_favorite.*
+import kotlinx.android.synthetic.main.fragment_history.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class HistoryFragment : Fragment(), View.OnLongClickListener {
@@ -34,12 +33,13 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentFavoriteBinding>(
+        val binding = DataBindingUtil.inflate<FragmentHistoryBinding>(
             inflater,
-            R.layout.fragment_favorite,
+            R.layout.fragment_history,
             container,
             false
         )
+        binding.viewModel = viewModel
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -53,24 +53,17 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
         mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
-
+        emptyView.setEmptyMessageId(R.string.history_empty)
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(
-            GridDividerItemDecoration(
-                context!!,
-                dp2px(15F),
-                dp2px(15F),
-                isNeedSpace = true,
-                isLastRowNeedSpace = true,
-                color = resources.getColor(R.color.window_background)
-            )
-        )
 
         viewModel.movies.observe(this, Observer {
             if (it != null) {
+                if (it.isEmpty()) {
+                    viewModel.viewState.postValue(Constants.ViewState.EMPTY)
+                } else {
+                    viewModel.viewState.postValue(Constants.ViewState.DONE)
+                }
                 adapter.submitList(it)
-                // TODO 前面UI刷新会导致卡片变形，边距错乱，使用全局刷新以避免，待后续优化
-                adapter.notifyDataSetChanged()
             }
         })
     }

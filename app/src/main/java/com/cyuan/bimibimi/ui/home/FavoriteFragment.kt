@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.core.extension.dp2px
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.databinding.FragmentFavoriteBinding
 import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.FavoriteMovie
@@ -18,7 +18,6 @@ import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.home.adapter.FavoriteMovieAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModelFactory
-import com.cyuan.bimibimi.widget.GridDividerItemDecoration
 import com.cyuan.bimibimi.widget.MessageDialog
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
@@ -42,6 +41,8 @@ class FavoriteFragment : Fragment(), View.OnLongClickListener {
             container,
             false
         )
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         return binding.root
     }
 
@@ -54,22 +55,15 @@ class FavoriteFragment : Fragment(), View.OnLongClickListener {
         }
 
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(
-            GridDividerItemDecoration(
-                context!!,
-                dp2px(15F),
-                dp2px(15F),
-                isNeedSpace = true,
-                isLastRowNeedSpace = true,
-                color = resources.getColor(R.color.window_background)
-            )
-        )
 
         viewModel.movies.observe(this, Observer {
             if (it != null) {
+                if (it.isEmpty()) {
+                    viewModel.viewState.postValue(Constants.ViewState.EMPTY)
+                } else {
+                    viewModel.viewState.postValue(Constants.ViewState.DONE)
+                }
                 adapter.submitList(it)
-                //TODO 前面UI刷新会导致卡片变形，边距错乱，使用全局刷新以避免，待后续优化
-                adapter.notifyDataSetChanged()
             }
         })
     }

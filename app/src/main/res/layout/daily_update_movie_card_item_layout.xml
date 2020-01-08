@@ -2,10 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="150dp"
-        android:layout_height="240dp"
-        android:layout_marginLeft="12dp"
+    <com.cyuan.bimibimi.widget.MovieCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         app:cardCornerRadius="4dp">
@@ -16,10 +16,10 @@
             android:orientation="vertical"
             android:background="@color/card_view_background">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.cyuan.bimibimi.widget.MovieImageView
                 android:id="@+id/cover"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/timg1"/>
 
@@ -49,5 +49,5 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.cyuan.bimibimi.widget.MovieCardView>
 </layout>

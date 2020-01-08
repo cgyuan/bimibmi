@@ -2,18 +2,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="176.5dp"
+    <com.cyuan.bimibimi.widget.MovieCardView
+        android:layout_width="match_parent"
         android:layout_height="280dp"
-        app:cardCornerRadius="4dp">
+        app:cardCornerRadius="4dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@color/card_view_background">
+            android:background="@color/card_view_background"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.cyuan.bimibimi.widget.MovieImageView
                 android:id="@+id/cover"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
@@ -24,27 +26,27 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:padding="2dp"
                 android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:text="被偷走的那五年"
                 android:textColor="@color/title_color"
-                android:text="被偷走的那五年" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textColor="@color/red"
-                android:layout_weight="1"
-                android:textSize="12sp"
-                android:padding="2dp"
                 android:layout_marginBottom="2dp"
-                android:text="HD高清" />
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:padding="2dp"
+                android:text="HD高清"
+                android:textColor="@color/red"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.cyuan.bimibimi.widget.MovieCardView>
 </layout>

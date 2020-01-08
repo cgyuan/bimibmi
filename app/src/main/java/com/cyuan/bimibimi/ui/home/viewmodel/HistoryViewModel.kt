@@ -1,9 +1,11 @@
 package com.cyuan.bimibimi.ui.home.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.model.MovieDetail
@@ -15,6 +17,7 @@ class HistoryViewModel(historyRepository: HistoryRepository, private val movieRe
         return movieRepository.fetchMovieDetail(url)
     }
 
+    val viewState = MutableLiveData(Constants.ViewState.LOADING)
     val movies: LiveData<PagedList<History>> =
         LivePagedListBuilder<Int, History>(historyRepository.getAllHistoryByPage(),
             PagedList.Config.Builder()

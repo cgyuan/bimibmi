@@ -11,6 +11,7 @@ import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.cyuan.bimibimi.core.extension.dp2px
 
 class GridDividerItemDecoration
 /**
@@ -26,6 +27,7 @@ class GridDividerItemDecoration
     isNeedSpace: Boolean,
     isLastRowNeedSpace: Boolean = false, @ColorInt color: Int = Color.WHITE
 ) : RecyclerView.ItemDecoration() {
+    private var isDynamicUpdate: Boolean = false
     private var mPaint: Paint?
     private var mFirstRowTopMargin = 0 //第一行顶部是否需要间隔
     private var isNeedSpace = false//第一列和最后一列是否需要指定间隔(默认不指定)
@@ -49,7 +51,7 @@ class GridDividerItemDecoration
                         mContext.resources.displayMetrics.widthPixels
                 if (isNeedSpace)
                     spaceWidth = 2 * mDividerWidth
-                itemWidth = (width - spaceWidth) / spanCount - 40
+                itemWidth = (width - spaceWidth) / spanCount - dp2px(7.5F)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -84,12 +86,14 @@ class GridDividerItemDecoration
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
 
+        val lm = parent.layoutManager ?: return
         var top = 0
         var left = 0
         var right = 0
         var bottom = 0
 
-        val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).getViewLayoutPosition()
+//        val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).getViewLayoutPosition()
+        val itemPosition = lm.getPosition(view)
         spanCount = getSpanCount(parent)
         val childCount = parent.adapter!!.itemCount
         val maxAllDividerWidth = getMaxDividerWidth(view) //
@@ -140,12 +144,12 @@ class GridDividerItemDecoration
                 mContext.resources.displayMetrics.widthPixels
 
         var maxDividerWidth = screenWidth - itemWidth * spanCount
-        if (itemHeight < 0 || itemWidth < 0 || isNeedSpace && maxDividerWidth <= (spanCount - 1) * mDividerWidth) {
-            view.layoutParams.width = attachCloumnWidth
-            view.layoutParams.height = attachCloumnWidth
+        view.layoutParams.width = attachCloumnWidth
+        maxDividerWidth = screenWidth - view.layoutParams.width * spanCount
+//        if (itemHeight < 0 || itemWidth < 0 || isNeedSpace && maxDividerWidth <= (spanCount - 1) * mDividerWidth) {
+//            view.layoutParams.height = attachCloumnWidth
 
-            maxDividerWidth = screenWidth - view.layoutParams.width * spanCount
-        }
+//        }
         return maxDividerWidth
     }
 
@@ -298,7 +302,9 @@ class GridDividerItemDecoration
     ): Boolean {
         val layoutManager = parent.getLayoutManager()
         if (layoutManager is GridLayoutManager) {
-            return pos / spanCount + 1 == 1
+            return (pos / spanCount == 0) || (isDynamicUpdate && pos == spanCount).also {
+                isDynamicUpdate = false
+            }
         } else if (layoutManager is StaggeredGridLayoutManager) {
 
         }
@@ -319,5 +325,9 @@ class GridDividerItemDecoration
             spanCount = layoutManager.spanCount
         }
         return spanCount
+    }
+
+    fun dynamicUpdate(b: Boolean) {
+        isDynamicUpdate = b
     }
 }

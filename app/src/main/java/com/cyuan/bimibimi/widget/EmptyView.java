@@ -59,8 +59,8 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.EmptyView, defStyle, 0);
 
-        mDrawableIds[0] = a.getInt(R.styleable.EmptyView_comEmptyDrawable, R.drawable.status_empty);
-        mDrawableIds[1] = a.getInt(R.styleable.EmptyView_comErrorDrawable, R.drawable.status_empty);
+        mDrawableIds[0] = a.getInt(R.styleable.EmptyView_comEmptyDrawable, R.drawable.ic_empty_conent);
+        mDrawableIds[1] = a.getInt(R.styleable.EmptyView_comErrorDrawable, R.drawable.ic_error_content);
         mTextIds[0] = a.getInt(R.styleable.EmptyView_comEmptyText, R.string.prompt_empty);
         mTextIds[1] = a.getInt(R.styleable.EmptyView_comErrorText, R.string.prompt_error);
         mTextIds[2] = a.getInt(R.styleable.EmptyView_comLoadingText, R.string.prompt_loading);
@@ -110,7 +110,7 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
         mState = Constants.ViewState.EMPTY;
         mLoading.setVisibility(GONE);
         mLoading.cancelAnimation();
-//        mEmptyImg.setImageResource(mDrawableIds[0]);
+        mEmptyImg.setImageResource(mDrawableIds[0]);
         if (!TextUtils.isEmpty(mEmptyMessage)) {
             mStatusText.setText(mEmptyMessage);
         } else {
@@ -129,7 +129,7 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
         mState = Constants.ViewState.ERROR;
         mLoading.setVisibility(GONE);
         mLoading.cancelAnimation();
-//        mEmptyImg.setImageResource(mDrawableIds[1]);
+        mEmptyImg.setImageResource(mDrawableIds[1]);
         mStatusText.setText(mTextIds[1]);
         mEmptyImg.setVisibility(VISIBLE);
         setVisibility(VISIBLE);
