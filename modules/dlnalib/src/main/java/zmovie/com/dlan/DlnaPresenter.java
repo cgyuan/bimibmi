@@ -1,9 +1,10 @@
 package zmovie.com.dlan;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -14,13 +15,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yanbo.lib_screen.entity.ClingDevice;
 import com.yanbo.lib_screen.entity.RemoteItem;
+import com.yanbo.lib_screen.event.DIDLEvent;
 import com.yanbo.lib_screen.event.DeviceEvent;
 import com.yanbo.lib_screen.manager.ClingManager;
 import com.yanbo.lib_screen.manager.DeviceManager;
+import com.yanbo.lib_screen.utils.VMNetwork;
 
+import org.fourthline.cling.model.ModelUtil;
+import org.fourthline.cling.support.model.Res;
+import org.fourthline.cling.support.model.item.VideoItem;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 
 import per.goweii.anylayer.AnyLayer;
 import per.goweii.anylayer.DialogLayer;
@@ -52,6 +60,7 @@ public class DlnaPresenter {
     public void initService() {
         ClingManager.getInstance().startClingService();
         EventBus.getDefault().register(this);
+//        ClingManager.getInstance().searchLocalContent("20");
     }
 
     public void removeEventRegister() {
@@ -70,19 +79,58 @@ public class DlnaPresenter {
     }
 
     public void startPlay(String path, String title) {
-        RemoteItem item = new RemoteItem(title, "", "",
-                1, "", "1280x720", path);
-        startPlay(item);
+        if (path.startsWith("/")) {
+            VideoItem localItem = new VideoItem();
+            localItem.setId("");
+            localItem.setParentID("");
+            localItem.setRefID("");
+            localItem.setTitle("");
+
+            String[] videoColumns = new String[]{"_id", "title", "_data", "artist", "mime_type", "_size", "duration", "resolution"};
+            Cursor cur = context.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI, videoColumns, "_data = ?", new String[]{path}, null);
+            if (cur != null && cur.moveToFirst()) {
+                String id = String.valueOf(cur.getInt(cur.getColumnIndex("_id")));
+                String creator = cur.getString(cur.getColumnIndex("artist"));
+                String mimeType = cur.getString(cur.getColumnIndex("mime_type"));
+                long size = cur.getLong(cur.getColumnIndex("_size"));
+                long duration = cur.getLong(cur.getColumnIndex("duration"));
+                String durationStr = ModelUtil.toTimeString(duration / 1000L);
+                String resolution = cur.getString(cur.getColumnIndex("resolution"));
+                String data = cur.getString(cur.getColumnIndexOrThrow("_data"));
+                String fileName = data.substring(data.lastIndexOf(File.separator));
+                String ext = fileName.substring(fileName.lastIndexOf("."));
+                data = data.replace(fileName, File.separator + id + ext);
+                String serverURL = "http://" + VMNetwork.getLocalIP() + ":" + "55677" + "/";
+                String url = serverURL + "video" + data;
+                Res res = new Res(mimeType, size, durationStr, (Long)null, url);
+                res.setDuration(ModelUtil.toTimeString(duration / 1000L));
+                res.setResolution(resolution);
+                localItem.addResource(res);
+                cur.close();
+                startPlayLocal(localItem);
+            } else {
+                Res res = new Res();
+                String serverURL = "http://" + VMNetwork.getLocalIP() + ":" + "55699";
+                String url = serverURL + path;
+                res.setValue(url);
+                localItem.addResource(res);
+                startPlayLocal(localItem);
+            }
+        } else {
+            RemoteItem item = new RemoteItem(title, "", "",
+                    1, "", "1280x720", path);
+            startPlay(item);
+        }
     }
 
     /**
      * 本地投屏
      *
-     * @param remoteItem
+     * @param item
      */
-    public void startPlayLocal(RemoteItem remoteItem) {
-        ClingManager.getInstance().setRemoteItem(remoteItem);
-        MediaPlayActivity.startSelf((Activity) context);
+    public void startPlayLocal(VideoItem item) {
+        ClingManager.getInstance().setLocalItem(item);
+        context.startActivity(new Intent(context,MediaPlayActivity.class));
     }
 
     /**
@@ -159,6 +207,11 @@ public class DlnaPresenter {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventBus(DeviceEvent event) {
         mDeviceAdapter.refresh();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDIDLEventBus(DIDLEvent event) {
+        Log.d("DIDL", event.toString());
     }
 
 }

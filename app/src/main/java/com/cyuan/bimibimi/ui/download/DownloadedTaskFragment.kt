@@ -39,7 +39,7 @@ class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListe
 
     override fun onClick(task: DownloadTaskInfo) {
         val intent = Intent(context, OnlinePlayerActivity::class.java)
-        intent.putExtra(PlayerKeys.URL, "file://" + task.filePath)
+        intent.putExtra(PlayerKeys.URL, task.filePath)
         intent.putExtra(PlayerKeys.MOVIE_TITLE, task.title)
         intent.putExtra(PlayerKeys.EPISODE_NAME, task.episodeName)
         intent.putExtra(PlayerKeys.DATA_SOURCE_INDEX, task.dataSourceIndex)

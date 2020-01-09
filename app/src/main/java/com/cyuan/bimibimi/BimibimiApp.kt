@@ -1,6 +1,7 @@
 package com.cyuan.bimibimi
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
@@ -15,6 +16,7 @@ import skin.support.app.SkinCardViewInflater
 import skin.support.constraint.app.SkinConstraintViewInflater
 import skin.support.design.app.SkinMaterialViewInflater
 import zmovie.com.dlan.DlnaLib
+import zmovie.com.dlan.JettyResourceService
 import java.lang.ref.WeakReference
 
 
@@ -33,6 +35,8 @@ class BimibimiApp : MultiDexApplication() {
         if (isNight) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+
+        startService(Intent(this, JettyResourceService::class.java))
 
         SkinCompatManager.withoutActivity(this)
             .addInflater(SkinAppCompatViewInflater()) // 基础控件换肤

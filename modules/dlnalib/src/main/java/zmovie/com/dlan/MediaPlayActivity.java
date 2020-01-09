@@ -2,6 +2,7 @@ package zmovie.com.dlan;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -20,11 +21,18 @@ import com.yanbo.lib_screen.manager.ClingManager;
 import com.yanbo.lib_screen.manager.ControlManager;
 import com.yanbo.lib_screen.utils.LogUtils;
 import com.yanbo.lib_screen.utils.VMDate;
+import com.yanbo.lib_screen.utils.VMNetwork;
 
+import org.fourthline.cling.model.ModelUtil;
+import org.fourthline.cling.support.model.Res;
 import org.fourthline.cling.support.model.item.Item;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 
 /**
@@ -103,6 +111,7 @@ public class MediaPlayActivity extends AppCompatActivity implements View.OnClick
         String url = "";
         String duration = "";
         if (localItem != null) {
+
             url = localItem.getFirstResource().getValue();
             duration = localItem.getFirstResource().getDuration();
         }
@@ -413,6 +422,7 @@ public class MediaPlayActivity extends AppCompatActivity implements View.OnClick
                 } else if (avtInfo.getState().equals("STOPPED")) {
                     ControlManager.getInstance().setState(ControlManager.CastState.STOPED);
                     playView.setSelected(false);
+                    ControlManager.getInstance().unInitScreenCastCallback();
 
                     finish();
                 } else {
@@ -470,5 +480,12 @@ public class MediaPlayActivity extends AppCompatActivity implements View.OnClick
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        localItem = null;
+        remoteItem = null;
+        super.onDestroy();
     }
 }
