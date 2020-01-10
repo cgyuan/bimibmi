@@ -353,8 +353,12 @@ object HtmlDataParser {
         } catch (e: Exception) {
             return ""
         }
+        try {
+            url = URLDecoder.decode(url, "utf-8")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-        url = URLDecoder.decode(url, "utf-8")
         return url
     }
 

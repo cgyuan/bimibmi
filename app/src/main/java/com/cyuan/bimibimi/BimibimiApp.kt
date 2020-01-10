@@ -9,6 +9,7 @@ import androidx.multidex.MultiDexApplication
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.SharedUtil
+import com.tencent.bugly.Bugly
 import me.ele.uetool.UETool
 import skin.support.SkinCompatManager
 import skin.support.app.SkinAppCompatViewInflater
@@ -89,6 +90,8 @@ class BimibimiApp : MultiDexApplication() {
 
             }
         })
+
+        Bugly.init(applicationContext, "852f771d92", BuildConfig.DEBUG)
     }
 
     fun getCurrentActivity() :FragmentActivity? {

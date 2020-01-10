@@ -13,6 +13,7 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.CacheUtils
 import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.widget.MessageDialog
+import com.tencent.bugly.beta.Beta
 
 class SettingFragment: PreferenceFragmentCompat() {
     private lateinit var mClearCacheItem: Preference
@@ -45,7 +46,7 @@ class SettingFragment: PreferenceFragmentCompat() {
             true
         }
         mCheckUpdateItem.setOnPreferenceClickListener {
-            Toast.makeText(activity, "已是最新版本", Toast.LENGTH_SHORT).show()
+            Beta.checkUpgrade()
             true
         }
         mSelectPlayerItem.setOnPreferenceClickListener {

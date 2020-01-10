@@ -6,6 +6,16 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+//apply from: 'tinker-support.gradle'
+
+/*apply plugin: 'bugly'
+
+bugly {
+    appId = "852f771d92"
+    appKey = "80675d07-628a-4fae-81f8-c96076332e21"
+    debug = true
+}*/
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -40,15 +50,27 @@ android {
             }
         }
     }
+
+    signingConfigs {
+        release {
+            storeFile file('appSignature.jks')
+            storePassword 'c12345678'
+            keyAlias 'key'
+            keyPassword 'c12345678'
+        }
+    }
+
     buildTypes {
 
         debug {
+            signingConfig signingConfigs.release
             minifyEnabled false
             debuggable true
         }
 
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -164,4 +186,8 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.1.1'
 
 //    implementation 'me.jessyan:autosize:1.1.2'
+
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.4.2'
+    implementation 'com.tencent.bugly:nativecrashreport:3.7.1'
+    implementation 'com.tencent.tinker:tinker-android-lib:latest.release'
 }
