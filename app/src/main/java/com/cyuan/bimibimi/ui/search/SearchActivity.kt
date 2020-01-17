@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -74,6 +75,14 @@ class SearchActivity: BaseActivity() {
                 }
             }
         })
+        searchEdit.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideSoftKeyboard()
+                loadData()
+                return@setOnEditorActionListener true
+            }
+            false
+        }
         searchTextClear.setOnClickListener {
             searchEdit.setText("")
         }
@@ -81,8 +90,6 @@ class SearchActivity: BaseActivity() {
             finish()
         }
         searchBtn.setOnClickListener {
-            movieList.clear()
-            searchAdapter.notifyDataSetChanged()
             hideSoftKeyboard()
             loadData()
         }
@@ -91,6 +98,7 @@ class SearchActivity: BaseActivity() {
     private fun loadData() {
         HtmlDataParser.parseSearch(searchKeyWord, object : ParseResultCallback<List<Movie>> {
             override fun onSuccess(data: List<Movie>) {
+                movieList.clear()
                 movieList.addAll(data)
                 searchAdapter.notifyDataSetChanged()
             }

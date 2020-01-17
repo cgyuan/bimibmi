@@ -18,7 +18,7 @@ object LayoutHelperFactory {
         gridHelper.hGap = dp2px(10F)
         gridHelper.marginLeft = dp2px(15F)
         gridHelper.marginRight = dp2px(15F)
-        gridHelper.marginBottom = 5
+        gridHelper.marginBottom = dp2px(15F)
         //自动填充满布局
         gridHelper.setAutoExpand(false)
         return gridHelper

@@ -7,6 +7,8 @@
 
     <color name="colorTabIndicate">#505050</color>
 
+    <color name="download_tab_color">@color/colorPrimary</color>
+
     <color name="navigation_background_light">#3b3b3b</color>
     <color name="window_background">#2B2B2B</color>
 

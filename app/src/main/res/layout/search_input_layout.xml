@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|start"
         android:padding="@dimen/search_back_padding"
-        android:src="@drawable/ic_arrow_back_black" />
+        app:srcCompat="@drawable/ic_arrow_back_24dp"
+        android:tint="@color/gray_dark"/>
 
 
     <EditText
@@ -32,9 +33,10 @@
         android:layout_marginStart="@dimen/search_edit_margin_end"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:hint="@string/search_hint"
+        android:hint="视频、番剧、关键词"
         android:imeOptions="actionSearch"
         android:maxLines="1"
+        android:singleLine="true"
         android:textColor="@color/font_normal"
         android:textSize="@dimen/default_small_text_size" />
 
@@ -45,7 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|end"
         android:layout_marginEnd="@dimen/search_clear_button_margin_end"
-        android:src="@drawable/ic_close_black"
+        app:srcCompat="@drawable/ic_close_black_24dp"
+        android:tint="@color/gray_dark"
         android:visibility="gone" />
 
 
@@ -56,7 +59,8 @@
         android:layout_gravity="center|end"
         android:clickable="true"
         android:padding="@dimen/search_back_padding"
-        android:src="@drawable/ic_search_query" />
+        app:srcCompat="@drawable/ic_search_24dp"
+        android:tint="@color/gray_dark"/>
 
 
 </androidx.cardview.widget.CardView>

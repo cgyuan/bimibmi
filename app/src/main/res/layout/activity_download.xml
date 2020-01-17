@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/window_background">
 
     <include layout="@layout/toolbar_layout" />
 
@@ -16,12 +17,12 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@color/download_tab_color"
         android:layout_marginTop="10dp"
-        app:tabIndicatorColor="@color/black_80"
+        app:tabIndicatorColor="@color/title_color"
         app:tabIndicatorHeight="1dp"
-        app:tabSelectedTextColor="@color/black_80"
-        app:tabTextColor="@color/font_normal"/>
+        app:tabSelectedTextColor="@color/title_color"
+        app:tabTextColor="@color/title_color"/>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mViewPager"
