@@ -1,5 +1,6 @@
 package zmovie.com.dlan;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -23,17 +25,22 @@ public class JettyResourceService extends Service {
     private JettyFileResourceServer mJettyResourceServer;
     private static final int NOTIFICATION_ID = 10;
     private static final String CHANEL = "deamon";
+    private PowerManager.WakeLock mJettyResourceServerWakeLock;
 
     public JettyResourceService() {
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     public void onCreate() {
         super.onCreate();
+        PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        mJettyResourceServerWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "handleJettyResource");
         this.mJettyResourceServer = new JettyFileResourceServer();
+        mJettyResourceServerWakeLock.acquire();
         this.mThreadPool.execute(this.mJettyResourceServer);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANEL, CHANEL,
+            /*NotificationChannel channel = new NotificationChannel(CHANEL, CHANEL,
                     NotificationManager.IMPORTANCE_LOW);
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (manager == null)
@@ -43,7 +50,7 @@ public class JettyResourceService extends Service {
             Notification notification = new NotificationCompat.Builder(this, CHANEL).setAutoCancel(true).setCategory(
                     Notification.CATEGORY_SERVICE).setOngoing(true).setPriority(
                     NotificationManager.IMPORTANCE_LOW).build();
-            startForeground(NOTIFICATION_ID, notification);
+            startForeground(NOTIFICATION_ID, notification);*/
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             //如果 18 以上的设备 启动一个Service startForeground给相同的id
             //然后结束那个Service
@@ -61,6 +68,7 @@ public class JettyResourceService extends Service {
 
     public void onDestroy() {
         this.mJettyResourceServer.stopIfRunning();
+        mJettyResourceServerWakeLock.release();
         super.onDestroy();
     }
 

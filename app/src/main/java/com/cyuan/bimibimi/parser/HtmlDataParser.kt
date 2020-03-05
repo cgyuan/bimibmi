@@ -69,7 +69,9 @@ object HtmlDataParser {
                         label = itemString.substring(start + "<p>".length, end)
                         video.label = label
                     }
-                    list.add(video)
+                    if (!video.title.contains("无修正")) {
+                        list.add(video)
+                    }
                 }
 
 
