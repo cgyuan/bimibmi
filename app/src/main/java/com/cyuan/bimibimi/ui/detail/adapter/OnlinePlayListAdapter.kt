@@ -44,6 +44,7 @@ class OnlinePlayListAdapter(private val context: Context,
         if (bgSector != 0) {
             holder.btPlayText.setBackgroundResource(bgSector)
         }
+        val dataSourceName = movieDetail.dataSources[dataSourceIndex].name
         holder.itemView.setOnClickListener {
             HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
                 override fun onSuccess(data: String) {
@@ -63,7 +64,7 @@ class OnlinePlayListAdapter(private val context: Context,
                 override fun onFail(msg: String) {
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
-            })
+            }, dataSourceName)
         }
         holder.itemView.setOnLongClickListener {
             HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
@@ -96,7 +97,7 @@ class OnlinePlayListAdapter(private val context: Context,
                 override fun onFail(msg: String) {
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
-            })
+            }, dataSourceName)
             true
         }
     }

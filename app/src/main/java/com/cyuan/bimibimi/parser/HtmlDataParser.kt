@@ -198,10 +198,27 @@ object HtmlDataParser {
             })
     }
 
+    fun parseVideoSourceFromIframe(
+        context: Context,
+        url: String,
+        callback: ParseResultCallback<String>?,
+        dataSource: String
+    ) {
+        // http://119.23.209.33/static/danmu/play.php?url=
+        var pageUrl = ""
+        if ("Danma U：" == dataSource) {
+            pageUrl = "http://119.23.209.33/static/danmu/niux.php?id=${url}"
+        } else {
+            pageUrl = "http://119.23.209.33/static/danmu/play.php?url=${url}"
+        }
+        parseVideoWithWebView(context, pageUrl, callback)
+    }
+
     fun parseVideoSource(
         context: Context,
         episode: Episode,
-        callback: ParseResultCallback<String>?
+        callback: ParseResultCallback<String>?,
+        dataSource: String = ""
     ) {
         val repository = RepositoryProvider.providerDownloadTaskRepository()
         val taskInfo = repository.getFinishedTask(episode.href)
@@ -225,22 +242,23 @@ object HtmlDataParser {
                     }
                     if (!url.startsWith("http")) {
                         // 获得视频后缀部分，并据此从静态页面解析视频url
-                        parseVideoUrlById(url, callback)
+//                        parseVideoUrlById(url, callback)
+                        parseVideoSourceFromIframe(context, url, callback, dataSource)
                     } else if (url.endsWith(".html")) {
                         // parseVideoUrlWithWebView(context, url, callback)
                         // https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/19rrok4nt0.m3u8
                         // "https://api.nmbaojie.com/api/video/youkuplay.php?url=https://api.nmbaojie.com/api/data/iqiyim3u8/19rrok4pg4.m3u8"
                         // https://www.iqiyi.com/v_19rrok4pg4.html
-                        if (url.contains("iqiyi")) {
+                        /*if (url.contains("iqiyi")) {
                             val vid = UrlHelper.extractIqyVideoId(url)
                             url =
                                 "https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
                             callback?.onSuccess(url)
-                        } else if (url.contains("v.qq.com")) {
+                        } else */if (url.contains("v.qq.com") || url.contains("youku") || url.contains("iqiyi")) {
                             // https://v.qq.com/x/cover/enj7gj9pcksq89p/g0761hr9ih3.html
                             // http://dalaowangsan.cn/wangerjiexi/api.php?url=https://m.v.qq.com/cover/0/0gsf9fytppje54d.html?vid=k0027nolupz&cb=jQuery18205677586477461618_1574253655192&_=1574253655788
 
-                            parseVideoUrl(context, url, callback)
+                            parseVideoWithWebView(context, url, callback, true)
 //                            url = UrlHelper.rebuildQQVideoUrl(url)
 //                            StringRequest().url(url)
 //                                .listen(object : Callback {
@@ -288,7 +306,12 @@ object HtmlDataParser {
                         "}\n" +
                     "}, 200)\n"
 
-    fun parseVideoUrl(context: Context, url: String, callback: ParseResultCallback<String>?) {
+    fun parseVideoWithWebView(
+        context: Context,
+        url: String,
+        callback: ParseResultCallback<String>?,
+        useParseEngine: Boolean = false
+    ) {
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true
@@ -297,8 +320,14 @@ object HtmlDataParser {
             webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
         webView.addJavascriptInterface(JsBridge(webView, callback), "app")
-        webView.loadUrl("https://okjx.lrkdzx.com/okbyjiexi/?url=$url")
-//        webView.loadUrl("http://okjx.cc/?url=https://v.qq.com/x/cover/mu01sbah4rauf44.html")
+        val header = mutableMapOf<String, String>()
+        header["Referer"] = "http://www.bimibimi.tv/"
+        if (useParseEngine) {
+            webView.loadUrl("https://okjx.lrkdzx.com/okbyjiexi/?url=$url")
+        } else {
+            webView.loadUrl(url, header)
+        }
+//        webView.loadUrl("http://okjx.cc/?url=http://www.iqiyi.com/v_19rrok4nt0.html")
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, webUrl: String?) {
                 webView.evaluateJavascript(GET_VIDEO_SRC_JS, null)

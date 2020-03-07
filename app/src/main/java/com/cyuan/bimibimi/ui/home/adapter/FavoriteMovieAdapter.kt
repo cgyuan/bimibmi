@@ -2,29 +2,21 @@ package com.cyuan.bimibimi.ui.home.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.paging.AsyncPagedListDiffer
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
-import com.cyuan.bimibimi.core.extension.logError
-import com.cyuan.bimibimi.core.extension.logInfo
 import com.cyuan.bimibimi.core.utils.Reflector
-import com.cyuan.bimibimi.databinding.MovieCardItemLayoutBinding
 import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.base.BasePagedListAdapter
-import com.cyuan.bimibimi.ui.base.LoadingMoreViewHolder
 import com.cyuan.bimibimi.ui.base.MyAdapterListUpdateCallback
 import com.cyuan.bimibimi.ui.detail.MovieDetailActivity
-import kotlin.math.log
 
 class FavoriteMovieAdapter(
     context: Context,
