@@ -34,6 +34,6 @@ dependencies {
     //loading
     api 'com.github.ybq:Android-SpinKit:1.2.0'
     //非常绚的弹框
-    api 'com.github.goweii:AnyLayer:3.2.0'
+    api 'com.github.goweii:AnyLayer:3.3.0-androidx'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 }
