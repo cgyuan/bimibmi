@@ -31,7 +31,7 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
             setNavigationOnClickListener { finish() }
         }
 
-        mDownloadHelper = DownloadHelper.getInstance(this, this)
+        mDownloadHelper = DownloadHelper.getInstance(this.application, this)
         mDownloadHelper.setITask(this)
         mDownloadHelper.initDownloadLiveData(this)
 
