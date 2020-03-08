@@ -198,6 +198,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         webview.destroy()
+        controller.destroy()
         mPIPManager.reset()
         dlnaPresenter.removeEventRegister()
         super.onDestroy()

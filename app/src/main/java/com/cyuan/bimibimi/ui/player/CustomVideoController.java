@@ -10,7 +10,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -52,6 +51,7 @@ import com.dueeeke.videoplayer.player.VideoView;
 import com.dueeeke.videoplayer.util.L;
 import com.dueeeke.videoplayer.util.PlayerUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import per.goweii.anylayer.AnimatorHelper;
@@ -64,7 +64,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, GestureVideoController.GestureListener {
     private OnlinePlayerActivity mActivity;
     protected TextView mTotalTime, mCurrTime;
-//    protected ImageView mFullScreenButton;
+    //    protected ImageView mFullScreenButton;
     protected RelativeLayout mBottomContainer;
     protected LinearLayout mTopContainer;
     protected SeekBar mVideoProgress;
@@ -74,6 +74,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     private boolean mIsLive;
     private boolean mIsDragging;
 
+    private NetSpeedHandler handler;
     private SeekBar mBottomProgress;
     private ImageView mPlayButton;
     private ImageView mStartPlayButton;
@@ -110,13 +111,21 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     private boolean showChoseBtn = false;
     public static int sCurrentIndex = 0;
 
-    Handler handler = new Handler(Looper.getMainLooper()){
+     static class NetSpeedHandler extends Handler{
+
+         WeakReference<CustomVideoController> weakController;
+
+         public NetSpeedHandler(CustomVideoController controller) {
+             this.weakController = new WeakReference<>(controller);
+         }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==0){
-                refreshNetSpeed();
-                handler.sendEmptyMessageDelayed(0,1000);
+            CustomVideoController controller = weakController.get();
+            if (msg.what==0 && controller != null){
+                controller.refreshNetSpeed();
+                sendEmptyMessageDelayed(0,1000);
             }
 
         }
@@ -162,6 +171,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
     public CustomVideoController(@NonNull Context context) {
         this(context, null);
         mActivity = (OnlinePlayerActivity) context;
+        handler = new NetSpeedHandler(this);
     }
 
     public CustomVideoController(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -1023,6 +1033,10 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         if (mCenterView.getVisibility() == VISIBLE) {
             mCenterView.setVisibility(GONE);
         }
+    }
+
+    public void destroy() {
+        handler.removeCallbacksAndMessages(null);
     }
 
 
