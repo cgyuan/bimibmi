@@ -30,6 +30,7 @@ import java.util.*
 
 class OnlinePlayerActivity : AppCompatActivity() {
 
+    private var dataSourceName: String = ""
     private var dataSourceIndex: Int = 0
     private lateinit var movieCover: String
     private lateinit var movieDetailHref: String
@@ -53,10 +54,6 @@ class OnlinePlayerActivity : AppCompatActivity() {
             startFloatWindow()
         }
 
-        override fun onLocalCast() {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
     }
 
     private val episodeItemClickListener = CustomVideoController.OnItemClickedListener { position ->
@@ -75,7 +72,6 @@ class OnlinePlayerActivity : AppCompatActivity() {
                     val netSpeedVisible = !currentUrl.startsWith("file") && !currentUrl.startsWith("/")
                     controller.setNeedSpeedVisible(netSpeedVisible)
                     episodeName = episode.title
-                    mVideoView.stopPlayback()
                     mVideoView.release()
 
                     mVideoView.setUrl(url)
@@ -88,7 +84,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
                     Toast.makeText(this@OnlinePlayerActivity, msg, Toast.LENGTH_SHORT).show()
                 }
 
-            })
+            }, dataSourceName)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +108,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         movieTitle = intent.getStringExtra(PlayerKeys.MOVIE_TITLE)!!
         episodeName = intent.getStringExtra(PlayerKeys.EPISODE_NAME)!!
         dataSourceIndex = intent.getIntExtra(PlayerKeys.DATA_SOURCE_INDEX, 0)
+        dataSourceName = intent.getStringExtra(PlayerKeys.DATA_SOURCE_NAME)!!
         episodeIndex = intent.getIntExtra(PlayerKeys.EPISODE_INDEX, 0)
         episodeList = intent.getParcelableArrayListExtra(PlayerKeys.EPISODE_LIST)
         movieDetailHref = intent.getStringExtra(PlayerKeys.MOVIE_DETAIL_HREF)!!
@@ -200,6 +197,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        webview.destroy()
         mPIPManager.reset()
         dlnaPresenter.removeEventRegister()
         super.onDestroy()

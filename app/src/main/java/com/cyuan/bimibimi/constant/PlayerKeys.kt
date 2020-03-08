@@ -11,6 +11,7 @@ interface PlayerKeys {
         const val EPISODE_LIST = "EPISODE_LIST"
         const val DATA_SOURCE_INDEX = "DATA_SOURCE_INDEX"
         const val EPISODE_INDEX = "EPISODE_INDEX"
+        const val DATA_SOURCE_NAME = "DATA_SOURCE_NAME"
         const val PLAY_POSITION = "PLAY_POSITION"
         const val MOVIE_DETAIL_HREF = "MOVIE_DETAIL_HREF"
         const val MOVIE_COVER = "MOVIE_COVER"

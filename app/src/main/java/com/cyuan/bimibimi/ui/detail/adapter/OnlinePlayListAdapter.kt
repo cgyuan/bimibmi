@@ -55,6 +55,7 @@ class OnlinePlayListAdapter(private val context: Context,
                     intent.putExtra(PlayerKeys.EPISODE_NAME, episodes[position].title)
                     intent.putExtra(PlayerKeys.DATA_SOURCE_INDEX, dataSourceIndex)
                     intent.putExtra(PlayerKeys.EPISODE_INDEX, position)
+                    intent.putExtra(PlayerKeys.DATA_SOURCE_NAME, dataSourceName)
                     intent.putExtra(PlayerKeys.MOVIE_DETAIL_HREF, movieDetail.href)
                     intent.putExtra(PlayerKeys.MOVIE_COVER, movieDetail.cover)
                     intent.putParcelableArrayListExtra(PlayerKeys.EPISODE_LIST, episodes)

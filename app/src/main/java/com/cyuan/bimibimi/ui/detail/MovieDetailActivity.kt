@@ -243,4 +243,9 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         }
     }
 
+    override fun onDestroy() {
+        webview.destroy()
+        super.onDestroy()
+    }
+
 }

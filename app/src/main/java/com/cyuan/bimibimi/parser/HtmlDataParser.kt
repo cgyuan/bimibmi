@@ -5,9 +5,12 @@ import android.content.Context
 import android.os.Build
 import android.os.SystemClock
 import android.webkit.*
+import com.cyuan.bimibimi.BimibimiApp
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logWarn
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.core.utils.UrlHelper
 import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.*
@@ -288,8 +291,11 @@ object HtmlDataParser {
                    private val callback: ParseResultCallback<String>?) {
         @JavascriptInterface
         fun getSrc(url: String) {
-            callback?.onSuccess(url)
-            webView.removeAllViews()
+            App.getHandler().post {
+                callback?.onSuccess(url)
+                webView.removeAllViews()
+                webView.removeJavascriptInterface("app")
+            }
         }
     }
 

@@ -1030,8 +1030,6 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         void onAirPlay();
 
         void onPic2Pic();
-
-        void onLocalCast();
     }
 
     private OnStateChangeListener mStateListener;
