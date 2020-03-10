@@ -108,7 +108,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         movieTitle = intent.getStringExtra(PlayerKeys.MOVIE_TITLE)!!
         episodeName = intent.getStringExtra(PlayerKeys.EPISODE_NAME)!!
         dataSourceIndex = intent.getIntExtra(PlayerKeys.DATA_SOURCE_INDEX, 0)
-        dataSourceName = intent.getStringExtra(PlayerKeys.DATA_SOURCE_NAME)!!
+        dataSourceName = intent.getStringExtra(PlayerKeys.DATA_SOURCE_NAME) ?: ""
         episodeIndex = intent.getIntExtra(PlayerKeys.EPISODE_INDEX, 0)
         episodeList = intent.getParcelableArrayListExtra(PlayerKeys.EPISODE_LIST)
         movieDetailHref = intent.getStringExtra(PlayerKeys.MOVIE_DETAIL_HREF)!!

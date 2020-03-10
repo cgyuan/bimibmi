@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
 import androidx.multidex.MultiDexApplication
+import androidx.work.*
+import androidx.work.PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.SharedUtil
@@ -19,6 +21,7 @@ import skin.support.design.app.SkinMaterialViewInflater
 import zmovie.com.dlan.DlnaLib
 import zmovie.com.dlan.JettyResourceService
 import java.lang.ref.WeakReference
+import java.util.concurrent.TimeUnit
 
 
 class BimibimiApp : MultiDexApplication() {
@@ -38,6 +41,19 @@ class BimibimiApp : MultiDexApplication() {
         }
 
         startService(Intent(this, JettyResourceService::class.java))
+
+//        val constraint = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+//            .build()
+//
+//        val periodicWorkRequest = PeriodicWorkRequest
+//            .Builder(
+//                JettyServiceWorker::class.java,
+//                MIN_PERIODIC_INTERVAL_MILLIS,
+//                TimeUnit.MILLISECONDS
+//            )
+//            .build()
+//        WorkManager.getInstance(this).enqueueUniquePeriodicWork("jetty_service", ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest)
 
         SkinCompatManager.withoutActivity(this)
             .addInflater(SkinAppCompatViewInflater()) // 基础控件换肤

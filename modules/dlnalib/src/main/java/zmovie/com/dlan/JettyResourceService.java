@@ -11,6 +11,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -33,10 +34,10 @@ public class JettyResourceService extends Service {
     @SuppressLint("InvalidWakeLockTag")
     public void onCreate() {
         super.onCreate();
-        PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-        mJettyResourceServerWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "handleJettyResource");
+//        PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+//        mJettyResourceServerWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "handleJettyResource");
         this.mJettyResourceServer = new JettyFileResourceServer();
-        mJettyResourceServerWakeLock.acquire();
+//        mJettyResourceServerWakeLock.acquire();
         this.mThreadPool.execute(this.mJettyResourceServer);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
@@ -63,12 +64,13 @@ public class JettyResourceService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        this.mJettyResourceServer.startIfNotRunning();
         return super.onStartCommand(intent, flags, startId);
     }
 
     public void onDestroy() {
         this.mJettyResourceServer.stopIfRunning();
-        mJettyResourceServerWakeLock.release();
+//        mJettyResourceServerWakeLock.release();
         super.onDestroy();
     }
 
