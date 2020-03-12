@@ -33,6 +33,8 @@
     <string name="clear_history_msg">确定要清空所有播放记录吗？</string>
     <string name="dialog_confirm">确定</string>
     <string name="dialog_cancel">取消</string>
+    <string name="history_title">历史记录</string>
+    <string name="favorite_title">我的收藏</string>
 
     <string-array name="arr_player">
         <item>Media Player</item>

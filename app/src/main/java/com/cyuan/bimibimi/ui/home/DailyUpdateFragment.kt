@@ -71,7 +71,7 @@ class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
         recyclerView.layoutManager = linearLayoutManager
         topSmoothScroller = TopSmoothScroller(activity!!)
 
-        viewModel.dailyUpdateList.observe(this, Observer {
+        viewModel.dailyUpdateList.observe(viewLifecycleOwner, Observer {
             recyclerView.adapter = DailySectionAdapter(context!!, dayOfWeekList, it)
         })
 

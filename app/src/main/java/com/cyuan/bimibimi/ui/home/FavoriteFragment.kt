@@ -49,7 +49,7 @@ class FavoriteFragment : Fragment(), View.OnLongClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mToolbar.title = "我的收藏"
+        mToolbar.title = getString(R.string.favorite_title)
         mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
         mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
@@ -67,7 +67,7 @@ class FavoriteFragment : Fragment(), View.OnLongClickListener {
 
         }
 
-        viewModel.movies.observe(this, Observer {
+        viewModel.movies.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it.isEmpty()) {
                     viewModel.viewState.postValue(Constants.ViewState.EMPTY)

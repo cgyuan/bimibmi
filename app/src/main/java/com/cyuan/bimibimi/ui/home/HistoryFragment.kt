@@ -48,7 +48,7 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
         (activity as MainActivity).setSupportActionBar(mToolbar)
-        mToolbar.title = "历史记录"
+        mToolbar.title = getString(R.string.history_title)
         mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
         mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
@@ -56,7 +56,7 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
         emptyView.setEmptyMessageId(R.string.history_empty)
         recyclerView.adapter = adapter
 
-        viewModel.movies.observe(this, Observer {
+        viewModel.movies.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it.isEmpty()) {
                     viewModel.viewState.postValue(Constants.ViewState.EMPTY)
@@ -76,7 +76,7 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.delete) {
             MessageDialog.Builder(activity)
-                .setMessage(R.string.delete_history_msg)
+                .setMessage(R.string.clear_history_msg)
                 .setListener(object : MessageDialog.OnListener {
                     override fun confirm(dialog: Dialog?) {
                         val repository = HistoryRepository.getInstance(AppDatabase.instance.historyDao())

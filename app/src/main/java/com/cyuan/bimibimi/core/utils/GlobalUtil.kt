@@ -34,6 +34,11 @@ object GlobalUtil {
     val appPackage: String
         get() = App.getContext().packageName
 
+    /**
+     * 获取当前进程名称。
+     *
+     * return 当前进程名称。
+     */
     val processName: String
         get() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

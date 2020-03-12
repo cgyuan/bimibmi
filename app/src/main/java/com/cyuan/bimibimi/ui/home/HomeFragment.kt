@@ -61,7 +61,7 @@ class HomeFragment : Fragment() , UICallback {
 
         viewModel.fetchHomeData()
 
-        viewModel.bannerList.observe(this, Observer<List<Movie>> { bannerList ->
+        viewModel.bannerList.observe(viewLifecycleOwner, Observer<List<Movie>> { bannerList ->
             val bannerImgList = bannerList?.map {
                 it.cover
             }
@@ -69,7 +69,7 @@ class HomeFragment : Fragment() , UICallback {
             adapters.addAdapter(bannerAdapter)
         })
 
-        viewModel.sectionList.observe(this, Observer { sectionList ->
+        viewModel.sectionList.observe(viewLifecycleOwner, Observer { sectionList ->
             for (section in sectionList) {
                 adapters.addAdapter(
                     CommonGridHelperAdapter(
