@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import zmovie.com.dlan.JettyResourceService
+import com.cyuan.bimibimi.service.JettyResourceService
 
 class JettyServiceWorker(
     val context: Context,

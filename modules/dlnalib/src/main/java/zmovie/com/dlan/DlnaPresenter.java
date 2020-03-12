@@ -58,7 +58,6 @@ public class DlnaPresenter {
      * 初始化投屏服务，搜索可用设备
      */
     public void initService() {
-        ClingManager.getInstance().startClingService();
         EventBus.getDefault().register(this);
 //        ClingManager.getInstance().searchLocalContent("20");
     }

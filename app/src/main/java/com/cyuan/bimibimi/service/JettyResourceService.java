@@ -1,23 +1,32 @@
-package zmovie.com.dlan;
+package com.cyuan.bimibimi.service;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.cyuan.bimibimi.R;
+import com.cyuan.bimibimi.ui.home.MainActivity;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import zmovie.com.dlan.JettyFileResourceServer;
 
 public class JettyResourceService extends Service {
     private static final String TAG = JettyResourceService.class.getSimpleName();
@@ -25,7 +34,7 @@ public class JettyResourceService extends Service {
     private ExecutorService mThreadPool = Executors.newCachedThreadPool();
     private JettyFileResourceServer mJettyResourceServer;
     private static final int NOTIFICATION_ID = 10;
-    private static final String CHANEL = "deamon";
+    private static final String CHANEL = "daemon";
     private PowerManager.WakeLock mJettyResourceServerWakeLock;
 
     public JettyResourceService() {
@@ -41,29 +50,48 @@ public class JettyResourceService extends Service {
         this.mThreadPool.execute(this.mJettyResourceServer);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-            /*NotificationChannel channel = new NotificationChannel(CHANEL, CHANEL,
-                    NotificationManager.IMPORTANCE_LOW);
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (manager == null)
-                return;
-            manager.createNotificationChannel(channel);
-
-            Notification notification = new NotificationCompat.Builder(this, CHANEL).setAutoCancel(true).setCategory(
-                    Notification.CATEGORY_SERVICE).setOngoing(true).setPriority(
-                    NotificationManager.IMPORTANCE_LOW).build();
-            startForeground(NOTIFICATION_ID, notification);*/
+//            NotificationChannel channel = new NotificationChannel(CHANEL, CHANEL,
+//                    NotificationManager.IMPORTANCE_LOW);
+//            NotificationManager manager = (NotificationManager) getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
+//            if (manager == null)
+//                return;
+//            manager.createNotificationChannel(channel);
+//            Notification notification = getNotification();
+//            startForeground(NOTIFICATION_ID, notification);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             //如果 18 以上的设备 启动一个Service startForeground给相同的id
+            Notification notification = getNotification();
             //然后结束那个Service
-            startForeground(NOTIFICATION_ID, new Notification());
+            startForeground(NOTIFICATION_ID, notification);
             startService(new Intent(this, InnnerService.class));
         } else {
             startForeground(NOTIFICATION_ID, new Notification());
         }
     }
 
+    @NotNull
+    private Notification getNotification() {
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANEL)
+                .setContentTitle("远程文件访问正在运行")
+                .setContentText("本服务用于将保证本地视频投屏到电视正常运行")
+                .setSmallIcon(R.mipmap.ic_launch_little_tv)
+                .setTicker("服务正在后台运行...")
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
+                .setOngoing(true)
+                .setContentIntent(pendingIntent);
+        Notification notification = builder.build();
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        return notification;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        bindService(new Intent(this, DaemonService.class), new MyConnection(), BIND_AUTO_CREATE);
         this.mJettyResourceServer.startIfNotRunning();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -101,6 +129,24 @@ public class JettyResourceService extends Service {
         @Override
         public IBinder onBind(Intent intent) {
             return null;
+        }
+    }
+
+    class MyConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bindService(new Intent(JettyResourceService.this, DaemonService.class), new MyConnection(), BIND_AUTO_CREATE);
+        }
+
+        @Override
+        public void onBindingDied(ComponentName name) {
+
         }
     }
 }

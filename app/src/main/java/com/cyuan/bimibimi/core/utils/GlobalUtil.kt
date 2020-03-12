@@ -1,9 +1,13 @@
 package com.cyuan.bimibimi.core.utils
 
+import android.app.ActivityManager
+import android.app.Application
+import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.TextUtils
 import android.widget.Toast
 import com.cyuan.bimibimi.core.App
@@ -29,6 +33,26 @@ object GlobalUtil {
      */
     val appPackage: String
         get() = App.getContext().packageName
+
+    val processName: String
+        get() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                return Application.getProcessName()
+            }
+            val pid = android.os.Process.myPid()
+            val am: ActivityManager = App.getContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+            val runningApps: List<ActivityManager.RunningAppProcessInfo> = am.runningAppProcesses
+            if (runningApps.isNotEmpty()) {
+                for (procInfo in runningApps) {
+                    if (procInfo.pid == pid) {
+                        return procInfo.processName
+                    }
+                }
+            }
+
+            return ""
+        }
 
     /**
      * 获取当前应用程序的名称。

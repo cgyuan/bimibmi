@@ -23,6 +23,7 @@ import com.cyuan.bimibimi.ui.theme.ChooseThemeActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import skin.support.widget.SkinCompatSupportable
+import zmovie.com.dlan.DlnaLib
 
 class MainActivity : BaseActivity(), SkinCompatSupportable{
 
@@ -34,6 +35,7 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
         super.onCreate(savedInstanceState)
 //        DensityUtils.setDensity(application, this)
         setContentView(R.layout.activity_main)
+        DlnaLib.initDlna(application)
 
         if(!PermissionsMgr.isAllPermissionReady(this)) {
             PermissionsMgr.requestAllPermissionsAppNeed(this, {}, {

@@ -1,8 +1,10 @@
 package com.cyuan.bimibimi
 
 import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
 import androidx.multidex.MultiDexApplication
@@ -10,7 +12,9 @@ import androidx.work.*
 import androidx.work.PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.utils.GlobalUtil.processName
 import com.cyuan.bimibimi.core.utils.SharedUtil
+import com.cyuan.bimibimi.service.JettyResourceService
 import com.tencent.bugly.Bugly
 import me.ele.uetool.UETool
 import skin.support.SkinCompatManager
@@ -19,7 +23,6 @@ import skin.support.app.SkinCardViewInflater
 import skin.support.constraint.app.SkinConstraintViewInflater
 import skin.support.design.app.SkinMaterialViewInflater
 import zmovie.com.dlan.DlnaLib
-import zmovie.com.dlan.JettyResourceService
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
@@ -30,9 +33,13 @@ class BimibimiApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("BimibimiApp", "onCreate")
 //        UETool.putFilterClass(FilterOutView::class.java!!)
 //        UETool.putAttrsProviderClass(CustomAttribution::class.java!!)
         App.initialize(this)
+        if (packageName != processName) {
+            return
+        }
         DlnaLib.initDlna(this)
 
         val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)

@@ -56,8 +56,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service android:name="zmovie.com.dlan.JettyResourceService"
-            android:exported="false"/>
+        <service android:name=".service.JettyResourceService$InnnerService" />
+        <service android:name=".service.JettyResourceService"/>
+        <service android:name=".service.DaemonService" android:process=":daemon"/>
 
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
