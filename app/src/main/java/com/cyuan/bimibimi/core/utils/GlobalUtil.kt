@@ -277,9 +277,4 @@ object GlobalUtil {
      * */
     fun isWeiboInstalled() = isInstalled("com.sina.weibo")
 
-    /**
-     * 判断当前版本是否是开源版本。
-     */
-    fun isOpenSource() = App.getPackageName() == "com.quxianggif.opensource"
-
 }

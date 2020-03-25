@@ -3,6 +3,7 @@ package com.cyuan.bimibimi.ui.detail.adapter
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -12,15 +13,17 @@ import com.cyuan.bimibimi.BimibimiApp
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
-import com.cyuan.bimibimi.ui.download.DownloadHelper
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.parser.HtmlDataParser
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.detail.holder.OnlinePlayHolder
+import com.cyuan.bimibimi.ui.download.DownloadHelper
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
 import com.cyuan.bimibimi.widget.MessageDialog
+import per.goweii.anylayer.AnyLayer
+import per.goweii.anylayer.DialogLayer
 import java.util.*
 
 class OnlinePlayListAdapter(private val context: Context,
@@ -29,6 +32,13 @@ class OnlinePlayListAdapter(private val context: Context,
                             var dataSourceIndex: Int,
                             @DrawableRes private val bgSector: Int = 0):
     RecyclerView.Adapter<OnlinePlayHolder>() {
+
+
+    private var mLoadingDlg: DialogLayer = AnyLayer.dialog(context)
+        .contentView(R.layout.dialog_parse_video_loading)
+        .gravity(Gravity.CENTER)
+        .cancelableOnTouchOutside(false)
+        .cancelableOnClickKeyBack(true)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnlinePlayHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.online_play_btn, parent, false)
@@ -46,8 +56,10 @@ class OnlinePlayListAdapter(private val context: Context,
         }
         val dataSourceName = movieDetail.dataSources[dataSourceIndex].name
         holder.itemView.setOnClickListener {
+            mLoadingDlg.show()
             HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
                 override fun onSuccess(data: String) {
+                    mLoadingDlg.dismiss()
                     val url: String = data
                     val intent = Intent(context, OnlinePlayerActivity::class.java)
                     intent.putExtra(PlayerKeys.URL, url)
@@ -63,13 +75,16 @@ class OnlinePlayListAdapter(private val context: Context,
                 }
 
                 override fun onFail(msg: String) {
+                    mLoadingDlg.dismiss()
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             }, dataSourceName)
         }
         holder.itemView.setOnLongClickListener {
+            mLoadingDlg.show()
             HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
                 override fun onSuccess(data: String) {
+                    mLoadingDlg.dismiss()
                     App.getHandler().post {
                         MessageDialog.Builder((App.getContext() as BimibimiApp).getCurrentActivity())
                             .setMessage("缓存视频？")
@@ -96,6 +111,7 @@ class OnlinePlayListAdapter(private val context: Context,
                 }
 
                 override fun onFail(msg: String) {
+                    mLoadingDlg.dismiss()
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             }, dataSourceName)
