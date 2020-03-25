@@ -34,6 +34,7 @@ import com.cyuan.bimibimi.databinding.ActivityMovieDetailBinding
 import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
 import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.Movie
+import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.detail.adapter.RecommendMovieAdapter
@@ -73,51 +74,60 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         setSupportActionBar(mToolbar)
 
         initThemeColor()
+        if (viewModel.movieDetail.value != null) {
+            initMovieDetail(viewModel.movieDetail.value as MovieDetail)
+            detail_veilLayout_body.unVeil()
+        } else {
 
-        url = Constants.BIMIBIMI_INDEX + movie.href
+            url = Constants.BIMIBIMI_INDEX + movie.href
 
-        viewModel.fetchMovieDetail(url)
+            viewModel.fetchMovieDetail(url)
 
-        viewModel.movieDetail.observe(this, Observer { movieDetail ->
-            val requestOptions = RequestOptions()
-                .transform(GlideRoundTransform(this@MovieDetailActivity, 4))
-            movieDetail.href = movie.href
-            movieDetail.title = movie.title
+            viewModel.movieDetail.observe(this, Observer { movieDetail ->
+                initMovieDetail(movieDetail)
+            })
 
-            mvTitle.text = movieDetail.title
-            headDesc.text = movieDetail.headers
-            toolbarTitle.text = movieDetail.title
-
-            //加入圆角变换
-            Glide.with(this@MovieDetailActivity)
-                .load(movieDetail.cover)
-                .placeholder(R.drawable.ic_default_grey)
-                .apply(requestOptions)
-                .into(toolbarIcon)
-
-            descView.setContent(movieDetail.intro)
-
-            recommendListRv.layoutManager = FocusLayoutManager()
-            recommendListRv.adapter = RecommendMovieAdapter(
-                this@MovieDetailActivity,
-                movieDetail.recommendList
-            )
-
-            viewContainer.removeView(recommendListVeil)
-        })
-
-        viewModel.isLoading.observe(this, Observer { isLoading ->
-            if (isLoading) {
-                detail_veilLayout_body.veil()
-            } else {
-                detail_veilLayout_body.unVeil()
-            }
-        })
+            viewModel.isLoading.observe(this, Observer { isLoading ->
+                if (isLoading) {
+                    detail_veilLayout_body.veil()
+                } else {
+                    detail_veilLayout_body.unVeil()
+                }
+            })
+        }
 
         scroll_content.scrollTo(0, 0)
         scroll_content.postDelayed({
             scrollToTop()
         }, 5)
+    }
+
+    private fun initMovieDetail(movieDetail: MovieDetail) {
+        val requestOptions = RequestOptions()
+            .transform(GlideRoundTransform(this@MovieDetailActivity, 4))
+        movieDetail.href = movie.href
+        movieDetail.title = movie.title
+
+        mvTitle.text = movieDetail.title
+        headDesc.text = movieDetail.headers
+        toolbarTitle.text = movieDetail.title
+
+        //加入圆角变换
+        Glide.with(this@MovieDetailActivity)
+            .load(movieDetail.cover)
+            .placeholder(R.drawable.ic_default_grey)
+            .apply(requestOptions)
+            .into(toolbarIcon)
+
+        descView.setContent(movieDetail.intro)
+
+        recommendListRv.layoutManager = FocusLayoutManager()
+        recommendListRv.adapter = RecommendMovieAdapter(
+            this@MovieDetailActivity,
+            movieDetail.recommendList
+        )
+
+        viewContainer.removeView(recommendListVeil)
     }
 
     private fun scrollToTop() {

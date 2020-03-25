@@ -101,7 +101,7 @@ class OnlinePlayListAdapter(private val context: Context,
                                     taskInfo.episodeName = episodes[position].title
                                     taskInfo.href = movieDetail.href
                                     taskInfo.episodeHref = episodes[position].href
-                                    val downloadHelper = DownloadHelper.getInstance(context, null)
+                                    val downloadHelper = DownloadHelper.getInstance(context.applicationContext, null)
                                     downloadHelper.addTask(taskInfo)
                                 }
 
