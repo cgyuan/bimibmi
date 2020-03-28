@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
@@ -16,8 +17,8 @@ import com.cyuan.bimibimi.databinding.FragmentDailyUpdateBinding
 import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.home.adapter.DailySectionAdapter
-import com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModelFactory
 import com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModel
+import com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModelFactory
 import com.cyuan.bimibimi.widget.TopSmoothScroller
 import kotlinx.android.synthetic.main.fragment_daily_update.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -32,12 +33,14 @@ import skin.support.widget.SkinCompatSupportable
 
 class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var layoutManager: GridLayoutManager
     private val dayOfWeekList = listOf("一", "二", "三", "四", "五", "六", "日")
     private lateinit var topSmoothScroller: TopSmoothScroller
     private var mSuspensionHeight: Int = 0
     private var mCurrentPosition = 0
     private var isClickedTab = false
+
+    private val sectionOffsetPos: IntArray = IntArray(dayOfWeekList.size + 1)
 
     private val viewModel by viewModels<DailyUpdateViewModel> {
         DailyUpdateViewModelFactory()
@@ -56,6 +59,7 @@ class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sectionOffsetPos[0] = 0
         bindEmptyViewCallback(this)
         emptyView.bind(recyclerView)
         setHasOptionsMenu(true)
@@ -67,12 +71,23 @@ class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
 
         viewModel.fetchDailyUpdateMovie()
 
-        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = linearLayoutManager
+        layoutManager = GridLayoutManager(activity, 2)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                if(recyclerView.adapter?.getItemViewType(position) == DailySectionAdapter.VIEW_TYPE_TOP_BAR) {
+                    return 2
+                }
+                return 1
+            }
+        }
+        recyclerView.layoutManager = layoutManager
         topSmoothScroller = TopSmoothScroller(activity!!)
 
         viewModel.dailyUpdateList.observe(viewLifecycleOwner, Observer {
             recyclerView.adapter = DailySectionAdapter(context!!, dayOfWeekList, it)
+            it.forEachIndexed { index, list ->
+                sectionOffsetPos[index + 1] = sectionOffsetPos[index] + list.size + 1
+            }
         })
 
         mTabLayout.setTabAdapter(object: TabAdapter {
@@ -98,8 +113,8 @@ class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
             override fun onTabReselected(tab: TabView?, position: Int) {}
 
             override fun onTabSelected(tab: TabView?, position: Int) {
-                topSmoothScroller.targetPosition = position
-                linearLayoutManager.startSmoothScroll(topSmoothScroller)
+                topSmoothScroller.targetPosition = sectionOffsetPos[position]
+                layoutManager.startSmoothScroll(topSmoothScroller)
                 isClickedTab = true
             }
 
@@ -118,30 +133,48 @@ class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                val tabIndex = getTabIndex(firstVisibleItemPosition)
                 if (!isClickedTab) {
-                    mTabLayout.setTabSelected(linearLayoutManager.findFirstVisibleItemPosition(), false)
+                    mTabLayout.setTabSelected(tabIndex, false)
                 }
 
-                //找到下一个itemView
-                val view = linearLayoutManager.findViewByPosition(mCurrentPosition + 1)
-                view?.let {
-                    if (view.top in 1..mSuspensionHeight) {
-                        //需要对悬浮条进行移动
-                        mSuspensionBar.y = (-(mSuspensionHeight - view.top)).toFloat()
+                if (layoutManager is GridLayoutManager) {
+                    val viewList = mutableListOf<View?>()
+                    //找到下几个个itemView（因为是GridLayoutManager）
+                    for (i in 1..layoutManager.spanCount) {
+                        viewList.add(layoutManager.findViewByPosition(firstVisibleItemPosition + i))
+                    }
+
+                    if(viewList.any { view -> view is TextView }) {
+                        val view = viewList.filterIsInstance<TextView>()[0]
+                        if (view.top in 1..mSuspensionHeight) {
+                            //需要对悬浮条进行移动
+                            mSuspensionBar.y = (-(mSuspensionHeight - view.top)).toFloat()
+                        }
                     } else {
                         //保持在原来的位置
                         mSuspensionBar.y = 0f
                     }
                 }
 
-                if (mCurrentPosition != linearLayoutManager.findFirstVisibleItemPosition()) {
-                    mCurrentPosition = linearLayoutManager.findFirstVisibleItemPosition()
+                if (mCurrentPosition != tabIndex) {
+                    mCurrentPosition = tabIndex
                     updateSuspensionBar()
                 }
             }
         })
         updateSuspensionBar()
         applySkin()
+    }
+
+    private fun getTabIndex(firstVisibleItemPosition: Int): Int {
+        sectionOffsetPos.forEachIndexed { index, value ->
+            if (firstVisibleItemPosition >= value && firstVisibleItemPosition < sectionOffsetPos[index + 1]) {
+                return index
+            }
+        }
+        return 0
     }
 
     private fun updateSuspensionBar() {

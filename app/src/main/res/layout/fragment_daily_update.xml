@@ -49,13 +49,11 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/daily_update_section_layout" />
+                    android:scrollbars="none" />
                 <TextView
                     android:id="@+id/mSuspensionBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:text="星期一"
                     android:padding="10dp"
                     android:textSize="16sp"
