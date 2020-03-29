@@ -24,9 +24,12 @@ class EpisodeAdapter(
         holder.btn.isSelected = CustomVideoController.sCurrentIndex == position
         holder.btn.text = episodeList[position].title
         holder.btn.setOnClickListener {
+            choseEpisodeLayer.dismiss()
+            if (CustomVideoController.sCurrentIndex == position) {
+                return@setOnClickListener
+            }
             clickedListener.clicked(position)
             CustomVideoController.sCurrentIndex = position
-            choseEpisodeLayer.dismiss()
             notifyDataSetChanged()
         }
     }

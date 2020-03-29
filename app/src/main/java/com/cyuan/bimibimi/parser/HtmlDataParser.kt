@@ -214,6 +214,9 @@ object HtmlDataParser {
             "Danma U：" -> {
                 pageUrl = "http://119.23.209.33/static/danmu/niux.php?id=${url}"
             }
+            "Danma K：" -> {
+                pageUrl = "http://182.254.167.161/danmu/kzyun.php?url=${url}"
+            }
             else -> {
                 pageUrl = "http://182.254.167.161/danmu/play.php?url=${url}"
             }
