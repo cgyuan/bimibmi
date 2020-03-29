@@ -15,8 +15,8 @@ class TopSmoothScroller(context: Context) : LinearSmoothScroller(context) {
         return SNAP_TO_START
     }
 
-    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-        return 10f / displayMetrics!!.densityDpi
-    }
+//    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+//        return 10f / displayMetrics!!.densityDpi
+//    }
 
 }

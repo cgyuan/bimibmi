@@ -209,10 +209,18 @@ object HtmlDataParser {
     ) {
         // http://119.23.209.33/static/danmu/play.php?url=
         var pageUrl = ""
-        if ("Danma U：" == dataSource) {
-            pageUrl = "http://119.23.209.33/static/danmu/niux.php?id=${url}"
-        } else {
-            pageUrl = "http://119.23.209.33/static/danmu/play.php?url=${url}"
+        when (dataSource) {
+            // https://api.nxflv.com/Video/Qyvip.php?url=https%3A%2F%2Fapi.nxflv.com%2FCache%2F4fa869fd8956e5ec5a8138936712551c.m3u8
+            "Danma U：" -> {
+                pageUrl = "http://119.23.209.33/static/danmu/niux.php?id=${url}"
+            }
+            else -> {
+                pageUrl = "http://182.254.167.161/danmu/play.php?url=${url}"
+            }
+            // https://jx.jxii.cn/?url=http://www.iqiyi.com/v_19rrok4ms8.html
+//            else -> {
+//                pageUrl = "http://119.23.209.33/static/danmu/play.php?url=${url}"
+//            }
         }
         parseVideoWithWebView(context, pageUrl, callback)
     }
