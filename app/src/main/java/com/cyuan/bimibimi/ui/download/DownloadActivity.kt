@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.utils.FileUtils
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.ITask
@@ -31,9 +32,11 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
             setNavigationOnClickListener { finish() }
         }
 
-        mDownloadHelper = DownloadHelper.getInstance(this.application, this)
-        mDownloadHelper.setITask(this)
-        mDownloadHelper.initDownloadLiveData(this)
+        if (!GlobalUtil.isX86Device()) {
+            mDownloadHelper = DownloadHelper.getInstance(this.application, this)
+            mDownloadHelper.setITask(this)
+            mDownloadHelper.initDownloadLiveData(this)
+        }
 
         mViewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
@@ -64,7 +67,9 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
     }
 
     override fun onDestroy() {
-        mDownloadHelper.setITask(null)
+        if (!GlobalUtil.isX86Device()) {
+            mDownloadHelper.setITask(null)
+        }
         super.onDestroy()
     }
 

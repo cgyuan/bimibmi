@@ -60,6 +60,18 @@ object GlobalUtil {
         }
 
     /**
+     * 获取设备CPU类型
+     */
+    val cpuAbi: Array<out String>
+        get() {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Build.SUPPORTED_ABIS
+            } else {
+                arrayOf(Build.CPU_ABI)
+            }
+        }
+
+    /**
      * 获取当前应用程序的名称。
      * @return 当前应用程序的名称。
      */
@@ -277,4 +289,5 @@ object GlobalUtil {
      * */
     fun isWeiboInstalled() = isInstalled("com.sina.weibo")
 
+    fun isX86Device() = cpuAbi.any { it == "x86" }
 }

@@ -3,6 +3,7 @@ package com.cyuan.bimibimi.ui.detail.adapter
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.cyuan.bimibimi.BimibimiApp
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
@@ -101,8 +103,10 @@ class OnlinePlayListAdapter(private val context: Context,
                                     taskInfo.episodeName = episodes[position].title
                                     taskInfo.href = movieDetail.href
                                     taskInfo.episodeHref = episodes[position].href
-                                    val downloadHelper = DownloadHelper.getInstance(context.applicationContext, null)
-                                    downloadHelper.addTask(taskInfo)
+                                    if (!GlobalUtil.isX86Device()) {
+                                        val downloadHelper = DownloadHelper.getInstance(context.applicationContext, null)
+                                        downloadHelper.addTask(taskInfo)
+                                    }
                                 }
 
                                 override fun cancel(dialog: Dialog?) {}
