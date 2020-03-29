@@ -256,37 +256,11 @@ object HtmlDataParser {
 //                        parseVideoUrlById(url, callback)
                         parseVideoSourceFromIframe(context, url, callback, dataSource)
                     } else if (url.endsWith(".html")) {
-                        // parseVideoUrlWithWebView(context, url, callback)
-                        // https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/19rrok4nt0.m3u8
-                        // "https://api.nmbaojie.com/api/video/youkuplay.php?url=https://api.nmbaojie.com/api/data/iqiyim3u8/19rrok4pg4.m3u8"
-                        // https://www.iqiyi.com/v_19rrok4pg4.html
-                        /*if (url.contains("iqiyi")) {
-                            val vid = UrlHelper.extractIqyVideoId(url)
-                            url =
-                                "https://bb.nmbaojie.com/api/video/youkuplay.php?url=https://bb.nmbaojie.com/api/data/iqiyim3u8/${vid}.m3u8"
-                            callback?.onSuccess(url)
-                        } else */if (url.contains("v.qq.com") || url.contains("youku") || url.contains("iqiyi")) {
+                        if (url.contains("v.qq.com") || url.contains("youku") || url.contains("iqiyi")) {
                             // https://v.qq.com/x/cover/enj7gj9pcksq89p/g0761hr9ih3.html
                             // http://dalaowangsan.cn/wangerjiexi/api.php?url=https://m.v.qq.com/cover/0/0gsf9fytppje54d.html?vid=k0027nolupz&cb=jQuery18205677586477461618_1574253655192&_=1574253655788
 
                             parseVideoWithWebView(context, url, callback, true)
-//                            url = UrlHelper.rebuildQQVideoUrl(url)
-//                            StringRequest().url(url)
-//                                .listen(object : Callback {
-//                                    override fun onFailure(e: Exception) {
-//                                        callback?.onFail(e.message ?: "")
-//                                    }
-//
-//                                    override fun onResponseString(response: String) {
-//                                        val result = response.replace("(", "").replace(");", "")
-//                                        try {
-//                                            url = JSONObject(result).getString("url")
-//                                            callback?.onSuccess(url)
-//                                        } catch (e: Exception) {
-//
-//                                        }
-//                                    }
-//                                })
                         }
                     } else {
                         callback?.onSuccess(url)
@@ -337,7 +311,7 @@ object HtmlDataParser {
         val header = mutableMapOf<String, String>()
         header["Referer"] = "http://www.bimibimi.tv/"
         if (useParseEngine) {
-            webView.loadUrl("https://okjx.lrkdzx.com/okbyjiexi/?url=$url")
+            webView.loadUrl("https://jx.jxii.cn/?url=$url")
         } else {
             webView.loadUrl(url, header)
         }
@@ -345,6 +319,13 @@ object HtmlDataParser {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, webUrl: String?) {
                 webView.evaluateJavascript(GET_VIDEO_SRC_JS, null)
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url?.contains("nxflv")!!) {
+                    logWarn("FLV", url)
+                }
+                return super.shouldOverrideUrlLoading(view, url)
             }
         }
 
