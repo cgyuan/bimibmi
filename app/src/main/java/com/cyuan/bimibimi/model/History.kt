@@ -49,6 +49,10 @@ class History(
      */
     @ColumnInfo(name = "cover") var cover: String,
     /**
+     * 资源站点
+     */
+    @ColumnInfo(name = "host") var host: String,
+    /**
      * 标签，暂时留白
      */
     @Nullable

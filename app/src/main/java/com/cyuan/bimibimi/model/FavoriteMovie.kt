@@ -13,7 +13,11 @@ class FavoriteMovie(
     @ColumnInfo(name = "title") var title: String,
     @ColumnInfo(name = "cover") var cover: String,
     @ColumnInfo(name = "label") var label: String,
-    @ColumnInfo(name = "add_date") val date: Calendar
+    /**
+     * 资源站点
+     */
+    @ColumnInfo(name = "host") var host: String,
+    @ColumnInfo(name = "add_date" ) val date: Calendar
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

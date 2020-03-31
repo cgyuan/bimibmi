@@ -14,8 +14,8 @@ interface HistoryDao: BaseDao<History> {
     @Query("DELETE FROM history WHERE href = :href")
     fun deleteHistory(href: String)
 
-    @Query("SELECT * FROM history ORDER BY date DESC")
-    fun queryAllHistoryByPage(): DataSource.Factory<Int, History>
+    @Query("SELECT * FROM history WHERE host = :host ORDER BY date DESC")
+    fun queryAllHistoryByPage(host: String): DataSource.Factory<Int, History>
 
     @Query("SELECT * FROM history ORDER BY date DESC")
     fun queryAllHistory(): List<History>

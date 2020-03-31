@@ -19,6 +19,7 @@ class SettingFragment: PreferenceFragmentCompat() {
     private lateinit var mClearCacheItem: Preference
     private lateinit var mCheckUpdateItem: Preference
     private lateinit var mSelectPlayerItem: Preference
+    private lateinit var mSelectHostItem: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.setting_preference)
@@ -27,10 +28,21 @@ class SettingFragment: PreferenceFragmentCompat() {
         mClearCacheItem = findPreference("clearCache")!!
         mCheckUpdateItem = findPreference("checkUpdate")!!
         mSelectPlayerItem = findPreference("selectPlayer")!!
+        mSelectHostItem = findPreference("selectHost")!!
+
+        val array = resources.getStringArray(R.array.arr_host)
+        val map = mutableMapOf<String, String>()
+        map[array[0]] = Constants.BIMIBIMI_INDEX
+        map[array[1]] = Constants.HALITV_INDEX
 
         mClearCacheItem.summary = CacheUtils.getTotalCacheSize(activity)
         mCheckUpdateItem.summary = GlobalUtil.appVersionName
         mSelectPlayerItem.summary = mSelectPlayerItem.sharedPreferences.getString(Constants.SET_PLAYER, Constants.Player.EXO_PLAYER)
+        map.iterator().forEach {
+            if (it.value == GlobalUtil.host) {
+                mSelectHostItem.summary = it.key
+            }
+        }
 
         mClearCacheItem.setOnPreferenceClickListener {
             MessageDialog.Builder(activity)
@@ -59,6 +71,23 @@ class SettingFragment: PreferenceFragmentCompat() {
                     mSelectPlayerItem.summary = text
                 }
             val index = resources.getStringArray(R.array.arr_player).indexOf(mSelectPlayerItem.summary)
+            dlg.checkItem(index)
+            dlg.show()
+            true
+        }
+
+        mSelectHostItem.setOnPreferenceClickListener {
+            val dlg =
+                MaterialDialog(context!!).listItemsSingleChoice(R.array.arr_host) { dialog, index, text ->
+
+                    mSelectHostItem.sharedPreferences
+                        .edit()
+                        .putString(Constants.HOST, map[text])
+                        .apply()
+                    mSelectHostItem.summary = text
+                    GlobalUtil.hostCache = map[text]!!
+                }
+            val index = resources.getStringArray(R.array.arr_host).indexOf(mSelectHostItem.summary)
             dlg.checkItem(index)
             dlg.show()
             true

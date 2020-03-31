@@ -13,7 +13,7 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logDebug
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.parser.HtmlDataParser
+import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.base.InfiniteScrollListener
 import kotlinx.android.synthetic.main.fragment_category.*
@@ -96,7 +96,7 @@ class CategoryFragment(private var category: String) : Fragment() {
     fun loadData() {
         isLoading = true
         isLoadFailed = false
-        HtmlDataParser.parseCategoryMovie("$category-$currentPage", object :
+        DataParserAdapter.parseCategoryMovie("$category-$currentPage", object :
             ParseResultCallback<List<Movie>> {
             override fun onSuccess(data: List<Movie>) {
                 if (data.isEmpty()) {

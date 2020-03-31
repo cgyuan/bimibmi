@@ -1,13 +1,18 @@
 package com.cyuan.bimibimi.network.request
 
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 
 class SearchRequest: StringRequest() {
 
     private val params = mutableMapOf<String, String>()
 
     override fun url(): String {
-        return "${Constants.BIMIBIMI_INDEX}vod/search/"
+        return if (GlobalUtil.host == Constants.BIMIBIMI_INDEX) {
+            "${Constants.BIMIBIMI_INDEX}vod/search/"
+        } else {
+            "${Constants.HALITV_INDEX}search/"
+        }
     }
 
     fun addParam(key: String, value: String): SearchRequest {

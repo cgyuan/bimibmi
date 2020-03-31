@@ -10,6 +10,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.preference.PreferenceManager
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logWarn
 import java.text.SimpleDateFormat
@@ -69,6 +71,17 @@ object GlobalUtil {
             } else {
                 arrayOf(Build.CPU_ABI)
             }
+        }
+
+    var hostCache: String = ""
+
+    val host: String
+        get() {
+            if (TextUtils.isEmpty(hostCache)) {
+                hostCache =  PreferenceManager.getDefaultSharedPreferences(App.getContext())
+                    .getString(Constants.HOST, Constants.BIMIBIMI_INDEX)!!
+            }
+            return hostCache
         }
 
     /**

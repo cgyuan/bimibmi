@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_category.*
@@ -12,13 +14,9 @@ import skin.support.widget.SkinCompatSupportable
 
 class CategoryActivity : BaseActivity(), SkinCompatSupportable {
 
-    private val pagesPath = listOf(
-        "/type/riman", "/type/guoman", "/type/fanzu", "/type/juchang", "/type/move"
-    )
+    private val pagesPath = Constants.CATEGORY_MAP[GlobalUtil.host]!![Constants.PATH_KEY]!!
 
-    private val pagesTitle = listOf(
-        "新番放送", "国产动漫", "番组计划", "剧场动画", "影视"
-    )
+    private val pagesTitle = Constants.CATEGORY_MAP[GlobalUtil.host]!![Constants.TITLE_KEY]!!
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -27,5 +27,14 @@
         android:title="播放器设置"
         android:layout="@layout/custom_preference"/>
 
+    <androidx.preference.Preference
+        android:key="selectHost"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:iconSpaceReserved="false"
+        android:summary="BimiBimi"
+        android:title="选择资源站点"
+        android:layout="@layout/custom_preference"/>
+
 
 </androidx.preference.PreferenceScreen>

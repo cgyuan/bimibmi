@@ -20,7 +20,7 @@ class HistoryRepository private constructor(private val historyDao: HistoryDao) 
     fun removeHistory(history: History) = historyDao.deleteHistory(history.href)
 
 
-    fun getAllHistoryByPage() = historyDao.queryAllHistoryByPage()
+    fun getAllHistoryByPage(host: String) = historyDao.queryAllHistoryByPage(host)
 
     fun getAllHistory() = historyDao.queryAllHistory()
 

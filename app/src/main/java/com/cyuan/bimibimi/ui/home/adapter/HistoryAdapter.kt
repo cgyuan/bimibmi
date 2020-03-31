@@ -48,7 +48,7 @@ class HistoryAdapter(
             viewModel.viewModelScope.launch {
                 var movieDetail: MovieDetail? = null
                 try {
-                    movieDetail = viewModel.fetchMovieDetail(Constants.BIMIBIMI_INDEX + history.href)
+                    movieDetail = viewModel.fetchMovieDetail(history.href)
                 } catch (e: Exception) {
                     Toast.makeText(App.getContext(), e.message, Toast.LENGTH_SHORT).show()
                 }

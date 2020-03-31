@@ -14,6 +14,6 @@ interface FavoriteMovieDao: BaseDao<FavoriteMovie> {
     @Query("DELETE FROM favorite_movie WHERE href = :href")
     fun deleteMovie(href: String)
 
-    @Query("SELECT * FROM favorite_movie ORDER BY add_date DESC")
-    fun queryAllMovie(): DataSource.Factory<Int, FavoriteMovie>
+    @Query("SELECT * FROM favorite_movie WHERE host = :host ORDER BY add_date DESC")
+    fun queryAllMovie(host: String): DataSource.Factory<Int, FavoriteMovie>
 }

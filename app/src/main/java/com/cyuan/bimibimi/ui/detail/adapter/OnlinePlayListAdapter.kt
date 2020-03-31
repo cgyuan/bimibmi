@@ -3,7 +3,6 @@ package com.cyuan.bimibimi.ui.detail.adapter
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,7 +17,7 @@ import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
-import com.cyuan.bimibimi.parser.HtmlDataParser
+import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.detail.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.download.DownloadHelper
@@ -59,7 +58,7 @@ class OnlinePlayListAdapter(private val context: Context,
         val dataSourceName = movieDetail.dataSources[dataSourceIndex].name
         holder.itemView.setOnClickListener {
             mLoadingDlg.show()
-            HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
+            DataParserAdapter.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
                 override fun onSuccess(data: String) {
                     mLoadingDlg.dismiss()
                     val url: String = data
@@ -84,7 +83,7 @@ class OnlinePlayListAdapter(private val context: Context,
         }
         holder.itemView.setOnLongClickListener {
             mLoadingDlg.show()
-            HtmlDataParser.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
+            DataParserAdapter.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
                 override fun onSuccess(data: String) {
                     mLoadingDlg.dismiss()
                     App.getHandler().post {

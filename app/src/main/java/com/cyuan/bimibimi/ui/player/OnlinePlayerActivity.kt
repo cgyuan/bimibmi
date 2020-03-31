@@ -1,6 +1,7 @@
 package com.cyuan.bimibimi.ui.player
 
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,11 +10,12 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.db.AppDatabase
 import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.History
-import com.cyuan.bimibimi.parser.HtmlDataParser
+import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
@@ -63,7 +65,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
 
     fun playByEpisodeIndex(position: Int) {
         val episode = episodeList!![position]
-        HtmlDataParser.parseVideoSource(
+        DataParserAdapter.parseVideoSource(
             this@OnlinePlayerActivity,
             episode,
             object : ParseResultCallback<String> {
@@ -146,6 +148,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
             controller.setTitle("【${movieTitle}】$episodeName")
         }
         controller.setInitPlayPosition(playPosition)
+        Log.d("OnlineActivity OnCreate", "parent = " + mVideoView.parent)
         playView.addView(mVideoView)
         mVideoView.setPlayerFactory(playerFactory)
         mVideoView.startFullScreen()
@@ -191,7 +194,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         if (mVideoView.duration > 0) {
             val history = History(movieDetailHref, currentUrl,
                 movieTitle, dataSourceIndex, episodeName, episodeIndex, mVideoView.currentPosition,
-                mVideoView.duration, movieCover, "", Calendar.getInstance())
+                mVideoView.duration, movieCover, GlobalUtil.host , "", Calendar.getInstance())
             historyRepository.saveHistory(history)
         }
     }

@@ -41,4 +41,8 @@
         <item>Exo Player</item>
         <item>Ijk Player</item>
     </string-array>
+    <string-array name="arr_host">
+        <item>bimibimi</item>
+        <item>halitv</item>
+    </string-array>
 </resources>

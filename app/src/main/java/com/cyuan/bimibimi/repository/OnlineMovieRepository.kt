@@ -1,10 +1,12 @@
 package com.cyuan.bimibimi.repository
 import android.os.SystemClock
+import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.model.HomeInfo
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
-import com.cyuan.bimibimi.parser.HtmlDataParser
+import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,10 +21,10 @@ open class OnlineMovieRepository private constructor() {
     suspend fun fetchHomeInfo() = withContext(Dispatchers.IO) {
         val homeInfo = SharedUtil.read(HOME_INFO, HomeInfo::class.java)
         val hoursAgo = homeInfo?.let {  (SystemClock.uptimeMillis() - homeInfo.updateTimeStamp) / (1000 * 3600) } ?: 0
-        if (homeInfo == null || hoursAgo >= 1) {
+        if (homeInfo == null || hoursAgo >= 1 || GlobalUtil.host != homeInfo.host) {
             val result =
                 suspendCoroutine<HomeInfo> { continuation ->
-                    HtmlDataParser.parseHomePage(object :
+                    DataParserAdapter.parseHomePage(object :
                         ParseResultCallback<HomeInfo> {
                         override fun onSuccess(data: HomeInfo) {
                             SharedUtil.save(HOME_INFO, data)
@@ -43,7 +45,7 @@ open class OnlineMovieRepository private constructor() {
 
     suspend fun fetchMovieDetail(url: String) = withContext(Dispatchers.IO) {
         val result = suspendCoroutine<MovieDetail> {
-            HtmlDataParser.parseMovieDetail(url, object : ParseResultCallback<MovieDetail> {
+            DataParserAdapter.parseMovieDetail(url, object : ParseResultCallback<MovieDetail> {
                 override fun onSuccess(data: MovieDetail) {
                     it.resume(data)
                 }
@@ -59,7 +61,7 @@ open class OnlineMovieRepository private constructor() {
 
     suspend fun fetchDailyUpdateMovie() = withContext(Dispatchers.IO) {
         val result = suspendCoroutine<List<List<Movie>>> {
-            HtmlDataParser.parseDailyUpdate(object : ParseResultCallback<List<List<Movie>>> {
+            DataParserAdapter.parseDailyUpdate(object : ParseResultCallback<List<List<Movie>>> {
                 override fun onSuccess(data: List<List<Movie>>) {
                     it.resume(data)
                 }

@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/dlnalib" />
             <option value="$PROJECT_DIR$/modules/thunder" />
+            <option value="$PROJECT_DIR$/upload-plugin" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

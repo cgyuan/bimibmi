@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.db.dao.FavoriteMovieDao
 import com.cyuan.bimibimi.db.dao.HistoryDao
@@ -13,7 +14,7 @@ import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.History
 
 
-@Database(entities = [FavoriteMovie::class, History::class], version = 4, exportSchema = false)
+@Database(entities = [FavoriteMovie::class, History::class], version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
 
@@ -48,12 +49,21 @@ abstract class AppDatabase: RoomDatabase() {
 
         }
 
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE history ADD COLUMN host TEXT NOT NULL DEFAULT '${Constants.BIMIBIMI_INDEX}'")
+                database.execSQL("ALTER TABLE favorite_movie ADD COLUMN host TEXT NOT NULL DEFAULT '${Constants.BIMIBIMI_INDEX}'")
+            }
+
+        }
+
         val instance by lazy {
             Room.databaseBuilder(App.getContext(), AppDatabase::class.java, "Bimibimi-db")
                 .allowMainThreadQueries()
 //                .fallbackToDestructiveMigration()
                 .addMigrations(MIGRATION_2_3)
                 .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_4_5)
                 .build()
         }
     }

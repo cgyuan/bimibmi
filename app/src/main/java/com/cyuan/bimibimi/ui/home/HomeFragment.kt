@@ -3,7 +3,6 @@ package com.cyuan.bimibimi.ui.home
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -15,8 +14,8 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.databinding.FragmentHomeBinding
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.repository.OnlineMovieRepository
+import com.cyuan.bimibimi.ui.base.BaseFragment
 import com.cyuan.bimibimi.ui.base.CommonGridHelperAdapter
-import com.cyuan.bimibimi.ui.base.UICallback
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
@@ -26,7 +25,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
-class HomeFragment : Fragment() , UICallback {
+class HomeFragment : BaseFragment() {
 
     private lateinit var adapters: DelegateAdapter
     private lateinit var viewModel: HomeViewModel
@@ -62,6 +61,7 @@ class HomeFragment : Fragment() , UICallback {
         viewModel.fetchHomeData()
 
         viewModel.bannerList.observe(viewLifecycleOwner, Observer<List<Movie>> { bannerList ->
+            adapters.clear()
             val bannerImgList = bannerList?.map {
                 it.cover
             }
@@ -81,6 +81,7 @@ class HomeFragment : Fragment() , UICallback {
                 )
             }
             recyclerView.adapter = adapters
+            adapters.notifyDataSetChanged()
         })
     }
 

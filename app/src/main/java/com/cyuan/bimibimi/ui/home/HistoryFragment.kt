@@ -9,10 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.databinding.FragmentHistoryBinding
 import com.cyuan.bimibimi.db.AppDatabase
 import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.History
+import com.cyuan.bimibimi.ui.base.BaseFragment
 import com.cyuan.bimibimi.ui.home.adapter.HistoryAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModelFactory
@@ -20,7 +22,7 @@ import com.cyuan.bimibimi.widget.MessageDialog
 import kotlinx.android.synthetic.main.fragment_history.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 
-class HistoryFragment : Fragment(), View.OnLongClickListener {
+class HistoryFragment : BaseFragment(), View.OnLongClickListener {
 
     private val adapter by lazy { HistoryAdapter(viewModel, this) }
 
@@ -88,6 +90,10 @@ class HistoryFragment : Fragment(), View.OnLongClickListener {
                 }).show()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun reload() {
+        viewModel.host.value = GlobalUtil.host
     }
 
     override fun onLongClick(v: View?): Boolean {

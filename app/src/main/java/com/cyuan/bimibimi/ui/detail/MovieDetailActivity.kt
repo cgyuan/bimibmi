@@ -79,9 +79,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
             detail_veilLayout_body.unVeil()
         } else {
 
-            url = Constants.BIMIBIMI_INDEX + movie.href
-
-            viewModel.fetchMovieDetail(url)
+            viewModel.fetchMovieDetail(movie.href)
 
             viewModel.movieDetail.observe(this, Observer { movieDetail ->
                 initMovieDetail(movieDetail)
@@ -139,7 +137,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     }
 
     override fun reload() {
-        viewModel.fetchMovieDetail(url)
+        viewModel.fetchMovieDetail(movie.href)
     }
 
     private fun initThemeColor() {

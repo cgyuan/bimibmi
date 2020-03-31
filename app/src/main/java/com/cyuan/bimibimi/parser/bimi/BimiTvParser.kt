@@ -1,22 +1,20 @@
-package com.cyuan.bimibimi.parser
+package com.cyuan.bimibimi.parser.bimi
 
 import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
 import android.webkit.*
-import com.cyuan.bimibimi.BimibimiApp
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logWarn
-import com.cyuan.bimibimi.core.utils.GlobalUtil
-import com.cyuan.bimibimi.core.utils.UrlHelper
 import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.SearchRequest
 import com.cyuan.bimibimi.network.request.StringRequest
+import com.cyuan.bimibimi.parser.ParseResultCallback
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -24,7 +22,7 @@ import java.net.URLDecoder
 import java.util.regex.Pattern
 
 
-object HtmlDataParser {
+object BimiTvParser {
     fun parseHomePage(callback: ParseResultCallback<HomeInfo>?) {
         StringRequest().listen(object : Callback{
             override fun onFailure(e: Exception) {
@@ -72,7 +70,7 @@ object HtmlDataParser {
                         label = itemString.substring(start + "<p>".length, end)
                         video.label = label
                     }
-                    if (!video.title.contains("无修正")) {
+                    if (!(video.title.contains("无修正") || video.title.contains("风俗娘"))) {
                         list.add(video)
                     }
                 }
@@ -83,6 +81,7 @@ object HtmlDataParser {
                 homeInfo.bannerList = list
                 homeInfo.sectionList = sections
                 homeInfo.updateTimeStamp = SystemClock.uptimeMillis()
+                homeInfo.host = Constants.BIMIBIMI_INDEX
                 callback?.onSuccess(homeInfo)
             }
         })
@@ -112,7 +111,9 @@ object HtmlDataParser {
                 movie.title = linkEle.attr("title")
                 movie.href = linkEle.attr("href")
                 movie.label = movieELe.select("span[class=fl]")[0].text()
-                movieList.add(movie)
+                if (!(movie.title.contains("无修正") || movie.title.contains("风俗娘"))) {
+                    movieList.add(movie)
+                }
             }
             section.list = movieList
             sectionList.add(section)
@@ -120,7 +121,8 @@ object HtmlDataParser {
         return sectionList
     }
 
-    fun parseMovieDetail(url: String, callback: ParseResultCallback<MovieDetail>?) {
+    fun parseMovieDetail(href: String, callback: ParseResultCallback<MovieDetail>?) {
+        val url = Constants.BIMIBIMI_INDEX + href
         StringRequest().url(url)
             .listen(object: Callback {
                 override fun onFailure(e: Exception) {
@@ -188,7 +190,10 @@ object HtmlDataParser {
                         }
                     }
 
-                    val movieList = parseMovieList(document)
+                    val movieList =
+                        parseMovieList(
+                            document
+                        )
 
                     movieDetail.headers = stringBuilder.toString()
 
@@ -201,7 +206,7 @@ object HtmlDataParser {
             })
     }
 
-    fun parseVideoSourceFromIframe(
+    private fun parseVideoSourceFromIframe(
         context: Context,
         url: String,
         callback: ParseResultCallback<String>?,
@@ -224,8 +229,13 @@ object HtmlDataParser {
 //            else -> {
 //                pageUrl = "http://119.23.209.33/static/danmu/play.php?url=${url}"
 //            }
+
         }
-        parseVideoWithWebView(context, pageUrl, callback)
+        parseVideoWithWebView(
+            context,
+            pageUrl,
+            callback
+        )
     }
 
     fun parseVideoSource(
@@ -249,7 +259,10 @@ object HtmlDataParser {
 
                 override fun onResponseString(response: String) {
                     // 从页面解析视频url
-                    var url = parseVideoUrlFromPage(response)
+                    var url =
+                        parseVideoUrlFromPage(
+                            response
+                        )
                     if (url.isEmpty()) {
                         callback?.onFail("应版权方要求,该番剧已下架！")
                         return
@@ -257,13 +270,23 @@ object HtmlDataParser {
                     if (!url.startsWith("http")) {
                         // 获得视频后缀部分，并据此从静态页面解析视频url
 //                        parseVideoUrlById(url, callback)
-                        parseVideoSourceFromIframe(context, url, callback, dataSource)
+                        parseVideoSourceFromIframe(
+                            context,
+                            url,
+                            callback,
+                            dataSource
+                        )
                     } else if (url.endsWith(".html")) {
                         if (url.contains("v.qq.com") || url.contains("youku") || url.contains("iqiyi")) {
                             // https://v.qq.com/x/cover/enj7gj9pcksq89p/g0761hr9ih3.html
                             // http://dalaowangsan.cn/wangerjiexi/api.php?url=https://m.v.qq.com/cover/0/0gsf9fytppje54d.html?vid=k0027nolupz&cb=jQuery18205677586477461618_1574253655192&_=1574253655788
 
-                            parseVideoWithWebView(context, url, callback, true)
+                            parseVideoWithWebView(
+                                context,
+                                url,
+                                callback,
+                                true
+                            )
                         }
                     } else {
                         callback?.onSuccess(url)
@@ -310,7 +333,11 @@ object HtmlDataParser {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        webView.addJavascriptInterface(JsBridge(webView, callback), "app")
+        webView.addJavascriptInterface(
+            JsBridge(
+                webView,
+                callback
+            ), "app")
         val header = mutableMapOf<String, String>()
         header["Referer"] = "http://www.bimibimi.tv/"
         if (useParseEngine) {
@@ -402,7 +429,10 @@ object HtmlDataParser {
 
                 override fun onResponseString(response: String) {
                     val document = Jsoup.parse(response)
-                    val movieList = parseMovieList(document)
+                    val movieList =
+                        parseMovieList(
+                            document
+                        )
                     callback?.onSuccess(movieList)
                 }
             })
@@ -423,7 +453,7 @@ object HtmlDataParser {
             movie.title = linkEle.attr("title")
             movie.href = linkEle.attr("href")
             movie.label = movieELe.select("span[class=fl]")[0].text()
-            if (!movie.title.contains("无修正")) {
+            if (!(movie.title.contains("无修正") || movie.title.contains("风俗娘"))) {
                 movieList.add(movie)
             }
         }
@@ -439,7 +469,10 @@ object HtmlDataParser {
 
                 override fun onResponseString(response: String) {
                     val document = Jsoup.parse(response)
-                    val movieList = parseMovieList(document)
+                    val movieList =
+                        parseMovieList(
+                            document
+                        )
                     callback?.onSuccess(movieList)
                 }
             })

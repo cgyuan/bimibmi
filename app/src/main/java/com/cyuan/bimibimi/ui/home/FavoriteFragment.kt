@@ -12,10 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.databinding.FragmentFavoriteBinding
 import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.Movie
+import com.cyuan.bimibimi.ui.base.BaseFragment
 import com.cyuan.bimibimi.ui.home.adapter.FavoriteMovieAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModelFactory
@@ -23,7 +25,7 @@ import com.cyuan.bimibimi.widget.MessageDialog
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 
-class FavoriteFragment : Fragment(), View.OnLongClickListener {
+class FavoriteFragment : BaseFragment(), View.OnLongClickListener {
 
     private val adapter by lazy { FavoriteMovieAdapter(context!!, this) }
 
@@ -45,6 +47,10 @@ class FavoriteFragment : Fragment(), View.OnLongClickListener {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         return binding.root
+    }
+
+    override fun reload() {
+        viewModel.host.value = GlobalUtil.host
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
