@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.databinding.FragmentDailyUpdateBinding
-import com.cyuan.bimibimi.ui.base.UICallback
+import com.cyuan.bimibimi.ui.base.BaseFragment
 import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.home.adapter.DailySectionAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModel
@@ -31,7 +30,7 @@ import q.rorbin.verticaltablayout.widget.TabView
 import skin.support.widget.SkinCompatSupportable
 
 
-class DailyUpdateFragment : Fragment() , UICallback, SkinCompatSupportable {
+class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
 
     private lateinit var layoutManager: GridLayoutManager
     private val dayOfWeekList = listOf("一", "二", "三", "四", "五", "六", "日")
