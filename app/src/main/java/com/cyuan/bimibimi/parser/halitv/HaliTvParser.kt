@@ -164,7 +164,9 @@ object HaliTvParser {
         val document = Jsoup.parse(response)
         try {
             movieDetail.intro = document.select("div[class=bt-content]")[0].textNodes()[0].text()
-        } catch (e: Exception){}
+        } catch (e: Exception){
+            movieDetail.intro = document.select("div.bt-content p")[0].text()
+        }
         val headers = document.select("div[class=txt-list]")[0].text()
         movieDetail.title = document.select("h1")[0].text()
         movieDetail.cover = "http:" + document.select("img")[0].attr("src")
@@ -186,7 +188,14 @@ object HaliTvParser {
             dataSource.episodes = episodes
             dataSources.add(dataSource)
         }
-        movieDetail.headers = document.select("div[class=txt-list]")[0].text()
+        val stringBuilder = StringBuilder()
+        val headerEles = document.select("div[class=txt-list]")[0].select("p")
+        with(stringBuilder) {
+            headerEles.forEach {
+                append(it.text() + "\n")
+            }
+        }
+        movieDetail.headers = stringBuilder.toString()
         movieDetail.recommendList = parseMovieList(document)
         movieDetail.dataSources = dataSources
         return movieDetail
