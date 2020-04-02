@@ -32,6 +32,7 @@
                     android:background="@color/colorPrimary"
                     android:contentInsetStart="0dp"
                     app:contentInsetStart="0dp"
+                    android:clickable="true"
                     app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -76,7 +77,8 @@
             <com.cyuan.bimibimi.widget.EmptyView
                 android:id="@+id/emptyView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 bind:viewStatus="@{viewModel.viewState}"/>
 
             <androidx.recyclerview.widget.RecyclerView

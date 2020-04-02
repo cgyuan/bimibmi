@@ -118,6 +118,7 @@ object BimiTvParser {
             section.list = movieList
             sectionList.add(section)
         }
+        sectionList[0].list.add(sectionList[1].list[sectionList[1].list.size - 1])
         return sectionList
     }
 

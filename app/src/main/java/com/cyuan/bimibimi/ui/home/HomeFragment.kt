@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.cyuan.bimibimi.R
+import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.databinding.FragmentHomeBinding
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.repository.OnlineMovieRepository
@@ -61,6 +62,7 @@ class HomeFragment : BaseFragment() {
         viewModel.fetchHomeData()
 
         viewModel.bannerList.observe(viewLifecycleOwner, Observer<List<Movie>> { bannerList ->
+            saveHost = GlobalUtil.host
             adapters.clear()
             val bannerImgList = bannerList?.map {
                 it.cover

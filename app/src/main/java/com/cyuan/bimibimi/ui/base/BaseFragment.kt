@@ -6,7 +6,7 @@ import com.cyuan.bimibimi.core.utils.GlobalUtil
 
 abstract class BaseFragment: Fragment(), UICallback {
 
-    private lateinit var saveHost: String
+    protected lateinit var saveHost: String
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
