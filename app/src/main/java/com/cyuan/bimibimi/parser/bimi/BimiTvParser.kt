@@ -118,7 +118,7 @@ object BimiTvParser {
             section.list = movieList
             sectionList.add(section)
         }
-        sectionList[0].list.add(sectionList[1].list[sectionList[1].list.size - 1])
+        sectionList[0].list.add(sectionList[1].list[0])
         return sectionList
     }
 
@@ -340,7 +340,7 @@ object BimiTvParser {
                 callback
             ), "app")
         val header = mutableMapOf<String, String>()
-        header["Referer"] = "http://www.bimibimi.tv/"
+        header["Referer"] = Constants.HOST
         if (useParseEngine) {
             webView.loadUrl("https://jx.jxii.cn/?url=$url")
         } else {
@@ -421,7 +421,7 @@ object BimiTvParser {
 
 
     fun parseCategoryMovie(path: String, callback: ParseResultCallback<List<Movie>>?) {
-        val url = "http://www.bimibimi.tv$path/"
+        val url = "http://www.bimibimi.cc$path/"
         StringRequest().url(url)
             .listen(object : Callback {
                 override fun onFailure(e: Exception) {
