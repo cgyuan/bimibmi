@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
 
+    private var bannerAdapter: HomeBannerAdapter? = null
     private lateinit var adapters: DelegateAdapter
     private lateinit var viewModel: HomeViewModel
 
@@ -67,7 +68,7 @@ class HomeFragment : BaseFragment() {
             val bannerImgList = bannerList?.map {
                 it.cover
             }
-            val bannerAdapter = HomeBannerAdapter(context!!, bannerImgList!!, bannerList!!)
+            bannerAdapter = HomeBannerAdapter(context!!, bannerImgList!!, bannerList!!)
             adapters.addAdapter(bannerAdapter)
         })
 
@@ -85,6 +86,16 @@ class HomeFragment : BaseFragment() {
             recyclerView.adapter = adapters
             adapters.notifyDataSetChanged()
         })
+    }
+
+    override fun onStop() {
+        bannerAdapter?.stopAutoPlay()
+        super.onStop()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bannerAdapter?.startAutoPlay()
     }
 
     override fun reload() {

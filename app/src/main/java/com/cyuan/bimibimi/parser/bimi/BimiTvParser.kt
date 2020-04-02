@@ -504,7 +504,9 @@ object BimiTvParser {
                         movie.title = linkEle.attr("title")
                         movie.href = linkEle.attr("href")
                         movie.label = movieELe.select("span")[0].text()
-                        movieList.add(movie)
+                        if (!(movie.title.contains("无修正"))) {
+                            movieList.add(movie)
+                        }
                     }
                     dailyList.add(movieList)
                 }

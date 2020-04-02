@@ -169,7 +169,10 @@ object HaliTvParser {
         }
         val headers = document.select("div[class=txt-list]")[0].text()
         movieDetail.title = document.select("h1")[0].text()
-        movieDetail.cover = "http:" + document.select("img")[0].attr("src")
+        movieDetail.cover = document.select("img")[0].attr("src")
+        if (!movieDetail.cover.startsWith("http")) {
+            movieDetail.cover = "http:${movieDetail.cover}"
+        }
 
         val dataSourceEles = document.select("ul[class=layui-tab-title]")[0].getElementsByTag("li")
         val playListEles = document.select("ul.layui-tab-item.bt-playlist")

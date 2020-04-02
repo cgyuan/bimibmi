@@ -20,9 +20,12 @@ class HomeBannerAdapter(
     private val movies: List<Movie>
 ) : DelegateAdapter.Adapter<HomeBannerViewHolder>() {
 
+    private lateinit var homeBannerViewHolder: HomeBannerViewHolder
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeBannerViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.home_banner_layout, parent, false)
-        return HomeBannerViewHolder(view)
+        homeBannerViewHolder = HomeBannerViewHolder(view)
+        return homeBannerViewHolder
     }
 
     override fun getItemCount() = 1
@@ -44,6 +47,14 @@ class HomeBannerAdapter(
                 navController.navigate(R.id.action_homeFragment_to_movieDetailActivity, args)
             }
         holder.banner.start()
+    }
+
+    fun stopAutoPlay() {
+        homeBannerViewHolder.banner.stopAutoPlay()
+    }
+
+    fun startAutoPlay() {
+        homeBannerViewHolder.banner.startAutoPlay()
     }
 
 }
