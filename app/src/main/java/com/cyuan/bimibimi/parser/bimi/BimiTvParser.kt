@@ -421,7 +421,7 @@ object BimiTvParser {
 
 
     fun parseCategoryMovie(path: String, callback: ParseResultCallback<List<Movie>>?) {
-        val url = "http://www.bimibimi.cc$path/"
+        val url = "${Constants.BIMIBIMI_INDEX.substring(0, Constants.BIMIBIMI_INDEX.length - 1)}$path/"
         StringRequest().url(url)
             .listen(object : Callback {
                 override fun onFailure(e: Exception) {
