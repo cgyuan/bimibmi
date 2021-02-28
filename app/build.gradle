@@ -199,6 +199,6 @@ dependencies {
 
     implementation 'com.tencent.bugly:crashreport_upgrade:1.4.2'
     implementation 'com.tencent.bugly:nativecrashreport:3.7.1'
-    implementation 'com.tencent.tinker:tinker-android-lib:latest.release'
+//    implementation 'com.tencent.tinker:tinker-android-lib:latest.release'
     implementation 'androidx.work:work-runtime:2.3.3'
 }

@@ -132,8 +132,9 @@ object HaliTvParser {
                             if (!movie.cover.startsWith("http")) {
                                 movie.cover = "http:${movie.cover}"
                                 movieList.add(movie)
+                            } else {
+                                movieList.add(movie)
                             }
-
                         }
                     }
                     callback?.onSuccess(movieList)
@@ -264,7 +265,6 @@ object HaliTvParser {
             val link = element.getElementsByTag("a")[0].attr("href")
             var src = element.getElementsByTag("img")[0].attr("src")
             val title = element.getElementsByTag("span")[0].text()
-            src = "http:$src"
             val movie = Movie()
             movie.href = link
             movie.cover = src

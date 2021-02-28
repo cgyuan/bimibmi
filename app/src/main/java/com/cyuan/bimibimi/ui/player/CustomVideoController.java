@@ -507,7 +507,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
         mTopContainer.setPadding(0, 0, mPadding, 0);
         mBottomContainer.setPadding(0, 0, mPadding, 0);
         mBottomProgress.setPadding(0, 0, mPadding, 0);
-        LayoutParams layoutParams = (LayoutParams) mLockButton.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLockButton.getLayoutParams();
         int dp24 = PlayerUtils.dp2px(getContext(), 24);
         layoutParams.setMargins(dp24, 0, dp24, 0);
 //        LayoutParams sflp = (LayoutParams) mStopFullscreen.getLayoutParams();

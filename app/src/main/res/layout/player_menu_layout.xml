@@ -9,7 +9,7 @@
     android:visibility="gone"
     android:layout_gravity="right"
     android:layout_alignParentRight="true"
-    tools:visibility="gone">
+    tools:visibility="visible">
 
     <LinearLayout
         android:layout_width="match_parent"

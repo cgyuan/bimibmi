@@ -9,7 +9,7 @@ interface Constants {
         const val DEFAULT_SKIN: String = "cyan"
         const val IS_NIGHT_MODE_KEY: String = "IS_NIGHT_MODE_KEY"
         const val UUID = "ud"
-        const val BIMIBIMI_INDEX = "http://www.bimibimi.me/"
+        const val BIMIBIMI_INDEX = "http://www.bimiacg.com/"
         const val HALITV_INDEX = "https://www.halitv.com/"
         const val ALLOW_PLAY_IN_BACKGROUND = "ALLOW_PLAY_IN_BACKGROUND"
         const val PALY_BEHAVIOR = "PALY_BEHAVIOR"

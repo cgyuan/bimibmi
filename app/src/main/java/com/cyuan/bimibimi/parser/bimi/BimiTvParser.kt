@@ -78,6 +78,7 @@ object BimiTvParser {
 
                 val sections = parseSection(response)
                 val homeInfo = HomeInfo()
+                list.removeAt(0)
                 homeInfo.bannerList = list
                 homeInfo.sectionList = sections
                 homeInfo.updateTimeStamp = SystemClock.uptimeMillis()
@@ -88,8 +89,8 @@ object BimiTvParser {
     }
 
     private fun parseSection(response: String) : List<Section> {
-        val titleList = listOf("今日热播", "新番放送", "国产动漫", "番组计划", "剧场动画", "影视")
-        val moreList = listOf("", "/type/riman", "/type/guoman", "/type/fanzu", "/type/juchang", "/type/move")
+        val titleList = listOf("今日热播", "新番放送", "国产动漫", "番组计划", "剧场动画", "剧集", "电影")
+        val moreList = listOf("", "/type/riman", "/type/guoman", "/type/fanzu", "/type/juchang", "/type/dianshiju", "/type/move")
         val document = Jsoup.parse(response)!!
         // <ul class="drama-module clearfix tab-cont">
         val sectionEles = document.select("ul[class=drama-module clearfix tab-cont]")
@@ -125,7 +126,7 @@ object BimiTvParser {
     fun parseMovieDetail(href: String, callback: ParseResultCallback<MovieDetail>?) {
         val url = Constants.BIMIBIMI_INDEX + href
         StringRequest().url(url)
-            .listen(object: Callback {
+            .listen(object : Callback {
                 override fun onFailure(e: Exception) {
                     callback?.onFail(e.message ?: "解析影视数据失败")
                 }
@@ -137,19 +138,20 @@ object BimiTvParser {
 //                    val introEle = introEle.child(0)!!
                     movieDetail.intro = introEle.text()
 
-                    movieDetail.cover = document.select("div[class=v_pic]")[0].child(0)!!.attr("data-original")
+                    movieDetail.cover =
+                        document.select("div[class=v_pic]")[0].child(0)!!.attr("data-original")
                     if (!movieDetail.cover.startsWith("http")) {
                         movieDetail.cover = Constants.BIMIBIMI_INDEX + movieDetail.cover
                     }
 
 
-                    val dataSourceEles = document.select("div[class=js_bt]")
+                    val dataSourceDiv = document.select("div[class=play_source_tab]")[0]
                     //        val baiduPanElement = dataSourceEles.removeAt(dataSourceEles.size - 1)
                     val playListEles = document.select("ul[class=player_list]")
                     val dataSources = mutableListOf<DataSource>()
                     playListEles.forEachIndexed { index, element ->
                         val dataSource = DataSource()
-                        val dataSourceLabel = dataSourceEles[index].getElementsByTag("span")[0].text()
+                        val dataSourceLabel = dataSourceDiv.child(index).text()
                         dataSource.name = dataSourceLabel
                         if (dataSourceLabel.contains("百度")) {
                             return@forEachIndexed
@@ -160,14 +162,18 @@ object BimiTvParser {
                         playList.forEach {
                             val episode = Episode()
                             episode.title = it.text()
-                            episode.href = Constants.BIMIBIMI_INDEX.substring(0, Constants.BIMIBIMI_INDEX.length - 1) + it.attr("href")
+                            episode.href = Constants.BIMIBIMI_INDEX.substring(
+                                0,
+                                Constants.BIMIBIMI_INDEX.length - 1
+                            ) + it.attr("href")
                             episodes.add(episode)
                         }
                         dataSource.episodes = episodes
                         dataSources.add(dataSource)
                     }
 
-                    val headEles = document.select("ul[class=txt_list clearfix]")[0].getElementsByTag("li")
+                    val headEles =
+                        document.select("ul[class=txt_list clearfix]")[0].getElementsByTag("li")
                     headEles.removeAt(0)
                     headEles.removeAt(headEles.size - 1)
                     headEles.removeAt(headEles.size - 1)
@@ -252,7 +258,46 @@ object BimiTvParser {
             return
         }
 
-        StringRequest().url(episode.href)
+        context as Activity
+        val webView = context.findViewById<WebView>(R.id.webview)
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+//        webView.addJavascriptInterface(JsBridge(webView, callback), "app")
+
+        webView.loadUrl(episode.href)
+
+        webView.webViewClient = object : WebViewClient() {
+            private var lastTime: Long = 0
+
+            override fun onPageFinished(view: WebView?, webUrl: String?) {
+//                webView.evaluateJavascript(GET_IFRAME_SRC, null)
+            }
+
+            override fun shouldInterceptRequest(
+                view: WebView?,
+                url: String?
+            ): WebResourceResponse? {
+                url?.let {
+                    if (it.contains(".mp4") || it.contains("m3u8")) {
+                        val internal = SystemClock.uptimeMillis() - lastTime
+                        if (internal > 1000) {
+                            App.getHandler().post {
+                                webView.stopLoading()
+                                callback?.onSuccess(url)
+                                webView.removeAllViews()
+                            }
+                        }
+                        lastTime = SystemClock.uptimeMillis()
+                    }
+                }
+                return super.shouldInterceptRequest(view, url)
+            }
+        }
+
+        /*StringRequest().url(episode.href)
             .listen(object : Callback {
                 override fun onFailure(e: Exception) {
                     callback?.onFail(e.message ?: "解析视频失败")
@@ -293,7 +338,7 @@ object BimiTvParser {
                         callback?.onSuccess(url)
                     }
                 }
-            })
+            })*/
     }
 
     class JsBridge(private val webView: WebView,

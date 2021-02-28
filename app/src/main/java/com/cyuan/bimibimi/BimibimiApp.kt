@@ -49,19 +49,6 @@ class BimibimiApp : MultiDexApplication() {
 
         startService(Intent(this, JettyResourceService::class.java))
 
-//        val constraint = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.CONNECTED)
-//            .build()
-//
-//        val periodicWorkRequest = PeriodicWorkRequest
-//            .Builder(
-//                JettyServiceWorker::class.java,
-//                MIN_PERIODIC_INTERVAL_MILLIS,
-//                TimeUnit.MILLISECONDS
-//            )
-//            .build()
-//        WorkManager.getInstance(this).enqueueUniquePeriodicWork("jetty_service", ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest)
-
         SkinCompatManager.withoutActivity(this)
             .addInflater(SkinAppCompatViewInflater()) // 基础控件换肤
             .addInflater(SkinMaterialViewInflater()) // material design
