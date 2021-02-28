@@ -50,11 +50,15 @@ class HomeBannerAdapter(
     }
 
     fun stopAutoPlay() {
-        homeBannerViewHolder.banner.stopAutoPlay()
+        if (::homeBannerViewHolder.isInitialized) {
+            homeBannerViewHolder.banner.stopAutoPlay()
+        }
     }
 
     fun startAutoPlay() {
-        homeBannerViewHolder.banner.startAutoPlay()
+        if (::homeBannerViewHolder.isInitialized) {
+            homeBannerViewHolder.banner.startAutoPlay()
+        }
     }
 
 }
