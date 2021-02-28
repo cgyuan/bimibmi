@@ -96,6 +96,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
 
@@ -167,12 +168,12 @@ dependencies {
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     implementation 'de.hdodenhof:circleimageview:3.0.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.room:room-runtime:2.2.4'
-    kapt 'androidx.room:room-compiler:2.2.4'
-    implementation 'androidx.paging:paging-runtime:2.1.1'
+    implementation 'androidx.room:room-runtime:2.2.6'
+    kapt 'androidx.room:room-compiler:2.2.6'
+    implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
 
     debugImplementation 'me.ele:uetool:1.2.3'
     releaseImplementation 'me.ele:uetool-no-op:1.2.3'
@@ -192,7 +193,7 @@ dependencies {
     implementation 'skin.support:skin-support-constraint-layout:4.0.4'
 // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
 
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
     implementation 'com.afollestad.material-dialogs:core:3.1.1'
 
