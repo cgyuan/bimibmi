@@ -12,18 +12,21 @@ import com.alibaba.android.vlayout.VirtualLayoutManager
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logDebug
+import com.cyuan.bimibimi.databinding.FragmentCategoryBinding
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.base.InfiniteScrollListener
-import kotlinx.android.synthetic.main.fragment_category.*
 
 class CategoryFragment(private var category: String) : Fragment() {
 
+    private lateinit var binding: FragmentCategoryBinding
     private lateinit var categoryAdapter: CategoryGridHelperAdapter
     private val movieList = mutableListOf<Movie>()
 //    private lateinit var category: String
     private var currentPage = 1
+
+
 
     /**
      * 判断是否正在加载更多。
@@ -44,8 +47,9 @@ class CategoryFragment(private var category: String) : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_category, container, false)
+    ): View {
+        binding = FragmentCategoryBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,12 +59,12 @@ class CategoryFragment(private var category: String) : Fragment() {
 
 //        category = arguments?.getString(PlayerKeys.MOVIE_CATEGORY)!!
 
-        val layoutManager = VirtualLayoutManager(context!!)
+        val layoutManager = VirtualLayoutManager(requireContext())
 
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         val viewPool = RecyclerView.RecycledViewPool()
-        recyclerView.setRecycledViewPool(viewPool)
+        binding.recyclerView.setRecycledViewPool(viewPool)
         viewPool.setMaxRecycledViews(0, 10)
 
         val adapters = DelegateAdapter(layoutManager, true)
@@ -72,14 +76,14 @@ class CategoryFragment(private var category: String) : Fragment() {
             R.layout.loading_footer
         )
         adapters.addAdapter(categoryAdapter)
-        recyclerView.adapter = adapters
+        binding.recyclerView.adapter = adapters
     }
 
     override fun onResume() {
         super.onResume()
         if (currentPage == 1) {
             loadData()
-            recyclerView.addOnScrollListener(object : InfiniteScrollListener(recyclerView.layoutManager!!) {
+            binding.recyclerView.addOnScrollListener(object : InfiniteScrollListener(binding.recyclerView.layoutManager!!) {
                 override fun onLoadMore() {
                     currentPage += 1
                     loadData()

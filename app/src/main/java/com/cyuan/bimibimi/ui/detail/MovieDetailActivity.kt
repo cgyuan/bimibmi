@@ -18,14 +18,12 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
@@ -40,12 +38,11 @@ import com.cyuan.bimibimi.ui.base.bindEmptyViewCallback
 import com.cyuan.bimibimi.ui.detail.adapter.RecommendMovieAdapter
 import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.widget.FocusLayoutManager
-import kotlinx.android.synthetic.main.activity_movie_detail.*
-import kotlinx.android.synthetic.main.content_online_detail_page.*
 
 
 class MovieDetailActivity : AppCompatActivity(), UICallback {
 
+    private lateinit var binding: ActivityMovieDetailBinding
     private lateinit var url: String
     private lateinit var favoriteMovieRepository: FavoriteMovieRepository
     private lateinit var movie: Movie
@@ -56,46 +53,46 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityMovieDetailBinding>(
+        binding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_movie_detail
         )
         bindEmptyViewCallback(this)
-        emptyView.bind(movieDetail)
+        binding.detail.emptyView.bind(binding.detail.movieDetail)
         movie = intent.getParcelableExtra(PlayerKeys.MOVIE)!!
         binding.lifecycleOwner = this
         binding.activity = this
         binding.viewModel = viewModel
 
-        detail_veilLayout_body.shimmer = ShimmerUtils.getGrayShimmer(this)
+        binding.detail.detailVeilLayoutBody.shimmer  = ShimmerUtils.getGrayShimmer(this)
 
-        root.setBackgroundColor(Color.rgb(110, 110, 100))
-        mToolbar.setBackgroundColor(Color.rgb(110, 110, 100))
-        setSupportActionBar(mToolbar)
+        binding.root.setBackgroundColor(Color.rgb(110, 110, 100))
+        binding.mToolbar.setBackgroundColor(Color.rgb(110, 110, 100))
+        setSupportActionBar(binding.mToolbar)
 
         initThemeColor()
         if (viewModel.movieDetail.value != null) {
             initMovieDetail(viewModel.movieDetail.value as MovieDetail)
-            detail_veilLayout_body.unVeil()
+            binding.detail.detailVeilLayoutBody.unVeil()
         } else {
 
             viewModel.fetchMovieDetail(movie.href)
 
-            viewModel.movieDetail.observe(this, Observer { movieDetail ->
+            viewModel.movieDetail.observe(this, { movieDetail ->
                 initMovieDetail(movieDetail)
             })
 
-            viewModel.isLoading.observe(this, Observer { isLoading ->
+            viewModel.isLoading.observe(this, { isLoading ->
                 if (isLoading) {
-                    detail_veilLayout_body.veil()
+                    binding.detail.detailVeilLayoutBody.veil()
                 } else {
-                    detail_veilLayout_body.unVeil()
+                    binding.detail.detailVeilLayoutBody.unVeil()
                 }
             })
         }
 
-        scroll_content.scrollTo(0, 0)
-        scroll_content.postDelayed({
+        binding.detail.scrollContent.scrollTo(0, 0)
+        binding.detail.scrollContent.postDelayed({
             scrollToTop()
         }, 5)
     }
@@ -106,32 +103,32 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
         movieDetail.href = movie.href
         movieDetail.title = movie.title
 
-        mvTitle.text = movieDetail.title
-        headDesc.text = movieDetail.headers
-        toolbarTitle.text = movieDetail.title
+        binding.detail.mvTitle.text = movieDetail.title
+        binding.detail.headDesc.text = movieDetail.headers
+        binding.toolbarTitle.text = movieDetail.title
 
         //加入圆角变换
         Glide.with(this@MovieDetailActivity)
             .load(movieDetail.cover)
             .placeholder(R.drawable.ic_default_grey)
             .apply(requestOptions)
-            .into(toolbarIcon)
+            .into(binding.toolbarIcon)
 
-        descView.setContent(movieDetail.intro)
+        binding.detail.descView.setContent(movieDetail.intro)
 
-        recommendListRv.layoutManager = FocusLayoutManager()
-        recommendListRv.adapter = RecommendMovieAdapter(
+        binding.detail.recommendListRv.layoutManager = FocusLayoutManager()
+        binding.detail.recommendListRv.adapter = RecommendMovieAdapter(
             this@MovieDetailActivity,
             movieDetail.recommendList
         )
 
-        viewContainer.removeView(recommendListVeil)
+        binding.detail.viewContainer.removeView(binding.detail.recommendListVeil)
     }
 
     private fun scrollToTop() {
-        if (scroll_content.scrollY != 0) {
-            scroll_content.postDelayed({
-                scroll_content.scrollTo(0, 0)
+        if (binding.detail.scrollContent.scrollY != 0) {
+            binding.detail.scrollContent.postDelayed({
+                binding.detail.scrollContent.scrollTo(0, 0)
             }, 5)
         }
     }
@@ -151,23 +148,23 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
             }
         })
 
-        scroll_content.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        binding.detail.scrollContent.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (scrollY >= 300) {
-                if (!toolbarIcon.isShown) {
-                    toolbarIcon.visibility = View.VISIBLE
+                if (!binding.toolbarIcon.isShown) {
+                    binding.toolbarIcon.visibility = View.VISIBLE
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        app_bar.elevation = 8f
+                        binding.appBar.elevation = 8f
                     }
                     val animation = AnimationUtils.loadAnimation(this@MovieDetailActivity, R.anim.anim_in)
-                    toolbarIcon.startAnimation(animation)
+                    binding.toolbarIcon.startAnimation(animation)
                 }
             } else {
-                if (toolbarIcon.isShown) {
+                if (binding.toolbarIcon.isShown) {
                     val animation = AnimationUtils.loadAnimation(this@MovieDetailActivity, R.anim.anim_out)
-                    toolbarIcon.startAnimation(animation)
-                    toolbarIcon.visibility = View.INVISIBLE
+                    binding.toolbarIcon.startAnimation(animation)
+                    binding.toolbarIcon.visibility = View.INVISIBLE
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        app_bar.elevation = 0f
+                        binding.appBar.elevation = 0f
                     }
                 }
             }
@@ -192,8 +189,8 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
                     anim
                 }
                 colorAnim.addUpdateListener {
-                    root.setBackgroundColor(it.animatedValue as Int)
-                    mToolbar.setBackgroundColor(it.animatedValue as Int)
+                    binding.root.setBackgroundColor(it.animatedValue as Int)
+                    binding.mToolbar.setBackgroundColor(it.animatedValue as Int)
                 }
                 colorAnim.duration = 300
                 colorAnim.repeatMode = ValueAnimator.RESTART
@@ -252,7 +249,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     }
 
     override fun onDestroy() {
-        webview.destroy()
+        binding.webview.destroy()
         super.onDestroy()
     }
 

@@ -7,15 +7,13 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.utils.FileUtils
 import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
+import com.cyuan.bimibimi.databinding.ActivityDownloadBinding
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.ITask
 import com.cyuan.bimibimi.ui.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_download.*
-import kotlinx.android.synthetic.main.download_header_layout.*
-import kotlinx.android.synthetic.main.toolbar_layout.*
 import skin.support.widget.SkinCompatSupportable
 
-class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
+class DownloadActivity : BaseActivity<ActivityDownloadBinding>(), SkinCompatSupportable, ITask {
 
     var mTabTitles = arrayOf("正在下载", "下载完成")
     private var mDownloadingTaskFragment: DownloadingTaskFragment? = null
@@ -24,8 +22,9 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_download)
-        mToolbar.run {
+        binding = ActivityDownloadBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.toolbarLayout.mToolbar.apply {
             setSupportActionBar(this)
             title = "缓存管理"
             setNavigationIcon(R.drawable.ic_arrow_back_24dp)
@@ -38,7 +37,7 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
             mDownloadHelper.initDownloadLiveData(this)
         }
 
-        mViewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        binding.mViewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
                 return if (position == 0) {
                     mDownloadingTaskFragment = DownloadingTaskFragment()
@@ -55,15 +54,15 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
 
         }
 
-        mDownloadPathTv.text = "当前文件下载路径:${FileUtils.cachePath}"
+        binding.header.mDownloadPathTv.text = "当前文件下载路径:${FileUtils.cachePath}"
 
-        mTabLayout.setupWithViewPager(mViewPager)
+        binding.mTabLayout.setupWithViewPager(binding.mViewPager)
     }
 
     override fun onResume() {
         super.onResume()
-        mToolbar.title = "缓存管理"
-        mMemoryStatusTv.text = "已下载文件${FileUtils.cacheSize}，机身剩余可用${FileUtils.spaceSize[0]}"
+        binding.toolbarLayout.mToolbar.title = "缓存管理"
+        binding.header.mMemoryStatusTv.text = "已下载文件${FileUtils.cacheSize}，机身剩余可用${FileUtils.spaceSize[0]}"
     }
 
     override fun onDestroy() {
@@ -84,13 +83,13 @@ class DownloadActivity : BaseActivity(), SkinCompatSupportable, ITask {
         } else {
             "暂无下载任务"
         }
-        mTaskStatusTv.text = statusText
+        binding.header.mTaskStatusTv.text = statusText
         mDownloadingTaskFragment?.refresh(taskInfos)
     }
 
     override fun updateDoneTask(taskInfos: MutableList<DownloadTaskInfo>?) {
         mDownloadedTaskFragment?.refresh(taskInfos)
-        mMemoryStatusTv.text = "已下载文件${FileUtils.cacheSize}，机身剩余可用${FileUtils.spaceSize[0]}"
+        binding.header.mMemoryStatusTv.text = "已下载文件${FileUtils.cacheSize}，机身剩余可用${FileUtils.spaceSize[0]}"
     }
 
     override fun repeatAdd(s: String?) {

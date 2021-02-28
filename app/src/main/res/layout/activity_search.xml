@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/window_background">
 
-    <include layout="@layout/search_input_layout"/>
+    <include android:id="@+id/search" layout="@layout/search_input_layout"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

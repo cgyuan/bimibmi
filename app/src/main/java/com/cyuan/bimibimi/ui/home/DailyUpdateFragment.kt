@@ -19,10 +19,6 @@ import com.cyuan.bimibimi.ui.home.adapter.DailySectionAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.DailyUpdateViewModelFactory
 import com.cyuan.bimibimi.widget.TopSmoothScroller
-import kotlinx.android.synthetic.main.fragment_daily_update.*
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.emptyView
-import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import q.rorbin.verticaltablayout.VerticalTabLayout
 import q.rorbin.verticaltablayout.adapter.TabAdapter
 import q.rorbin.verticaltablayout.widget.ITabView
@@ -32,6 +28,7 @@ import skin.support.widget.SkinCompatSupportable
 
 class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
 
+    private lateinit var binding: FragmentDailyUpdateBinding
     private lateinit var layoutManager: GridLayoutManager
     private val dayOfWeekList = listOf("一", "二", "三", "四", "五", "六", "日")
     private lateinit var topSmoothScroller: TopSmoothScroller
@@ -49,8 +46,8 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val binding = FragmentDailyUpdateBinding.inflate(inflater)
+    ): View {
+        binding = FragmentDailyUpdateBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
@@ -60,11 +57,11 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
         super.onActivityCreated(savedInstanceState)
         sectionOffsetPos[0] = 0
         bindEmptyViewCallback(this)
-        emptyView.bind(recyclerView)
+        binding.emptyView.bind(binding.recyclerView)
         setHasOptionsMenu(true)
-        mToolbar.title = "新番播放表"
-        mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
-        mToolbar.setNavigationOnClickListener {
+        binding.toolbarLayout.mToolbar.title = "新番播放表"
+        binding.toolbarLayout.mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
+        binding.toolbarLayout.mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
 
@@ -73,23 +70,23 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
         layoutManager = GridLayoutManager(activity, 2)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                if(recyclerView.adapter?.getItemViewType(position) == DailySectionAdapter.VIEW_TYPE_TOP_BAR) {
+                if(binding.recyclerView.adapter?.getItemViewType(position) == DailySectionAdapter.VIEW_TYPE_TOP_BAR) {
                     return 2
                 }
                 return 1
             }
         }
-        recyclerView.layoutManager = layoutManager
-        topSmoothScroller = TopSmoothScroller(activity!!)
+        binding.recyclerView.layoutManager = layoutManager
+        topSmoothScroller = TopSmoothScroller(requireActivity())
 
         viewModel.dailyUpdateList.observe(viewLifecycleOwner, Observer {
-            recyclerView.adapter = DailySectionAdapter(context!!, dayOfWeekList, it)
+            binding.recyclerView.adapter = DailySectionAdapter(requireContext(), dayOfWeekList, it)
             it.forEachIndexed { index, list ->
                 sectionOffsetPos[index + 1] = sectionOffsetPos[index] + list.size + 1
             }
         })
 
-        mTabLayout.setTabAdapter(object: TabAdapter {
+        binding.mTabLayout.setTabAdapter(object: TabAdapter {
             override fun getIcon(position: Int) = null
 
             override fun getBadge(position: Int) = null
@@ -108,7 +105,7 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
 
         })
 
-        mTabLayout.addOnTabSelectedListener(object : VerticalTabLayout.OnTabSelectedListener {
+        binding.mTabLayout.addOnTabSelectedListener(object : VerticalTabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabView?, position: Int) {}
 
             override fun onTabSelected(tab: TabView?, position: Int) {
@@ -119,11 +116,11 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
 
         })
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                mSuspensionHeight = mSuspensionBar.height
+                mSuspensionHeight = binding.mSuspensionBar.height
                 if (newState == RecyclerView.SCROLL_STATE_IDLE ||
                         newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     isClickedTab = false
@@ -135,7 +132,7 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
                 val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
                 val tabIndex = getTabIndex(firstVisibleItemPosition)
                 if (!isClickedTab) {
-                    mTabLayout.setTabSelected(tabIndex, false)
+                    binding.mTabLayout.setTabSelected(tabIndex, false)
                 }
 
                 if (layoutManager is GridLayoutManager) {
@@ -149,11 +146,11 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
                         val view = viewList.filterIsInstance<TextView>()[0]
                         if (view.top in 1..mSuspensionHeight) {
                             //需要对悬浮条进行移动
-                            mSuspensionBar.y = (-(mSuspensionHeight - view.top)).toFloat()
+                            binding.mSuspensionBar.y = (-(mSuspensionHeight - view.top)).toFloat()
                         }
                     } else {
                         //保持在原来的位置
-                        mSuspensionBar.y = 0f
+                        binding.mSuspensionBar.y = 0f
                     }
                 }
 
@@ -177,7 +174,7 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
     }
 
     private fun updateSuspensionBar() {
-        mSuspensionBar.text = "星期${dayOfWeekList[mCurrentPosition]}"
+        binding.mSuspensionBar.text = "星期${dayOfWeekList[mCurrentPosition]}"
     }
 
 
@@ -186,7 +183,7 @@ class DailyUpdateFragment : BaseFragment(), SkinCompatSupportable {
     }
 
     override fun applySkin() {
-        SupportSkinHelper.tintVerticalTabLayout(activity!!, mTabLayout)
+        SupportSkinHelper.tintVerticalTabLayout(requireActivity(), binding.mTabLayout)
     }
 
 }

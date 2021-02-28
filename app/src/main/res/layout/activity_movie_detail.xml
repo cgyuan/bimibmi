@@ -76,7 +76,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include layout="@layout/content_online_detail_page" bind:viewModel="@{viewModel}" />
+        <include android:id="@+id/detail" layout="@layout/content_online_detail_page" bind:viewModel="@{viewModel}" />
 
         <WebView
             android:id="@+id/webview"

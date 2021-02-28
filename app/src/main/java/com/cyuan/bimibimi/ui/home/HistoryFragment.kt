@@ -19,11 +19,10 @@ import com.cyuan.bimibimi.ui.home.adapter.HistoryAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModelFactory
 import com.cyuan.bimibimi.widget.MessageDialog
-import kotlinx.android.synthetic.main.fragment_history.*
-import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class HistoryFragment : BaseFragment(), View.OnLongClickListener {
 
+    private lateinit var binding: FragmentHistoryBinding
     private val adapter by lazy { HistoryAdapter(viewModel, this) }
 
     private val viewModel by viewModels<HistoryViewModel> {
@@ -34,8 +33,8 @@ class HistoryFragment : BaseFragment(), View.OnLongClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val binding = DataBindingUtil.inflate<FragmentHistoryBinding>(
+    ): View {
+        binding = DataBindingUtil.inflate<FragmentHistoryBinding>(
             inflater,
             R.layout.fragment_history,
             container,
@@ -49,14 +48,14 @@ class HistoryFragment : BaseFragment(), View.OnLongClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
-        (activity as MainActivity).setSupportActionBar(mToolbar)
-        mToolbar.title = getString(R.string.history_title)
-        mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
-        mToolbar.setNavigationOnClickListener {
+        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.mToolbar)
+        binding.toolbarLayout.mToolbar.title = getString(R.string.history_title)
+        binding.toolbarLayout.mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
+        binding.toolbarLayout.mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
-        emptyView.setEmptyMessageId(R.string.history_empty)
-        recyclerView.adapter = adapter
+        binding.emptyView.setEmptyMessageId(R.string.history_empty)
+        binding.recyclerView.adapter = adapter
 
         viewModel.movies.observe(viewLifecycleOwner, Observer {
             if (it != null) {

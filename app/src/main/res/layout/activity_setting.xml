@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar_layout" />
+    <include android:id="@+id/toolbar_layout" layout="@layout/toolbar_layout" />
 
     <FrameLayout
         android:id="@+id/setting_container"

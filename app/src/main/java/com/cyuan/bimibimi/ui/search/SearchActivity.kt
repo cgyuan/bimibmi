@@ -14,16 +14,15 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.extension.hideSoftKeyboard
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
+import com.cyuan.bimibimi.databinding.ActivitySearchBinding
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.base.BaseActivity
 import com.kotlin.base.widgets.DefaultTextWatcher
-import kotlinx.android.synthetic.main.fragment_category.*
-import kotlinx.android.synthetic.main.search_input_layout.*
 import skin.support.widget.SkinCompatSupportable
 
-class SearchActivity: BaseActivity(), SkinCompatSupportable {
+class SearchActivity: BaseActivity<ActivitySearchBinding>(), SkinCompatSupportable {
 
     private lateinit var searchKeyWord: String
     private lateinit var searchAdapter: SearchGridHelperAdapter
@@ -31,7 +30,8 @@ class SearchActivity: BaseActivity(), SkinCompatSupportable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         searchKeyWord = intent.getStringExtra(Constants.Search.KEYWORD)!!
 
         initSearchBar()
@@ -44,10 +44,10 @@ class SearchActivity: BaseActivity(), SkinCompatSupportable {
     private fun initRecyclerView() {
         val layoutManager = VirtualLayoutManager(this)
 
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         val viewPool = RecyclerView.RecycledViewPool()
-        recyclerView.setRecycledViewPool(viewPool)
+        binding.recyclerView.setRecycledViewPool(viewPool)
         viewPool.setMaxRecycledViews(0, 10)
 
         val adapters = DelegateAdapter(layoutManager, true)
@@ -58,25 +58,25 @@ class SearchActivity: BaseActivity(), SkinCompatSupportable {
             R.layout.movie_card_item_layout
         )
         adapters.addAdapter(searchAdapter)
-        recyclerView.adapter = adapters
+        binding.recyclerView.adapter = adapters
     }
 
     private fun initSearchBar() {
-        searchEdit.setText(searchKeyWord)
-        searchTextClear.visibility = View.VISIBLE
-        searchEdit.addTextChangedListener(object : DefaultTextWatcher() {
+        binding.search.searchEdit.setText(searchKeyWord)
+        binding.search.searchTextClear.visibility = View.VISIBLE
+        binding.search.searchEdit.addTextChangedListener(object : DefaultTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchKeyWord = s.toString()
                 if (TextUtils.isEmpty(s)) {
-                    searchBtn.isEnabled = false
-                    searchTextClear.visibility = View.INVISIBLE
+                    binding.search.searchBtn.isEnabled = false
+                    binding.search.searchTextClear.visibility = View.INVISIBLE
                 } else {
-                    searchBtn.isEnabled = true
-                    searchTextClear.visibility = View.VISIBLE
+                    binding.search.searchBtn.isEnabled = true
+                    binding.search.searchTextClear.visibility = View.VISIBLE
                 }
             }
         })
-        searchEdit.setOnEditorActionListener { v, actionId, event ->
+        binding.search.searchEdit.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 hideSoftKeyboard()
                 loadData()
@@ -84,13 +84,13 @@ class SearchActivity: BaseActivity(), SkinCompatSupportable {
             }
             false
         }
-        searchTextClear.setOnClickListener {
-            searchEdit.setText("")
+        binding.search.searchTextClear.setOnClickListener {
+            binding.search.searchEdit.setText("")
         }
-        searchBack.setOnClickListener {
+        binding.search.searchBack.setOnClickListener {
             finish()
         }
-        searchBtn.setOnClickListener {
+        binding.search.searchBtn.setOnClickListener {
             hideSoftKeyboard()
             loadData()
         }

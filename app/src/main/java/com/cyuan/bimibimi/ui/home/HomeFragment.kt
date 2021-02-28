@@ -23,11 +23,11 @@ import com.cyuan.bimibimi.ui.home.adapter.HomeBannerAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.HomeViewModel
 import com.cyuan.bimibimi.ui.search.SearchActivity
 import com.miguelcatalan.materialsearchview.MaterialSearchView
-import kotlinx.android.synthetic.main.fragment_home.*
 
 
 class HomeFragment : BaseFragment() {
 
+    private lateinit var binding: FragmentHomeBinding
     private var bannerAdapter: HomeBannerAdapter? = null
     private lateinit var adapters: DelegateAdapter
     private lateinit var viewModel: HomeViewModel
@@ -37,7 +37,7 @@ class HomeFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentHomeBinding.inflate(inflater)
+        binding = FragmentHomeBinding.inflate(inflater)
         viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return HomeViewModel(OnlineMovieRepository.instance) as T
@@ -53,10 +53,10 @@ class HomeFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         bindEmptyViewCallback(this)
-        emptyView.bind(recyclerView)
+        binding.emptyView.bind(binding.recyclerView)
         setHasOptionsMenu(true)
-        mToolbar.title = ""
-        (activity as MainActivity).setSupportActionBar(mToolbar)
+        binding.mToolbar.title = ""
+        (activity as MainActivity).setSupportActionBar(binding.mToolbar)
         initSearchView()
         initRecyclerView()
 
@@ -68,7 +68,7 @@ class HomeFragment : BaseFragment() {
             val bannerImgList = bannerList?.map {
                 it.cover
             }
-            bannerAdapter = HomeBannerAdapter(context!!, bannerImgList!!, bannerList!!)
+            bannerAdapter = HomeBannerAdapter(requireContext(), bannerImgList!!, bannerList)
             adapters.addAdapter(bannerAdapter)
         })
 
@@ -76,14 +76,14 @@ class HomeFragment : BaseFragment() {
             for (section in sectionList) {
                 adapters.addAdapter(
                     CommonGridHelperAdapter(
-                        context!!, section.list,
+                        requireContext(), section.list,
                         R.layout.home_movie_card_layout,
                         R.layout.hom_section_header_layout,
                         section.title, section.moreLink
                     )
                 )
             }
-            recyclerView.adapter = adapters
+            binding.recyclerView.adapter = adapters
             adapters.notifyDataSetChanged()
         })
     }
@@ -103,22 +103,22 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
-        val layoutManager = VirtualLayoutManager(context!!)
+        val layoutManager = VirtualLayoutManager(requireContext())
 
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         val viewPool = RecyclerView.RecycledViewPool()
-        recyclerView.setRecycledViewPool(viewPool)
+        binding.recyclerView.setRecycledViewPool(viewPool)
         viewPool.setMaxRecycledViews(0, 10)
 
         adapters = DelegateAdapter(layoutManager, false)
     }
 
     private fun initSearchView() {
-        searchView.setVoiceSearch(false)
-        searchView.setEllipsize(true)
-        searchView.setCursorDrawable(R.drawable.custom_cursor)
-        searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
+        binding.searchView.setVoiceSearch(false)
+        binding.searchView.setEllipsize(true)
+        binding.searchView.setCursorDrawable(R.drawable.custom_cursor)
+        binding.searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 SearchActivity.launch(context!!, query ?: "")
                 return false
@@ -133,7 +133,7 @@ class HomeFragment : BaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
-        searchView.setMenuItem(menu.findItem(R.id.id_action_search))
+        binding.searchView.setMenuItem(menu.findItem(R.id.id_action_search))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

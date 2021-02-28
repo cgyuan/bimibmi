@@ -15,17 +15,17 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.PermissionsMgr
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
+import com.cyuan.bimibimi.databinding.ActivityMainBinding
 import com.cyuan.bimibimi.ui.base.BaseActivity
 import com.cyuan.bimibimi.ui.category.CategoryActivity
 import com.cyuan.bimibimi.ui.download.DownloadActivity
 import com.cyuan.bimibimi.ui.setting.SettingActivity
 import com.cyuan.bimibimi.ui.theme.ChooseThemeActivity
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import skin.support.widget.SkinCompatSupportable
 import zmovie.com.dlan.DlnaLib
 
-class MainActivity : BaseActivity(), SkinCompatSupportable{
+class MainActivity : BaseActivity<ActivityMainBinding>(), SkinCompatSupportable{
 
     private lateinit var switchModeBtn: ImageView
     private lateinit var navController: NavController
@@ -33,8 +33,9 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
 //        DensityUtils.setDensity(application, this)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         DlnaLib.initDlna(application)
 
         if(!PermissionsMgr.isAllPermissionReady(this)) {
@@ -45,23 +46,29 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
 
         navController = Navigation.findNavController(this, R.id.fragment)
 
-        homeItem = mNavigationView.menu.findItem(R.id.homeFragment)
-        mNavigationView.setNavigationItemSelectedListener {
+        homeItem = binding.mNavigationView.menu.findItem(R.id.homeFragment)
+        binding.mNavigationView.setNavigationItemSelectedListener {
             closeDrawer()
-            if (it.itemId in listOf(R.id.homeFragment, R.id.favoriteFragment, R.id.historyFragment, R.id.dailyUpdateFragment)) {
-                NavigationUI.onNavDestinationSelected(it, navController)
-            } else if (it.itemId == R.id.item_theme) {
-                startActivity(Intent(this@MainActivity, ChooseThemeActivity::class.java))
-            } else if (it.itemId == R.id.item_settings) {
-                startActivity(Intent(this@MainActivity, SettingActivity::class.java))
-            } else if (it.itemId == R.id.item_download) {
-                startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
-            } else if (it.itemId == R.id.item_category) {
-                startActivity(Intent(this@MainActivity, CategoryActivity::class.java))
+            when (it.itemId) {
+                in listOf(R.id.homeFragment, R.id.favoriteFragment, R.id.historyFragment, R.id.dailyUpdateFragment) -> {
+                    NavigationUI.onNavDestinationSelected(it, navController)
+                }
+                R.id.item_theme -> {
+                    startActivity(Intent(this@MainActivity, ChooseThemeActivity::class.java))
+                }
+                R.id.item_settings -> {
+                    startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+                }
+                R.id.item_download -> {
+                    startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
+                }
+                R.id.item_category -> {
+                    startActivity(Intent(this@MainActivity, CategoryActivity::class.java))
+                }
             }
             true
         }
-        switchModeBtn = mNavigationView.getHeaderView(0).findViewById<ImageView>(R.id.iv_head_switch_mode)
+        switchModeBtn = binding.mNavigationView.getHeaderView(0).findViewById<ImageView>(R.id.iv_head_switch_mode)
         val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)
         if (isNight) {
             switchModeBtn.setImageResource(R.drawable.ic_switch_daily)
@@ -74,11 +81,11 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
     }
 
     fun openDrawer() {
-        drawerLayout.openDrawer(GravityCompat.START)
+        binding.drawerLayout.openDrawer(GravityCompat.START)
     }
 
     private fun closeDrawer() {
-        drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
     }
 
     /**
@@ -89,7 +96,7 @@ class MainActivity : BaseActivity(), SkinCompatSupportable{
 //        val navHostFragment = this.supportFragmentManager.fragments.first() as NavHostFragment
 //        val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
         if (System.currentTimeMillis() - mExitTime > 2000) run {
-            Snackbar.make(content, "再按一次退出", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.content, "再按一次退出", Snackbar.LENGTH_SHORT).show()
             mExitTime = System.currentTimeMillis()
         } else {
             finish()

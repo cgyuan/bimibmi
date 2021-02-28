@@ -3,17 +3,15 @@ package com.cyuan.bimibimi.ui.theme
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.RadioButton
-import androidx.appcompat.app.AppCompatDelegate
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
+import com.cyuan.bimibimi.databinding.ActivityChooseThemeBinding
 import com.cyuan.bimibimi.ui.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_choose_theme.*
-import skin.support.SkinCompatManager
 import skin.support.widget.SkinCompatSupportable
 
-class ChooseThemeActivity: BaseActivity(), SkinCompatSupportable {
+class ChooseThemeActivity: BaseActivity<ActivityChooseThemeBinding>(), SkinCompatSupportable {
 
     private val mSkinNameIdMap = mapOf(
         Pair("cyan", R.id.mCyan),
@@ -28,14 +26,15 @@ class ChooseThemeActivity: BaseActivity(), SkinCompatSupportable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_choose_theme)
-        setSupportActionBar(mToolbar)
+        binding = ActivityChooseThemeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val skin = SharedUtil.read(Constants.SKIN_NAME, "cyan")
-        mThemeGroup.check(mSkinNameIdMap[skin] ?: R.id.mCyan)
-        mThemeGroup.setOnCheckedChangeListener { group, checkedId ->
-            val skinName = mThemeGroup.findViewById<RadioButton>(checkedId).tag as String
+        binding.mThemeGroup.check(mSkinNameIdMap[skin] ?: R.id.mCyan)
+        binding.mThemeGroup.setOnCheckedChangeListener { group, checkedId ->
+            val skinName = binding.mThemeGroup.findViewById<RadioButton>(checkedId).tag as String
             SupportSkinHelper.setSkin(skinName)
         }
     }

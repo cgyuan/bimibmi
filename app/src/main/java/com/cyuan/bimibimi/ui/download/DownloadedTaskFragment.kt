@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.databinding.FragmentDonwloadTaskBinding
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.ui.download.adapter.DownloadedTaskAdapter
 import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
-import kotlinx.android.synthetic.main.fragment_donwload_task.*
 
 class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListener {
 
+    private lateinit var binding: FragmentDonwloadTaskBinding
     private val mAdapter by lazy {
         DownloadedTaskAdapter()
     }
@@ -23,13 +24,14 @@ class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListe
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_donwload_task, container, false)
+    ): View {
+        binding = FragmentDonwloadTaskBinding.inflate(inflater, container, false)
+        return binding.recyclerView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        recyclerView.adapter = mAdapter
+        binding.recyclerView.adapter = mAdapter
         mAdapter.setOnItemClickListener(this)
     }
 

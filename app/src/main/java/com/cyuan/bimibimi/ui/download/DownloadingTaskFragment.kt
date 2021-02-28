@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.utils.Reflector
+import com.cyuan.bimibimi.databinding.FragmentDonwloadTaskBinding
 import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.ui.download.adapter.DownloadingTaskAdapter
@@ -16,25 +16,27 @@ import com.cyuan.bimibimi.widget.MessageDialog
 import com.hdl.m3u8.M3U8DownloadTask
 import com.hdl.m3u8.utils.MUtils
 import com.xunlei.downloadlib.XLTaskHelper
-import kotlinx.android.synthetic.main.fragment_donwload_task.*
 import java.io.File
 
 class DownloadingTaskFragment: Fragment(), DownloadingTaskAdapter.OnItemClickListener{
 
     private lateinit var mAdapter: DownloadingTaskAdapter
 
+    private lateinit var binding: FragmentDonwloadTaskBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_donwload_task, container, false)
+    ): View {
+        binding = FragmentDonwloadTaskBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mAdapter = DownloadingTaskAdapter()
-        recyclerView.adapter = mAdapter
+        binding.recyclerView.adapter = mAdapter
         mAdapter.setOnItemClickListener(this)
 //        recyclerView.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
     }

@@ -15,7 +15,7 @@ class CategoryGridHelperAdapter(
     dataList: List<Movie>,
     itemLayoutId: Int,
     footerLayoutId: Int?
-) : BaseVLayoutAdapter<Movie>(fragment.context!!, dataList, itemLayoutId, null, footerLayoutId) {
+) : BaseVLayoutAdapter<Movie>(fragment.requireContext(), dataList, itemLayoutId, null, footerLayoutId) {
 
     private val isLoadFailed: Boolean
         get() = fragment.isLoadFailed

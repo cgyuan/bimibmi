@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,12 +21,11 @@ import com.cyuan.bimibimi.ui.home.adapter.FavoriteMovieAdapter
 import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModel
 import com.cyuan.bimibimi.ui.home.viewmodel.FavoriteMovieViewModelFactory
 import com.cyuan.bimibimi.widget.MessageDialog
-import kotlinx.android.synthetic.main.fragment_favorite.*
-import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class FavoriteFragment : BaseFragment(), View.OnLongClickListener {
 
-    private val adapter by lazy { FavoriteMovieAdapter(context!!, this) }
+    private lateinit var binding: FragmentFavoriteBinding
+    private val adapter by lazy { FavoriteMovieAdapter(requireContext(), this) }
 
     private val viewModel by viewModels<FavoriteMovieViewModel> {
         FavoriteMovieViewModelFactory()
@@ -37,8 +35,8 @@ class FavoriteFragment : BaseFragment(), View.OnLongClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val binding = DataBindingUtil.inflate<FragmentFavoriteBinding>(
+    ): View {
+        binding = DataBindingUtil.inflate<FragmentFavoriteBinding>(
             inflater,
             R.layout.fragment_favorite,
             container,
@@ -55,14 +53,14 @@ class FavoriteFragment : BaseFragment(), View.OnLongClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mToolbar.title = getString(R.string.favorite_title)
-        mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
-        mToolbar.setNavigationOnClickListener {
+        binding.toolbarLayout.mToolbar.title = getString(R.string.favorite_title)
+        binding.toolbarLayout.mToolbar.setNavigationIcon(R.drawable.ic_navigation_drawer)
+        binding.toolbarLayout.mToolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
 
-        recyclerView.adapter = adapter
-        val lm = recyclerView.layoutManager as GridLayoutManager
+        binding.recyclerView.adapter = adapter
+        val lm = binding.recyclerView.layoutManager as GridLayoutManager
         lm.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 if (adapter.footerLayoutId != null && adapter.itemCount - 1 == position) {

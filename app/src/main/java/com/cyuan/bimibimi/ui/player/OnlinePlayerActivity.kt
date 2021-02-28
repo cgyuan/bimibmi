@@ -4,19 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.GlobalUtil
+import com.cyuan.bimibimi.databinding.ActivityPlayerMainBinding
 import com.cyuan.bimibimi.db.AppDatabase
 import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
+import com.cyuan.bimibimi.ui.base.BaseActivity
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
 import com.dueeeke.videoplayer.controller.MediaPlayerControl
@@ -26,11 +26,10 @@ import com.dueeeke.videoplayer.player.AbstractPlayer
 import com.dueeeke.videoplayer.player.AndroidMediaPlayerFactory
 import com.dueeeke.videoplayer.player.PlayerFactory
 import com.dueeeke.videoplayer.player.VideoView
-import kotlinx.android.synthetic.main.activity_player_main.*
 import zmovie.com.dlan.DlnaPresenter
 import java.util.*
 
-class OnlinePlayerActivity : AppCompatActivity() {
+class OnlinePlayerActivity : BaseActivity<ActivityPlayerMainBinding>() {
 
     private var dataSourceName: String = ""
     private var dataSourceIndex: Int = 0
@@ -95,7 +94,8 @@ class OnlinePlayerActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
-        setContentView(R.layout.activity_player_main)
+        binding = ActivityPlayerMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         controller = CustomVideoController(this)
 
         controller.setOnStateChangeListener(stateChangeListener)
@@ -149,7 +149,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
         }
         controller.setInitPlayPosition(playPosition)
         Log.d("OnlineActivity OnCreate", "parent = " + mVideoView.parent)
-        playView.addView(mVideoView)
+        binding.playView.addView(mVideoView)
         mVideoView.setPlayerFactory(playerFactory)
         mVideoView.startFullScreen()
         mVideoView.start()
@@ -200,7 +200,7 @@ class OnlinePlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        webview.destroy()
+        binding.webview.destroy()
         controller.destroy()
         mPIPManager.reset()
         dlnaPresenter.removeEventRegister()

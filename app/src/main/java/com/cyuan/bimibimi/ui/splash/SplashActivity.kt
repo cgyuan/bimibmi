@@ -12,16 +12,16 @@ import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.core.extension.dp2px
 import com.cyuan.bimibimi.core.utils.DensityUtils
 import com.cyuan.bimibimi.core.utils.SystemBarHelper
+import com.cyuan.bimibimi.databinding.ActivitySplashBinding
+import com.cyuan.bimibimi.ui.base.BaseActivity
 import com.cyuan.bimibimi.ui.home.MainActivity
 import com.cyuan.bimibimi.widget.DefaultAnimationListener
-import kotlinx.android.synthetic.main.splash_layout.*
 
-class SplashActivity: AppCompatActivity() {
+class SplashActivity: BaseActivity<ActivitySplashBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
@@ -29,7 +29,8 @@ class SplashActivity: AppCompatActivity() {
         } catch (e: Exception) {}
         super.onCreate(savedInstanceState)
         DensityUtils.setDensity(application, this)
-        setContentView(R.layout.splash_layout)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -99,13 +100,13 @@ class SplashActivity: AppCompatActivity() {
                             this@SplashActivity,
                             R.anim.splash_masker_alpha_in
                         )
-                        descContent.visibility = View.VISIBLE
-                        posterMasker.visibility = View.VISIBLE
-                        posterMasker.startAnimation(alphaAnim)
-                        descContent.startAnimation(slideAnim)
+                        binding.descContent.visibility = View.VISIBLE
+                        binding.posterMasker.visibility = View.VISIBLE
+                        binding.posterMasker.startAnimation(alphaAnim)
+                        binding.descContent.startAnimation(slideAnim)
                         slideAnim.setAnimationListener(object : DefaultAnimationListener() {
                             override fun onAnimationEnd(animation: Animation?) {
-                                showContent.postDelayed({
+                                binding.showContent.postDelayed({
                                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                                     finish()
                                 }, 1500)
@@ -115,7 +116,7 @@ class SplashActivity: AppCompatActivity() {
                 })
             }
         })
-        showContent.addView(container)
+        binding.showContent.addView(container)
     }
 
 }
