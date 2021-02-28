@@ -1,3 +1,2 @@
 include ':app', ':modules:dlnalib', ":modules:thunder"
 rootProject.name='BimibimiClient'
-//include ':upload-plugin'
