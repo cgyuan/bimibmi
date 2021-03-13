@@ -95,6 +95,21 @@ open class OnlineMovieRepository private constructor() {
         awaitClose {}
     }
 
+    fun fetchSearchContent(keyword: String) = callbackFlow<List<Movie>> {
+        DataParserAdapter.parseSearch(keyword, object: ParseResultCallback<List<Movie>> {
+            override fun onSuccess(data: List<Movie>) {
+                offer(data)
+                close()
+            }
+
+            override fun onFail(msg: String) {
+                cancel(CancellationException(msg))
+            }
+
+        })
+        awaitClose { close() }
+    }
+
     companion object {
         val instance by lazy { OnlineMovieRepository() }
     }

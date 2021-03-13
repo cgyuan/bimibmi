@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
@@ -16,9 +17,8 @@ import com.cyuan.bimibimi.core.extension.hideSoftKeyboard
 import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.databinding.ActivitySearchBinding
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.parser.DataParserAdapter
-import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.base.BaseActivity
+import com.cyuan.bimibimi.ui.search.viewmodel.SearchViewModel
 import com.kotlin.base.widgets.DefaultTextWatcher
 import skin.support.widget.SkinCompatSupportable
 
@@ -27,6 +27,9 @@ class SearchActivity: BaseActivity<ActivitySearchBinding>(), SkinCompatSupportab
     private lateinit var searchKeyWord: String
     private lateinit var searchAdapter: SearchGridHelperAdapter
     private val movieList = mutableListOf<Movie>()
+    private val viewModel by viewModels<SearchViewModel> {
+        SearchViewModel.provideFactory()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,18 +100,17 @@ class SearchActivity: BaseActivity<ActivitySearchBinding>(), SkinCompatSupportab
     }
 
     private fun loadData() {
-        DataParserAdapter.parseSearch(searchKeyWord, object : ParseResultCallback<List<Movie>> {
-            override fun onSuccess(data: List<Movie>) {
+        viewModel.fetchSearchContent(
+            searchKeyWord,
+            onError = {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        )
+            .observe(this) {
                 movieList.clear()
-                movieList.addAll(data)
+                movieList.addAll(it)
                 searchAdapter.notifyDataSetChanged()
             }
-
-            override fun onFail(msg: String) {
-                Toast.makeText(this@SearchActivity, msg, Toast.LENGTH_SHORT).show()
-            }
-
-        })
     }
 
     companion object {
