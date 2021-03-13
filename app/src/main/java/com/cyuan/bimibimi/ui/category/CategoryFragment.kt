@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.android.vlayout.DelegateAdapter
 import com.alibaba.android.vlayout.VirtualLayoutManager
@@ -14,19 +15,19 @@ import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logDebug
 import com.cyuan.bimibimi.databinding.FragmentCategoryBinding
 import com.cyuan.bimibimi.model.Movie
-import com.cyuan.bimibimi.parser.DataParserAdapter
-import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.base.InfiniteScrollListener
+import com.cyuan.bimibimi.ui.category.viewmodel.CategoryViewModel
 
 class CategoryFragment(private var category: String) : Fragment() {
 
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var categoryAdapter: CategoryGridHelperAdapter
     private val movieList = mutableListOf<Movie>()
-//    private lateinit var category: String
     private var currentPage = 1
 
-
+    private val viewModel by viewModels<CategoryViewModel> {
+        CategoryViewModel.provideFactory()
+    }
 
     /**
      * 判断是否正在加载更多。
@@ -100,27 +101,24 @@ class CategoryFragment(private var category: String) : Fragment() {
     fun loadData() {
         isLoading = true
         isLoadFailed = false
-        DataParserAdapter.parseCategoryMovie("$category-$currentPage", object :
-            ParseResultCallback<List<Movie>> {
-            override fun onSuccess(data: List<Movie>) {
-                if (data.isEmpty()) {
-                    isNoMoreData = true
-                    categoryAdapter.notifyItemChanged(categoryAdapter.itemCount - 1)
-                    return
-                }
+        viewModel.fetchCategoryContent(
+            "$category-$currentPage",
+            onError = {
+                isLoading = false
+                isLoadFailed = true
+                categoryAdapter.notifyItemChanged(categoryAdapter.itemCount - 1)
+                Toast.makeText(App.getContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        ).observe(this) { data ->
+            if (data.isEmpty()) {
+                isNoMoreData = true
+                categoryAdapter.notifyItemChanged(categoryAdapter.itemCount - 1)
+            } else {
                 isLoading = false
                 val itemCount = categoryAdapter.itemCount
                 movieList.addAll(data)
                 categoryAdapter.notifyItemRangeInserted(itemCount, data.size)
             }
-
-            override fun onFail(msg: String) {
-                isLoading = false
-                isLoadFailed = true
-                categoryAdapter.notifyItemChanged(categoryAdapter.itemCount - 1)
-                Toast.makeText(App.getContext(), msg, Toast.LENGTH_SHORT).show()
-            }
-
-        })
+        }
     }
 }
