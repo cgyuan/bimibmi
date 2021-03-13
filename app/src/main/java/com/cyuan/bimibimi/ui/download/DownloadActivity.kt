@@ -1,6 +1,7 @@
 package com.cyuan.bimibimi.ui.download
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.cyuan.bimibimi.R
@@ -11,6 +12,8 @@ import com.cyuan.bimibimi.databinding.ActivityDownloadBinding
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.ITask
 import com.cyuan.bimibimi.ui.base.BaseActivity
+import com.cyuan.bimibimi.ui.download.viewmodel.DownloadViewModel
+import com.cyuan.bimibimi.ui.download.viewmodel.DownloadViewModelFactory
 import skin.support.widget.SkinCompatSupportable
 
 class DownloadActivity : BaseActivity<ActivityDownloadBinding>(), SkinCompatSupportable, ITask {
@@ -19,6 +22,10 @@ class DownloadActivity : BaseActivity<ActivityDownloadBinding>(), SkinCompatSupp
     private var mDownloadingTaskFragment: DownloadingTaskFragment? = null
     private var mDownloadedTaskFragment: DownloadedTaskFragment? = null
     lateinit var mDownloadHelper: DownloadHelper
+
+    val viewModel by viewModels<DownloadViewModel> {
+        DownloadViewModelFactory()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +41,7 @@ class DownloadActivity : BaseActivity<ActivityDownloadBinding>(), SkinCompatSupp
         if (!GlobalUtil.isX86Device()) {
             mDownloadHelper = DownloadHelper.getInstance(this.application, this)
             mDownloadHelper.setITask(this)
-            mDownloadHelper.initDownloadLiveData(this)
+            mDownloadHelper.initDownloadLiveData(this, viewModel)
         }
 
         binding.mViewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

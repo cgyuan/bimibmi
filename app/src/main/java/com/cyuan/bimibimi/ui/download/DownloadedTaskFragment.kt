@@ -1,17 +1,24 @@
 package com.cyuan.bimibimi.ui.download
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.PlayerKeys
+import com.cyuan.bimibimi.core.utils.Reflector
 import com.cyuan.bimibimi.databinding.FragmentDonwloadTaskBinding
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.ui.download.adapter.DownloadedTaskAdapter
-import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
+import com.cyuan.bimibimi.ui.player.PlayerActivity
+import com.cyuan.bimibimi.widget.MessageDialog
+import com.hdl.m3u8.M3U8DownloadTask
+import com.hdl.m3u8.utils.MUtils
+import com.xunlei.downloadlib.XLTaskHelper
+import java.io.File
 
 class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListener {
 
@@ -40,7 +47,7 @@ class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListe
     }
 
     override fun onClick(task: DownloadTaskInfo) {
-        val intent = Intent(context, OnlinePlayerActivity::class.java)
+        val intent = Intent(context, PlayerActivity::class.java)
         intent.putExtra(PlayerKeys.URL, task.filePath)
         intent.putExtra(PlayerKeys.MOVIE_TITLE, task.title)
         intent.putExtra(PlayerKeys.EPISODE_NAME, task.episodeName)
@@ -49,5 +56,22 @@ class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListe
         intent.putExtra(PlayerKeys.MOVIE_DETAIL_HREF, task.href)
         intent.putExtra(PlayerKeys.MOVIE_COVER, task.coverUrl)
         startActivity(intent)
+    }
+
+    override fun onLongClick(task: DownloadTaskInfo) {
+        MessageDialog.Builder(activity)
+            .setMessage("确定删除已下载内容【${task.title}】${task.episodeName}吗？")
+            .setListener(object : MessageDialog.OnListener {
+                override fun confirm(dialog: Dialog?) {
+                    if (!task.taskUrl.toLowerCase().endsWith("m3u8")) {
+                        XLTaskHelper.instance().removeTask(task.taskId.toLong())
+                    }
+                    File(task.filePath).delete()
+                    val viewModel = (activity as DownloadActivity).viewModel
+                    viewModel.deleteTask(task)
+                    Toast.makeText(activity, "删除成功", Toast.LENGTH_SHORT).show()
+                }
+                override fun cancel(dialog: Dialog?) {}
+            }).show()
     }
 }

@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.cyuan.bimibimi.core.utils.Reflector
 import com.cyuan.bimibimi.databinding.FragmentDonwloadTaskBinding
-import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.ui.download.adapter.DownloadingTaskAdapter
 import com.cyuan.bimibimi.widget.MessageDialog
@@ -38,7 +37,6 @@ class DownloadingTaskFragment: Fragment(), DownloadingTaskAdapter.OnItemClickLis
         mAdapter = DownloadingTaskAdapter()
         binding.recyclerView.adapter = mAdapter
         mAdapter.setOnItemClickListener(this)
-//        recyclerView.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
     }
 
     fun refresh(taskInfos: MutableList<DownloadTaskInfo>?) {
@@ -71,12 +69,13 @@ class DownloadingTaskFragment: Fragment(), DownloadingTaskAdapter.OnItemClickLis
                         task.taskStatus = 0
                         val tempDir = Reflector.on(m3U8DownloadTask::class.java).field("tempDir").get<String>(m3U8DownloadTask)
                         MUtils.clearDir(File(tempDir))
-                        val repository = RepositoryProvider.providerDownloadTaskRepository()
-                        repository.deleteTask(task)
                     } else {
-                        File(task.filePath).deleteOnExit()
-                        File("${task.filePath}.js").deleteOnExit()
+                        File(task.filePath).delete()
+                        File("${task.filePath}.js").delete()
+                        XLTaskHelper.instance().removeTask(task.taskId.toLong())
                     }
+                    val viewModel = (activity as DownloadActivity).viewModel
+                    viewModel.deleteTask(task)
                     Toast.makeText(activity, "删除成功", Toast.LENGTH_SHORT).show()
                 }
                 override fun cancel(dialog: Dialog?) {}

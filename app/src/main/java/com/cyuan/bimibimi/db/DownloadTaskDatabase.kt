@@ -25,7 +25,6 @@ abstract class DownloadTaskDatabase: RoomDatabase() {
 
         val instance by lazy {
             Room.databaseBuilder(App.getContext(), DownloadTaskDatabase::class.java, "download_task_db")
-                .allowMainThreadQueries()
 //                .fallbackToDestructiveMigration()
                 .addMigrations(MIGRATION_2_3)
                 .build()

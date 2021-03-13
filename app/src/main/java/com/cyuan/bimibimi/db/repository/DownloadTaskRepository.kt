@@ -2,18 +2,25 @@ package com.cyuan.bimibimi.db.repository
 
 import com.cyuan.bimibimi.db.dao.DownloadTaskDao
 import com.cyuan.bimibimi.model.DownloadTaskInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class DownloadTaskRepository private constructor(
     private val downloadTaskDao: DownloadTaskDao
 ){
 
-    fun isTaskDownloading(taskInfo: DownloadTaskInfo) = downloadTaskDao.isTaskDownloading(taskInfo.taskUrl, taskInfo.filePath)
+    fun isTaskDownloading(taskInfo: DownloadTaskInfo) = flow {
+        val isTaskDownloading = downloadTaskDao.isTaskDownloading(taskInfo.taskUrl, taskInfo.filePath)
+        emit(isTaskDownloading)
+    }.flowOn(Dispatchers.IO)
 
     fun getAllDownloadingTask() = downloadTaskDao.queryDownloadingTasks()
 
     fun getAllDownloadedTask() = downloadTaskDao.queryFinishTasks()
 
-    fun saveTask(taskInfo: DownloadTaskInfo) {
+    suspend fun saveTask(taskInfo: DownloadTaskInfo) = withContext(Dispatchers.IO) {
         val record = downloadTaskDao.queryTaskByUrl(taskInfo.taskUrl)
         if (record != null) {
             taskInfo.id = record.id
@@ -23,9 +30,14 @@ class DownloadTaskRepository private constructor(
         }
     }
 
-    fun getFinishedTask(url: String) = downloadTaskDao.queryFinishTaskByEpisodeUrl(url)
+    fun getFinishedTask(url: String) = flow {
+        val res = downloadTaskDao.queryFinishTaskByEpisodeUrl(url)
+        emit(res)
+    }.flowOn(Dispatchers.IO)
 
-    fun deleteTask(taskInfo: DownloadTaskInfo) = downloadTaskDao.deleteTaskByUrl(taskInfo.taskUrl)
+    suspend fun deleteTask(taskInfo: DownloadTaskInfo) = withContext(Dispatchers.IO) {
+        downloadTaskDao.deleteTaskByUrl(taskInfo.taskUrl)
+    }
 
     companion object {
         @Volatile

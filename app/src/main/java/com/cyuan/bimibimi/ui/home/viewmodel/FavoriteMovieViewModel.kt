@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.extension.launch
 import com.cyuan.bimibimi.core.utils.GlobalUtil
-import com.cyuan.bimibimi.core.utils.SharedUtil
 import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
 import com.cyuan.bimibimi.model.FavoriteMovie
+import com.cyuan.bimibimi.model.Movie
 
-class FavoriteMovieViewModel(repository: FavoriteMovieRepository) : ViewModel() {
+class FavoriteMovieViewModel(
+    private val repository: FavoriteMovieRepository
+) : ViewModel() {
 
 
     val host = MutableLiveData<String>(GlobalUtil.host)
@@ -28,4 +31,11 @@ class FavoriteMovieViewModel(repository: FavoriteMovieRepository) : ViewModel() 
         }
 
     val viewState = MutableLiveData(Constants.ViewState.LOADING)
+
+    fun removeMovie(movie: Movie) {
+        launch({
+            repository.removeMovie(movie)
+        })
+    }
+
 }

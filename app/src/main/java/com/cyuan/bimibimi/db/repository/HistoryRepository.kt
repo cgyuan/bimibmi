@@ -2,10 +2,13 @@ package com.cyuan.bimibimi.db.repository
 
 import com.cyuan.bimibimi.db.dao.HistoryDao
 import com.cyuan.bimibimi.model.History
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HistoryRepository private constructor(private val historyDao: HistoryDao) {
 
-    fun saveHistory(history: History) {
+
+    suspend fun saveHistory(history: History) = withContext(Dispatchers.IO) {
         val record = historyDao.queryHistoryByHref(history.href)
         if (record != null) {
             history.id = record.id
@@ -17,7 +20,9 @@ class HistoryRepository private constructor(private val historyDao: HistoryDao) 
 
     fun removeHistory(href: String) = historyDao.deleteHistory(href)
 
-    fun removeHistory(history: History) = historyDao.deleteHistory(history.href)
+    suspend fun removeHistory(history: History) = withContext(Dispatchers.IO) {
+        historyDao.deleteHistory(history.href)
+    }
 
 
     fun getAllHistoryByPage(host: String) = historyDao.queryAllHistoryByPage(host)

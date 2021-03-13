@@ -9,7 +9,6 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.extension.logWarn
-import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.SearchRequest
@@ -251,13 +250,6 @@ object BimiTvParser {
         callback: ParseResultCallback<String>?,
         dataSource: String = ""
     ) {
-        val repository = RepositoryProvider.providerDownloadTaskRepository()
-        val taskInfo = repository.getFinishedTask(episode.href)
-        if (taskInfo != null) {
-            callback?.onSuccess(taskInfo.filePath)
-            return
-        }
-
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true

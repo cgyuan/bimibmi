@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.databinding.ActivityPlayerMainBinding
-import com.cyuan.bimibimi.db.AppDatabase
-import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.parser.DataParserAdapter
@@ -19,6 +18,7 @@ import com.cyuan.bimibimi.parser.ParseResultCallback
 import com.cyuan.bimibimi.ui.base.BaseActivity
 import com.cyuan.bimibimi.ui.player.manager.PIPManager
 import com.cyuan.bimibimi.ui.player.manager.WindowPermissionCheck
+import com.cyuan.bimibimi.ui.player.viewmodel.PlayerViewModel
 import com.dueeeke.videoplayer.controller.MediaPlayerControl
 import com.dueeeke.videoplayer.exo.ExoMediaPlayerFactory
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory
@@ -29,7 +29,7 @@ import com.dueeeke.videoplayer.player.VideoView
 import zmovie.com.dlan.DlnaPresenter
 import java.util.*
 
-class OnlinePlayerActivity : BaseActivity<ActivityPlayerMainBinding>() {
+class PlayerActivity : BaseActivity<ActivityPlayerMainBinding>() {
 
     private var dataSourceName: String = ""
     private var dataSourceIndex: Int = 0
@@ -46,9 +46,14 @@ class OnlinePlayerActivity : BaseActivity<ActivityPlayerMainBinding>() {
     private lateinit var mVideoView: VideoView<out AbstractPlayer>
     private lateinit var mPIPManager: PIPManager
     private lateinit var controller: CustomVideoController<out MediaPlayerControl>
+
+    private val viewModel by viewModels<PlayerViewModel> {
+        PlayerViewModel.provideFactory()
+    }
+
     private val stateChangeListener = object: CustomVideoController.OnStateChangeListener {
         override fun onAirPlay() {
-            dlnaPresenter.showDialogTip(this@OnlinePlayerActivity, currentUrl, "【${movieTitle}】$episodeName")
+            dlnaPresenter.showDialogTip(this@PlayerActivity, currentUrl, "【${movieTitle}】$episodeName")
         }
 
         override fun onPic2Pic() {
@@ -64,28 +69,20 @@ class OnlinePlayerActivity : BaseActivity<ActivityPlayerMainBinding>() {
 
     fun playByEpisodeIndex(position: Int) {
         val episode = episodeList!![position]
-        DataParserAdapter.parseVideoSource(
-            this@OnlinePlayerActivity,
-            episode,
-            object : ParseResultCallback<String> {
-                override fun onSuccess(url: String) {
-                    this@OnlinePlayerActivity.currentUrl = url
-                    val netSpeedVisible = !currentUrl.startsWith("file") && !currentUrl.startsWith("/")
-                    controller.setNeedSpeedVisible(netSpeedVisible)
-                    episodeName = episode.title
-                    mVideoView.release()
+        viewModel.getFinishedTaskByEpisodeHref(this, episode, episode.href, dataSourceName)
+            .observe(this) { url ->
+                this@PlayerActivity.currentUrl = url!!
+                val netSpeedVisible = !currentUrl.startsWith("file") && !currentUrl.startsWith("/")
+                controller.setNeedSpeedVisible(netSpeedVisible)
+                episodeName = episode.title
+                mVideoView.release()
 
-                    mVideoView.setUrl(url)
-                    controller.setTitle("【${movieTitle}】$episodeName")
-                    mVideoView.start()
-                    controller.disableMirrorFlip()
-                }
-
-                override fun onFail(msg: String) {
-                    Toast.makeText(this@OnlinePlayerActivity, msg, Toast.LENGTH_SHORT).show()
-                }
-
-            }, dataSourceName)
+                mVideoView.setUrl(url)
+                controller.setTitle("【${movieTitle}】$episodeName")
+                mVideoView.start()
+                controller.disableMirrorFlip()
+            }
+        // Toast.makeText(this@PlayerActivity, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,13 +186,11 @@ class OnlinePlayerActivity : BaseActivity<ActivityPlayerMainBinding>() {
 
     override fun onStop() {
         super.onStop()
-        val historyRepository = HistoryRepository
-            .getInstance(AppDatabase.instance.historyDao())
         if (mVideoView.duration > 0) {
             val history = History(movieDetailHref, currentUrl,
                 movieTitle, dataSourceIndex, episodeName, episodeIndex, mVideoView.currentPosition,
                 mVideoView.duration, movieCover, GlobalUtil.host , "", Calendar.getInstance())
-            historyRepository.saveHistory(history)
+            viewModel.saveHistory(history)
         }
     }
 

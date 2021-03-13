@@ -13,7 +13,6 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cyuan.bimibimi.R
-import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.constant.PlayerKeys
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.DateUtils
@@ -21,7 +20,7 @@ import com.cyuan.bimibimi.databinding.HistoryCardItemLayoutBinding
 import com.cyuan.bimibimi.model.History
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.ui.home.viewmodel.HistoryViewModel
-import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
+import com.cyuan.bimibimi.ui.player.PlayerActivity
 import kotlinx.coroutines.launch
 
 class HistoryAdapter(
@@ -52,7 +51,7 @@ class HistoryAdapter(
                 } catch (e: Exception) {
                     Toast.makeText(App.getContext(), e.message, Toast.LENGTH_SHORT).show()
                 }
-                val intent = Intent(App.getContext(), OnlinePlayerActivity::class.java)
+                val intent = Intent(App.getContext(), PlayerActivity::class.java)
                 intent.putExtra(PlayerKeys.MOVIE_DETAIL_HREF, history.href)
                 intent.putExtra(PlayerKeys.URL, history.url)
                 intent.putExtra(PlayerKeys.MOVIE_TITLE, history.title)

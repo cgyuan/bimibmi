@@ -29,7 +29,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".ui.detail.MovieDetailActivity" />
-        <activity android:name=".ui.player.OnlinePlayerActivity"
+        <activity android:name=".ui.player.PlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape" />
         <activity android:name=".ui.splash.SplashActivity"

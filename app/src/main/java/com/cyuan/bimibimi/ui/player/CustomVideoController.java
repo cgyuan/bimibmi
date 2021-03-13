@@ -62,7 +62,7 @@ import per.goweii.anylayer.Layer;
 
 public class CustomVideoController<T extends MediaPlayerControl> extends GestureVideoController<T>
         implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, GestureVideoController.GestureListener {
-    private OnlinePlayerActivity mActivity;
+    private PlayerActivity mActivity;
     protected TextView mTotalTime, mCurrTime;
     //    protected ImageView mFullScreenButton;
     protected RelativeLayout mBottomContainer;
@@ -170,7 +170,7 @@ public class CustomVideoController<T extends MediaPlayerControl> extends Gesture
 
     public CustomVideoController(@NonNull Context context) {
         this(context, null);
-        mActivity = (OnlinePlayerActivity) context;
+        mActivity = (PlayerActivity) context;
         handler = new NetSpeedHandler(this);
     }
 

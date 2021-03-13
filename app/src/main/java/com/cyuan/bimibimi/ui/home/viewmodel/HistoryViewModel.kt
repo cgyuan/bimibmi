@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.cyuan.bimibimi.constant.Constants
+import com.cyuan.bimibimi.core.extension.launch
 import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.db.repository.HistoryRepository
 import com.cyuan.bimibimi.model.History
@@ -34,6 +35,12 @@ class HistoryViewModel(
                 .setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
                 .build()).build()
+    }
+
+    fun removeHistory(history: History) {
+        launch({
+            historyRepository.removeHistory(history)
+        })
     }
 
 }

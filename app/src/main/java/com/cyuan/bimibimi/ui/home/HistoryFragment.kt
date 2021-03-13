@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.cyuan.bimibimi.R
@@ -101,8 +100,7 @@ class HistoryFragment : BaseFragment(), View.OnLongClickListener {
             .setListener(object : MessageDialog.OnListener {
                 override fun confirm(dialog: Dialog?) {
                     val history = v!!.tag as History
-                    val repository = HistoryRepository.getInstance(AppDatabase.instance.historyDao())
-                    repository.removeHistory(history)
+                    viewModel.removeHistory(history)
                 }
 
                 override fun cancel(dialog: Dialog?) {}

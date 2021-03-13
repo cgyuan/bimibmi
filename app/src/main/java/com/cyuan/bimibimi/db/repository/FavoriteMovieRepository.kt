@@ -4,18 +4,25 @@ import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.db.dao.FavoriteMovieDao
 import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.Movie
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class FavoriteMovieRepository private constructor(private val favoriteMovieDao: FavoriteMovieDao) {
 
-    fun isFavorite(movie: Movie) = favoriteMovieDao.isFavorite(movie.href)
+    suspend fun isFavorite(movie: Movie) = withContext(Dispatchers.IO) {
+        favoriteMovieDao.isFavorite(movie.href)
+    }
 
-    fun addMovie(movie: Movie) {
+
+    suspend fun addMovie(movie: Movie) = withContext(Dispatchers.IO) {
         val favoriteMovie = FavoriteMovie(movie.href, movie.title, movie.cover, movie.label, GlobalUtil.host, Calendar.getInstance())
         favoriteMovieDao.insert(favoriteMovie)
     }
 
-    fun removeMovie(movie: Movie) = favoriteMovieDao.deleteMovie(movie.href)
+    suspend fun removeMovie(movie: Movie) = withContext(Dispatchers.IO) {
+        favoriteMovieDao.deleteMovie(movie.href)
+    }
 
     fun getAllMovieByPage(host: String) = favoriteMovieDao.queryAllMovie(host)
 

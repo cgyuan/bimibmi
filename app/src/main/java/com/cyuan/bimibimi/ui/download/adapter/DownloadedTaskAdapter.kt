@@ -43,10 +43,15 @@ class DownloadedTaskAdapter :
         holder.itemView.setOnClickListener {
             mOnItemClickListener?.onClick(taskInfo)
         }
+        holder.itemView.setOnLongClickListener {
+            mOnItemClickListener?.onLongClick(taskInfo)
+            true
+        }
     }
 
     interface OnItemClickListener {
         fun onClick(task: DownloadTaskInfo)
+        fun onLongClick(task: DownloadTaskInfo)
     }
 
 

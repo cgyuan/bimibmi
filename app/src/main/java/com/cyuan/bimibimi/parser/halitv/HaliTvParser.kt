@@ -305,12 +305,6 @@ object HaliTvParser {
         callback: ParseResultCallback<String>?,
         dataSource: String = ""
     ) {
-        val repository = RepositoryProvider.providerDownloadTaskRepository()
-        val taskInfo = repository.getFinishedTask(episode.href)
-        if (taskInfo != null) {
-            callback?.onSuccess(taskInfo.filePath)
-            return
-        }
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true

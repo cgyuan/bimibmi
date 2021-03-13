@@ -3,8 +3,10 @@ package com.cyuan.bimibimi.ui.download.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.cyuan.bimibimi.core.App
+import com.cyuan.bimibimi.core.extension.launch
 import com.cyuan.bimibimi.core.utils.FileUtils
 import com.cyuan.bimibimi.db.DownloadTaskDatabase
 import com.cyuan.bimibimi.db.repository.DownloadTaskRepository
@@ -19,7 +21,6 @@ class DownloadViewModel(
     val repository: DownloadTaskRepository
 ) : AndroidViewModel(application) {
 
-//    val mDownloadTasks = MutableLiveData<ArrayList<DownloadTaskInfo>>(ArrayList())
     val mDownloadTasks = repository.getAllDownloadingTask()
 
     val mDownloadedTask = repository.getAllDownloadedTask()
@@ -45,9 +46,27 @@ class DownloadViewModel(
                 taskInfo.taskStatus = xlTaskInfo.mTaskStatus
                 taskInfo.receiveSize = xlTaskInfo.mDownloadSize.toString()
                 taskInfo.speed = FileUtils.convertFileSize(xlTaskInfo.mDownloadSpeed)
-                repository.saveTask(taskInfo)
+                launch({
+                    repository.saveTask(taskInfo)
+                })
             }
         }
+    }
+
+    fun saveTask(taskInfo: DownloadTaskInfo) {
+        launch({
+            repository.saveTask(taskInfo)
+        })
+    }
+
+    fun isTaskDownloading(taskInfo: DownloadTaskInfo) =
+        repository.isTaskDownloading(taskInfo)
+            .asLiveData(viewModelScope.coroutineContext)
+
+    fun deleteTask(task: DownloadTaskInfo) {
+        launch({
+            repository.deleteTask(task)
+        })
     }
 
     override fun onCleared() {

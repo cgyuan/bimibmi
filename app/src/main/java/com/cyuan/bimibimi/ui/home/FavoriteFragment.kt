@@ -13,7 +13,6 @@ import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.databinding.FragmentFavoriteBinding
-import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.FavoriteMovie
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.ui.base.BaseFragment
@@ -89,10 +88,9 @@ class FavoriteFragment : BaseFragment(), View.OnLongClickListener {
             .setListener(object : MessageDialog.OnListener {
                 override fun confirm(dialog: Dialog?) {
                     val favoriteMovie = v!!.tag as FavoriteMovie
-                    val repository = RepositoryProvider.providerFavoriteMovieRepository()
                     val movie = Movie()
                     movie.href = favoriteMovie.href
-                    repository.removeMovie(movie)
+                    viewModel.removeMovie(movie)
                 }
 
                 override fun cancel(dialog: Dialog?) {}

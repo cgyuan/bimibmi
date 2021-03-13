@@ -29,8 +29,6 @@ import com.cyuan.bimibimi.core.utils.ColorHelper.colorBurn
 import com.cyuan.bimibimi.core.utils.GlideRoundTransform
 import com.cyuan.bimibimi.core.utils.ShimmerUtils
 import com.cyuan.bimibimi.databinding.ActivityMovieDetailBinding
-import com.cyuan.bimibimi.db.repository.FavoriteMovieRepository
-import com.cyuan.bimibimi.db.repository.RepositoryProvider
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.ui.base.UICallback
@@ -44,10 +42,9 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
 
     private lateinit var binding: ActivityMovieDetailBinding
     private lateinit var url: String
-    private lateinit var favoriteMovieRepository: FavoriteMovieRepository
     private lateinit var movie: Movie
 
-    private val viewModel by viewModels<MovieDetailViewModel> {
+    val viewModel by viewModels<MovieDetailViewModel> {
         MovieDetailViewModelFactory()
     }
 
@@ -207,13 +204,14 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.cat_topappbar_menu, menu)
         val item = menu!!.findItem(R.id.favorite)
-        favoriteMovieRepository = RepositoryProvider.providerFavoriteMovieRepository()
-        val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
-        item.setIcon(if (isFavorMovie) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
-        if (isFavorMovie) {
-            setFavoriteIconTint(item, R.color.red)
-        } else {
-            setFavoriteIconTint(item, R.color.white)
+        viewModel.isFavorite(movie)
+        viewModel.isFavorite.observe(this) { isFavorMovie ->
+            item.setIcon(if (isFavorMovie) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp)
+            if (isFavorMovie) {
+                setFavoriteIconTint(item, R.color.red)
+            } else {
+                setFavoriteIconTint(item, R.color.white)
+            }
         }
         return true
     }
@@ -226,24 +224,20 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.favorite) {
-            toggleFavor(item)
+            toggleFavor()
         } else if (item.itemId == R.id.download) {
             startActivity(Intent(this, DownloadActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun toggleFavor(item: MenuItem) {
-        val isFavorMovie = favoriteMovieRepository.isFavorite(movie)
-        if (isFavorMovie) {
-            favoriteMovieRepository.removeMovie(movie)
-            item.setIcon(R.drawable.ic_favorite_border_black_24dp)
-            setFavoriteIconTint(item, R.color.white)
+    private fun toggleFavor() {
+        viewModel.isFavorite(movie)
+        if (viewModel.isFavorite.value!!) {
+            viewModel.removeFavoriteMovie(movie)
             Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show()
         } else {
-            favoriteMovieRepository.addMovie(movie)
-            item.setIcon(R.drawable.ic_favorite_black_24dp)
-            setFavoriteIconTint(item, R.color.red)
+            viewModel.addFavoriteMovie(movie)
             Toast.makeText(this, "已添加收藏", Toast.LENGTH_SHORT).show()
         }
     }

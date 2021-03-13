@@ -17,11 +17,10 @@ import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.model.DownloadTaskInfo
 import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.MovieDetail
-import com.cyuan.bimibimi.parser.DataParserAdapter
-import com.cyuan.bimibimi.parser.ParseResultCallback
+import com.cyuan.bimibimi.ui.detail.MovieDetailActivity
 import com.cyuan.bimibimi.ui.detail.holder.OnlinePlayHolder
 import com.cyuan.bimibimi.ui.download.DownloadHelper
-import com.cyuan.bimibimi.ui.player.OnlinePlayerActivity
+import com.cyuan.bimibimi.ui.player.PlayerActivity
 import com.cyuan.bimibimi.widget.MessageDialog
 import per.goweii.anylayer.AnyLayer
 import per.goweii.anylayer.DialogLayer
@@ -58,11 +57,18 @@ class OnlinePlayListAdapter(private val context: Context,
         val dataSourceName = movieDetail.dataSources[dataSourceIndex].name
         holder.itemView.setOnClickListener {
             mLoadingDlg.show()
-            DataParserAdapter.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
-                override fun onSuccess(data: String) {
+            context as MovieDetailActivity
+            context.viewModel.getFinishedTaskByEpisodeHref(
+                context, episodes[position], episodes[position].href, "",
+                onError = {
                     mLoadingDlg.dismiss()
-                    val url: String = data
-                    val intent = Intent(context, OnlinePlayerActivity::class.java)
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            )
+                .observe(context) { data ->
+                    mLoadingDlg.dismiss()
+                    val url: String = data!!
+                    val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra(PlayerKeys.URL, url)
                     intent.putExtra(PlayerKeys.MOVIE_TITLE, movieDetail.title)
                     intent.putExtra(PlayerKeys.EPISODE_NAME, episodes[position].title)
@@ -74,50 +80,43 @@ class OnlinePlayListAdapter(private val context: Context,
                     intent.putParcelableArrayListExtra(PlayerKeys.EPISODE_LIST, episodes)
                     context.startActivity(intent)
                 }
-
-                override fun onFail(msg: String) {
-                    mLoadingDlg.dismiss()
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                }
-            }, dataSourceName)
         }
         holder.itemView.setOnLongClickListener {
             mLoadingDlg.show()
-            DataParserAdapter.parseVideoSource(context, episodes[position], object : ParseResultCallback<String> {
-                override fun onSuccess(data: String) {
+            context as MovieDetailActivity
+            context.viewModel.getFinishedTaskByEpisodeHref(
+                context, episodes[position], episodes[position].href, "",
+                onError = {
                     mLoadingDlg.dismiss()
-                    App.getHandler().post {
-                        MessageDialog.Builder((App.getContext() as BimibimiApp).getCurrentActivity())
-                            .setMessage("缓存视频？")
-                            .setListener(object : MessageDialog.OnListener {
-                                override fun confirm(dialog: Dialog?) {
-                                    val taskInfo = DownloadTaskInfo()
-                                    taskInfo.taskUrl = data
-                                    taskInfo.coverUrl = movieDetail.cover
-                                    taskInfo.receiveSize = "0"
-                                    taskInfo.totalSize = "0"
-                                    taskInfo.title = movieDetail.title
-                                    taskInfo.dataSourceIndex = dataSourceIndex
-                                    taskInfo.episodeIndex = position
-                                    taskInfo.episodeName = episodes[position].title
-                                    taskInfo.href = movieDetail.href
-                                    taskInfo.episodeHref = episodes[position].href
-                                    if (!GlobalUtil.isX86Device()) {
-                                        val downloadHelper = DownloadHelper.getInstance(context.applicationContext, null)
-                                        downloadHelper.addTask(taskInfo)
-                                    }
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            )
+                .observe(context) { data ->
+                    mLoadingDlg.dismiss()
+                    MessageDialog.Builder((App.getContext() as BimibimiApp).getCurrentActivity())
+                        .setMessage("缓存视频？")
+                        .setListener(object : MessageDialog.OnListener {
+                            override fun confirm(dialog: Dialog?) {
+                                val taskInfo = DownloadTaskInfo()
+                                taskInfo.taskUrl = data!!
+                                taskInfo.coverUrl = movieDetail.cover
+                                taskInfo.receiveSize = "0"
+                                taskInfo.totalSize = "0"
+                                taskInfo.title = movieDetail.title
+                                taskInfo.dataSourceIndex = dataSourceIndex
+                                taskInfo.episodeIndex = position
+                                taskInfo.episodeName = episodes[position].title
+                                taskInfo.href = movieDetail.href
+                                taskInfo.episodeHref = episodes[position].href
+                                if (!GlobalUtil.isX86Device()) {
+                                    val downloadHelper = DownloadHelper.getInstance(context.applicationContext, null)
+                                    downloadHelper.addTask(taskInfo)
                                 }
+                            }
 
-                                override fun cancel(dialog: Dialog?) {}
-                            }).show()
-                    }
+                            override fun cancel(dialog: Dialog?) {}
+                        }).show()
                 }
-
-                override fun onFail(msg: String) {
-                    mLoadingDlg.dismiss()
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                }
-            }, dataSourceName)
             true
         }
     }

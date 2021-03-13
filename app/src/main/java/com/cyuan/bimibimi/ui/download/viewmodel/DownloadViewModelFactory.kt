@@ -8,7 +8,7 @@ import com.cyuan.bimibimi.db.repository.RepositoryProvider
 
 class DownloadViewModelFactory: ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val repository = RepositoryProvider.providerDownloadTaskRepository()
+        val repository = RepositoryProvider.provideDownloadTaskRepository()
         return DownloadViewModel(App.getContext() as Application, repository) as T
     }
 }

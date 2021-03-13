@@ -59,7 +59,6 @@ abstract class AppDatabase: RoomDatabase() {
 
         val instance by lazy {
             Room.databaseBuilder(App.getContext(), AppDatabase::class.java, "Bimibimi-db")
-                .allowMainThreadQueries()
 //                .fallbackToDestructiveMigration()
                 .addMigrations(MIGRATION_2_3)
                 .addMigrations(MIGRATION_3_4)

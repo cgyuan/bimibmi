@@ -1,15 +1,17 @@
 package com.cyuan.bimibimi.repository
+import android.content.Context
 import android.os.SystemClock
-import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.utils.GlobalUtil
 import com.cyuan.bimibimi.core.utils.SharedUtil
+import com.cyuan.bimibimi.model.Episode
 import com.cyuan.bimibimi.model.HomeInfo
 import com.cyuan.bimibimi.model.Movie
 import com.cyuan.bimibimi.model.MovieDetail
 import com.cyuan.bimibimi.parser.DataParserAdapter
 import com.cyuan.bimibimi.parser.ParseResultCallback
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -73,6 +75,24 @@ open class OnlineMovieRepository private constructor() {
             })
         }
         result
+    }
+
+    fun parseVideoSource(
+        context: Context,
+        episode: Episode,
+        dataSourceName: String
+    ) = callbackFlow<String> {
+        DataParserAdapter.parseVideoSource(context, episode, object : ParseResultCallback<String> {
+            override fun onSuccess(data: String) {
+                offer(data)
+                close()
+            }
+
+            override fun onFail(msg: String) {
+                cancel(CancellationException(msg))
+            }
+        }, dataSourceName)
+        awaitClose {}
     }
 
     companion object {
