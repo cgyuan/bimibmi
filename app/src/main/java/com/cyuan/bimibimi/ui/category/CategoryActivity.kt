@@ -51,8 +51,10 @@ class CategoryActivity : BaseActivity<ActivityCategoryBinding>(), SkinCompatSupp
     }
 
     override fun applySkin() {
-        SupportSkinHelper.tintStatusBar(this)
-        SupportSkinHelper.tintViewBackground(this, binding.mTabLayout)
+        if (isBindingInitialized) {
+            SupportSkinHelper.tintStatusBar(this)
+            SupportSkinHelper.tintViewBackground(this, binding.mTabLayout)
+        }
     }
 
 }

@@ -9,6 +9,8 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
 
     protected lateinit var binding: VB
 
+    protected val isBindingInitialized = ::binding.isInitialized
+
     override fun getDelegate(): AppCompatDelegate {
         return SkinAppCompatDelegateImpl.get(this, this)
     }
