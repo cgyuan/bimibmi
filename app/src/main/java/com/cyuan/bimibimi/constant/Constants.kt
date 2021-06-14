@@ -13,7 +13,7 @@ interface Constants {
         const val HALITV_INDEX = "https://www.kelatv.com/"
         const val ALLOW_PLAY_IN_BACKGROUND = "ALLOW_PLAY_IN_BACKGROUND"
         const val PALY_BEHAVIOR = "PALY_BEHAVIOR"
-        const val HALITV_CATEGORY_TEMPLATE = "https://www.halitv.com/index.php?s=home-vod-type-id-%s-mcid--area--year--letter--order--picm-1-p-%s"
+        const val HALITV_CATEGORY_TEMPLATE = "https://www.kelatv.com/index.php?s=home-vod-type-id-%s-mcid--area--year--letter--order--picm-1-p-%s"
 
         const val PATH_KEY = "PATH"
         const val TITLE_KEY = "TITLE"
