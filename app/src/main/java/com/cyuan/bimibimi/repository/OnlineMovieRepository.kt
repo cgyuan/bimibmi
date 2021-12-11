@@ -12,6 +12,7 @@ import com.cyuan.bimibimi.parser.ParseResultCallback
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import java.lang.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -84,12 +85,16 @@ open class OnlineMovieRepository private constructor() {
     ) = callbackFlow<String> {
         DataParserAdapter.parseVideoSource(context, episode, object : ParseResultCallback<String> {
             override fun onSuccess(data: String) {
-                offer(data)
-                close()
+                try {
+                    offer(data)
+                    close()
+                } catch (e: Exception) {}
             }
 
             override fun onFail(msg: String) {
-                cancel(CancellationException(msg))
+                try {
+                    cancel(CancellationException(msg))
+                } catch (e: Exception) {}
             }
         }, dataSourceName)
         awaitClose {}

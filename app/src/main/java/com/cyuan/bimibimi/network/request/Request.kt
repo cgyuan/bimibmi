@@ -5,12 +5,14 @@ import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.OriginThreadCallback
 import com.cyuan.bimibimi.network.Response
 import com.cyuan.bimibimi.network.exception.ResponseCodeException
+import com.cyuan.bimibimi.network.utils.HttpsUtils
 import com.cyuan.bimibimi.network.utils.Utility
 import com.google.gson.GsonBuilder
 import okhttp3.*
 import okhttp3.Request
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLSocketFactory
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -34,6 +36,7 @@ abstract class Request {
         connectTimeout(10)
         writeTimeout(10)
         readTimeout(10)
+        sslSocketFactory()
         notFollowRedirect()
         deviceName = Utility.deviceName
         deviceSerial = Utility.getDeviceSerial()
@@ -74,6 +77,11 @@ abstract class Request {
         okHttpBuilder.readTimeout(seconds.toLong(), TimeUnit.SECONDS)
     }
 
+    private fun sslSocketFactory() {
+        okHttpBuilder.sslSocketFactory(HttpsUtils.getSslSocketFactory().sSLSocketFactory, HttpsUtils.UnSafeTrustManager)
+            .hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier)
+    }
+
     abstract fun url(): String
 
     abstract fun method(): Int
@@ -105,6 +113,11 @@ abstract class Request {
 
             })
         }
+    }
+
+    fun syncRequest(): okhttp3.Response {
+        val request = buildRequest()
+        return okHttpClient.newCall(request).execute()
     }
 
 
@@ -162,6 +175,7 @@ abstract class Request {
             method() == POST -> requestBuilder.post(formBody())
             method() == PUT -> requestBuilder.put(formBody())
             method() == DELETE -> requestBuilder.delete(formBody())
+            method() == HEADER -> requestBuilder.head()
         }
         val request = requestBuilder.build()
         return request
@@ -287,5 +301,7 @@ abstract class Request {
         const val PUT = 2
 
         const val DELETE = 3
+
+        const val HEADER = 4
     }
 }

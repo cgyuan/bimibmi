@@ -2,8 +2,10 @@ package com.cyuan.bimibimi.parser.bimi
 
 import android.app.Activity
 import android.content.Context
+import android.net.http.SslError
 import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import android.webkit.*
 import com.cyuan.bimibimi.R
 import com.cyuan.bimibimi.constant.Constants
@@ -13,6 +15,7 @@ import com.cyuan.bimibimi.model.*
 import com.cyuan.bimibimi.network.Callback
 import com.cyuan.bimibimi.network.request.SearchRequest
 import com.cyuan.bimibimi.network.request.StringRequest
+import com.cyuan.bimibimi.network.utils.VideoUrlChecker
 import com.cyuan.bimibimi.parser.ParseResultCallback
 import org.json.JSONObject
 import org.jsoup.Jsoup
@@ -250,10 +253,14 @@ object BimiTvParser {
         callback: ParseResultCallback<String>?,
         dataSource: String = ""
     ) {
+        var hadParsed = false
         context as Activity
         val webView = context.findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            webView.settings.safeBrowsingEnabled = false
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
@@ -268,12 +275,33 @@ object BimiTvParser {
 //                webView.evaluateJavascript(GET_IFRAME_SRC, null)
             }
 
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                // Ignore handshake error
+                handler?.proceed()
+            }
+
             override fun shouldInterceptRequest(
                 view: WebView?,
                 url: String?
             ): WebResourceResponse? {
+                if (hadParsed) super.shouldInterceptRequest(view, url)
                 url?.let {
+                    Log.d("BimiTvParser", url)
+                    if (VideoUrlChecker.isVideoUrl(it)) {
+                        hadParsed = true
+                        App.getHandler().post {
+                            webView.stopLoading()
+                            callback?.onSuccess(url)
+                            webView.removeAllViews()
+                        }
+                        return super.shouldInterceptRequest(view, url)
+                    }
                     if (it.contains(".mp4") || it.contains("m3u8")) {
+                        hadParsed = true
                         val internal = SystemClock.uptimeMillis() - lastTime
                         if (internal > 1000) {
                             App.getHandler().post {

@@ -2,6 +2,7 @@ package com.cyuan.bimibimi.parser.halitv
 
 import android.app.Activity
 import android.content.Context
+import android.net.http.SslError
 import android.os.Build
 import android.os.SystemClock
 import android.webkit.*
@@ -321,12 +322,21 @@ object HaliTvParser {
 //                webView.evaluateJavascript(GET_IFRAME_SRC, null)
             }
 
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                // Ignore handshake error
+                handler?.proceed()
+            }
+
             override fun shouldInterceptRequest(
                 view: WebView?,
                 url: String?
             ): WebResourceResponse? {
                 url?.let {
-                    if (it.contains(".mp4")) {
+                    if (it.contains(".mp4") || it.contains("m3u8")) {
                         App.getHandler().post {
                             webView.stopLoading()
                             callback?.onSuccess(url)

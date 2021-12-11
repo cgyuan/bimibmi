@@ -117,7 +117,7 @@ class HomeFragment : BaseFragment() {
     private fun initSearchView() {
         binding.searchView.setVoiceSearch(false)
         binding.searchView.setEllipsize(true)
-        binding.searchView.setCursorDrawable(R.drawable.custom_cursor)
+//        binding.searchView.setCursorDrawable(R.drawable.custom_cursor)
         binding.searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 SearchActivity.launch(context!!, query ?: "")
