@@ -14,6 +14,7 @@
 
     <color name="navigation_color_selected">@color/colorPrimary</color>
     <color name="navigation_color_default">#727272</color>
+    <color name="navigation_color_d">#727272</color>
 
     <color name="timeBar_buffered_color">#1effe9</color>
     <!--已经播放过视频的颜色-->

@@ -3,6 +3,7 @@ package com.cyuan.bimibimi
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
@@ -14,6 +15,7 @@ import com.cyuan.bimibimi.constant.Constants
 import com.cyuan.bimibimi.core.App
 import com.cyuan.bimibimi.core.utils.GlobalUtil.processName
 import com.cyuan.bimibimi.core.utils.SharedUtil
+import com.cyuan.bimibimi.core.utils.SupportSkinHelper
 import com.cyuan.bimibimi.service.JettyResourceService
 import com.tencent.bugly.Bugly
 import me.ele.uetool.UETool
@@ -42,11 +44,6 @@ class BimibimiApp : MultiDexApplication() {
         }
         DlnaLib.initDlna(this)
 
-        val isNight: Boolean = SharedUtil.read(Constants.IS_NIGHT_MODE_KEY, false)
-        if (isNight) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-
         startService(Intent(this, JettyResourceService::class.java))
 
         SkinCompatManager.withoutActivity(this)
@@ -59,6 +56,9 @@ class BimibimiApp : MultiDexApplication() {
                 .setSkinAllActivityEnable(true)                // true: 默认所有的Activity都换肤; false: 只有实现SkinCompatSupportable接口的Activity换肤
             .loadSkin()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+
+        val skinName = SharedUtil.read(Constants.SKIN_NAME_BEFORE_NIGHT_MODE, "cyan")
+        SupportSkinHelper.setSkin(skinName)
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
 

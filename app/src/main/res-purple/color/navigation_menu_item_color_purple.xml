@@ -3,5 +3,5 @@
 
     <item android:color="@color/purple" android:state_checked="true"/>
 
-    <item android:color="@color/navigation_color_default"/>
+    <item android:color="@color/navigation_color_d"/>
 </selector>
