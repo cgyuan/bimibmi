@@ -232,7 +232,6 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
     }
 
     private fun toggleFavor() {
-        viewModel.isFavorite(movie)
         if (viewModel.isFavorite.value!!) {
             viewModel.removeFavoriteMovie(movie)
             Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show()
@@ -240,6 +239,7 @@ class MovieDetailActivity : AppCompatActivity(), UICallback {
             viewModel.addFavoriteMovie(movie)
             Toast.makeText(this, "已添加收藏", Toast.LENGTH_SHORT).show()
         }
+        viewModel.isFavorite.value = viewModel.isFavorite.value?.not() ?: false
     }
 
     override fun onDestroy() {
