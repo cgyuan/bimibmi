@@ -52,6 +52,7 @@ public class SystemBarHelper {
      */
     public static void tintStatusBar(Activity activity, @ColorInt int statusBarColor, @FloatRange(from = 0.0, to = 1.0) float alpha) {
         tintStatusBar(activity.getWindow(), statusBarColor, alpha);
+//        activity.getWindow().setStatusBarColor(statusBarColor);
     }
 
 
@@ -80,7 +81,7 @@ public class SystemBarHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(statusBarColor);
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -90,8 +91,6 @@ public class SystemBarHelper {
         if (rootView != null) {
             ViewCompat.setFitsSystemWindows(rootView, true);
         }
-        setStatusBar(decorView, statusBarColor, true);
-        setTranslucentView(decorView, alpha);
     }
 
 

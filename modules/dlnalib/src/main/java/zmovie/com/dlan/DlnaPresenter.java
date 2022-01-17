@@ -74,7 +74,9 @@ public class DlnaPresenter {
     public void startPlay(RemoteItem remoteItem) {
         ClingManager.getInstance().setRemoteItem(remoteItem);
 
-        context.startActivity(new Intent(context,MediaPlayActivity.class));
+        Intent intent = new Intent(context, MediaPlayActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     public void startPlay(String path, String title) {

@@ -32,6 +32,9 @@ class SplashActivity: BaseActivity<ActivitySplashBinding>() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        var systemUiVisibility = window.decorView.systemUiVisibility
+        systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        window.decorView.systemUiVisibility = systemUiVisibility
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             /**
@@ -43,8 +46,6 @@ class SplashActivity: BaseActivity<ActivitySplashBinding>() {
             params.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             window.attributes = params
-
-            SystemBarHelper.immersiveStatusBar(this)
         }
 
         val container = LinearLayout(this)
