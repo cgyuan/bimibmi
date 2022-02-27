@@ -39,9 +39,15 @@ class DownloadActivity : BaseActivity<ActivityDownloadBinding>(), SkinCompatSupp
         }
 
         if (!GlobalUtil.isX86Device()) {
-            mDownloadHelper = DownloadHelper.getInstance(this.application, this)
-            mDownloadHelper.setITask(this)
-            mDownloadHelper.initDownloadLiveData(this, viewModel)
+            mDownloadHelper = DownloadHelper.getInstance(this.application)
+        }
+
+        viewModel.mDownloadTasks.observe(this) {
+            updateIngTask(it as MutableList<DownloadTaskInfo>?)
+        }
+
+        viewModel.mDownloadedTask.observe(this) {
+            updateDoneTask(it as MutableList<DownloadTaskInfo>?)
         }
 
         binding.mViewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -70,13 +76,6 @@ class DownloadActivity : BaseActivity<ActivityDownloadBinding>(), SkinCompatSupp
         super.onResume()
         binding.toolbarLayout.mToolbar.title = "缓存管理"
         binding.header.mMemoryStatusTv.text = "已下载文件${FileUtils.cacheSize}，机身剩余可用${FileUtils.spaceSize[0]}"
-    }
-
-    override fun onDestroy() {
-        if (!GlobalUtil.isX86Device()) {
-            mDownloadHelper.setITask(null)
-        }
-        super.onDestroy()
     }
 
     override fun applySkin() {

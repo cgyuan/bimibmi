@@ -48,7 +48,7 @@ class DownloadingTaskFragment: Fragment(), DownloadingTaskAdapter.OnItemClickLis
         if (task.taskStatus == 0 || task.taskStatus == 4 || task.taskStatus == 3) {
             (activity as DownloadActivity).mDownloadHelper.resumeNormalTask(task)
         } else if (task.taskStatus != 2 || task.taskStatus != -1) {
-            if (!task.taskUrl.toLowerCase().endsWith("m3u8")) {
+            if (!task.taskUrl.toLowerCase().contains("m3u8")) {
                 XLTaskHelper.instance().removeTask(task.taskId.toLong())
             } else {
                 val m3U8DownloadTask = M3U8DownloadTask(task.taskId)
@@ -63,7 +63,7 @@ class DownloadingTaskFragment: Fragment(), DownloadingTaskAdapter.OnItemClickLis
             .setMessage("确定删除当前任务吗？")
             .setListener(object : MessageDialog.OnListener {
                 override fun confirm(dialog: Dialog?) {
-                    if (task.taskUrl.toLowerCase().endsWith("m3u8")) {
+                    if (task.taskUrl.toLowerCase().contains("m3u8")) {
                         val m3U8DownloadTask = M3U8DownloadTask(task.taskId)
                         m3U8DownloadTask.stop()
                         task.taskStatus = 0

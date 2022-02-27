@@ -63,7 +63,7 @@ class DownloadedTaskFragment: Fragment(), DownloadedTaskAdapter.OnItemClickListe
             .setMessage("确定删除已下载内容【${task.title}】${task.episodeName}吗？")
             .setListener(object : MessageDialog.OnListener {
                 override fun confirm(dialog: Dialog?) {
-                    if (!task.taskUrl.toLowerCase().endsWith("m3u8")) {
+                    if (!task.taskUrl.toLowerCase().contains("m3u8")) {
                         XLTaskHelper.instance().removeTask(task.taskId.toLong())
                     }
                     File(task.filePath).delete()

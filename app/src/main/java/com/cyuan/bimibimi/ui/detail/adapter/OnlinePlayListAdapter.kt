@@ -24,7 +24,6 @@ import com.cyuan.bimibimi.ui.player.PlayerActivity
 import com.cyuan.bimibimi.widget.MessageDialog
 import per.goweii.anylayer.AnyLayer
 import per.goweii.anylayer.DialogLayer
-import java.util.*
 
 class OnlinePlayListAdapter(private val context: Context,
                             private val episodes: ArrayList<Episode>,
@@ -49,8 +48,12 @@ class OnlinePlayListAdapter(private val context: Context,
         return episodes.size
     }
 
+
+
     override fun onBindViewHolder(holder: OnlinePlayHolder, position: Int) {
-        holder.btPlayText.text = episodes[position].title
+        val adapterPosition = holder.adapterPosition
+        val episode = episodes[adapterPosition]
+        holder.btPlayText.text = episode.title
         if (bgSector != 0) {
             holder.btPlayText.setBackgroundResource(bgSector)
         }
@@ -59,7 +62,7 @@ class OnlinePlayListAdapter(private val context: Context,
             mLoadingDlg.show()
             context as MovieDetailActivity
             context.viewModel.getFinishedTaskByEpisodeHref(
-                context, episodes[position], episodes[position].href, "",
+                context, episode, episode.href, "",
                 onError = {
                     mLoadingDlg.dismiss()
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -71,9 +74,9 @@ class OnlinePlayListAdapter(private val context: Context,
                     val intent = Intent(context, PlayerActivity::class.java)
                     intent.putExtra(PlayerKeys.URL, url)
                     intent.putExtra(PlayerKeys.MOVIE_TITLE, movieDetail.title)
-                    intent.putExtra(PlayerKeys.EPISODE_NAME, episodes[position].title)
+                    intent.putExtra(PlayerKeys.EPISODE_NAME, episode.title)
                     intent.putExtra(PlayerKeys.DATA_SOURCE_INDEX, dataSourceIndex)
-                    intent.putExtra(PlayerKeys.EPISODE_INDEX, position)
+                    intent.putExtra(PlayerKeys.EPISODE_INDEX, adapterPosition)
                     intent.putExtra(PlayerKeys.DATA_SOURCE_NAME, dataSourceName)
                     intent.putExtra(PlayerKeys.MOVIE_DETAIL_HREF, movieDetail.href)
                     intent.putExtra(PlayerKeys.MOVIE_COVER, movieDetail.cover)
@@ -85,7 +88,7 @@ class OnlinePlayListAdapter(private val context: Context,
             mLoadingDlg.show()
             context as MovieDetailActivity
             context.viewModel.getFinishedTaskByEpisodeHref(
-                context, episodes[position], episodes[position].href, "",
+                context, episode, episode.href, "",
                 onError = {
                     mLoadingDlg.dismiss()
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -104,12 +107,12 @@ class OnlinePlayListAdapter(private val context: Context,
                                 taskInfo.totalSize = "0"
                                 taskInfo.title = movieDetail.title
                                 taskInfo.dataSourceIndex = dataSourceIndex
-                                taskInfo.episodeIndex = position
-                                taskInfo.episodeName = episodes[position].title
+                                taskInfo.episodeIndex = adapterPosition
+                                taskInfo.episodeName = episode.title
                                 taskInfo.href = movieDetail.href
-                                taskInfo.episodeHref = episodes[position].href
+                                taskInfo.episodeHref = episode.href
                                 if (!GlobalUtil.isX86Device()) {
-                                    val downloadHelper = DownloadHelper.getInstance(context.applicationContext, null)
+                                    val downloadHelper = DownloadHelper.getInstance(context.applicationContext)
                                     downloadHelper.addTask(taskInfo)
                                 }
                             }

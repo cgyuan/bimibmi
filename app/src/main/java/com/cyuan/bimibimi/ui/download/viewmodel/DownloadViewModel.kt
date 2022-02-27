@@ -40,7 +40,7 @@ class DownloadViewModel(
         if (mDownloadTasks.value == null) return
         mDownloadTasks.value as List<DownloadTaskInfo>
         for (taskInfo in mDownloadTasks.value!!) {
-            if (!taskInfo.taskUrl.toLowerCase().endsWith("m3u8")) {
+            if (!taskInfo.taskUrl.toLowerCase().contains("m3u8")) {
                 val xlTaskInfo = XLTaskHelper.instance().getTaskInfo(taskInfo.taskId.toLong())
                 taskInfo.totalSize = xlTaskInfo.mFileSize.toString()
                 taskInfo.taskStatus = xlTaskInfo.mTaskStatus

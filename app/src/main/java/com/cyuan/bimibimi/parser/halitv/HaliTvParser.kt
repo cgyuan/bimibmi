@@ -307,7 +307,7 @@ object HaliTvParser {
         dataSource: String = ""
     ) {
         context as Activity
-        val webView = context.findViewById<WebView>(R.id.webview)
+        val webView = WebView(context)
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -341,6 +341,7 @@ object HaliTvParser {
                             webView.stopLoading()
                             callback?.onSuccess(url)
                             webView.removeAllViews()
+                            webView.destroy()
                         }
                     }
                 }
